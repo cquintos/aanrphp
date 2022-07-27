@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Commodity;
+use App\Log;
 
 class CommoditiesController extends Controller
 {
     public function addCommodity(Request $request){
         $this->validate($request, array(
-            'name' => 'required|max:100'
+            'name' => 'required|max:100',
         ));
 
         
@@ -39,7 +40,7 @@ class CommoditiesController extends Controller
     
     public function editCommodity(Request $request, $commodity_id){
         $this->validate($request, array(
-            'name' => 'required|max:100'
+            'name' => 'required|max:100',
         ));
         
         $user = auth()->user();
