@@ -189,11 +189,11 @@ class ArtifactAANRController extends Controller{
     }
     
     public function editArtifact(Request $request, $artifact_id){
-        $this->validate($request, array(
+        $this->validate($request, [
             'title' => 'required',
             'date_published' => 'before:tomorrow',
             'file' => 'file|max:10240|mimes:pdf,jpeg,png'
-        ));
+        ]);
         $user = auth()->user();
         $temp_changes = '';
         $log = new Log;
