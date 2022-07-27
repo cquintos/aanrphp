@@ -5,12 +5,14 @@
 @section('breadcrumb')
     <ol class="breadcrumb pb-0" style="background-color:transparent">
         <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">km4aanr</a></li>
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Dashboard</a></li>
+        <!-- <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Dashboard</a></li> -->
         <li class="breadcrumb-item active" aria-current="page">Manage</li>
     </ol>
 @endsection
 
-<?php $consortium_chosen = App\Consortia::where('id', '=', auth()->user()->consortia_admin_id)->first() ?>
+<?php 
+    $consortium_chosen = App\Consortia::where('id', '=', auth()->user()->consortia_admin_id)->first();
+?>
 
 <style>
     .center-td{
@@ -140,7 +142,7 @@
             <div class="col-xl-2 col-md-3 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
                 <div class="nav nav-tabs" style="border-bottom-width: 0px;">
                     <a class="list-group-item active" data-toggle="tab" href="#user_profile" style="padding-top:23px; padding-left:32px">
-                        <span><i class="fas fa-database" style="margin-right:0.8rem"></i> User Profile</span>
+                        <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
                     @if(auth()->user()->consortia_admin_request == 2)
                     <a class="list-group-item" data-toggle="tab" href="#manage_consortia" style="padding-top:23px; padding-left:32px">

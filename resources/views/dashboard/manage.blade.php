@@ -17,7 +17,7 @@
     $sliders = App\LandingPageSlider::all(); 
     $social_media = App\SocialMediaSticky::all();
     $header_links = App\HeaderLink::all(); 
-    $footer_links = App\FooterLink::all(); 
+    $footer_links = App\FooterLink::all();
 ?>
 
 <style>
@@ -319,7 +319,7 @@
                                         });
                                     </script>
                                     <div class="form-group">
-                                        {{Form::label('contact_number', 'Contact Number', ['class' => 'col-form-label font-weight-bold'])}}
+                                        {{Form::label('contact_number', 'Contact Number', ['type' => 'tel', 'class' => 'col-form-label font-weight-bold'])}}
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                               <span class="input-group-text">+63</span>
@@ -1237,10 +1237,10 @@
                                     <table class="table data-table tech-table table-hover" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th width="10%">#</th>
-                                                <th width="45%">Name</th>
-                                                <th width="30%">Link</th>
-                                                <th width="15%">Actions</th>
+                                                <th style="width:10%">#</th>
+                                                <th style="width:45%">Name</th>
+                                                <th style="width:30%">Link</th>
+                                                <th style="width:15%">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1248,7 +1248,7 @@
                                             <tr>
                                                 <td><span class="text-muted">{{$social->id}}</span></td>
                                                 <td><span class="text-muted">{{$social->name}}</span></td>
-                                                <td><span class="text-muted">{{$social->link}}</span></td>
+                                                <td><span class="text-muted" style="word-wrap: break-word">{{$social->link}}</span></td>
                                                 <td class="">
                                                     <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editStickyModal-{{$social->id}}"><i class="fas fa-edit"></i> Edit Details</button>
                                                 </td>
@@ -1640,9 +1640,9 @@
                                 <div class="card-header px-5 pt-4">
                                     <h2 class="text-primary" >
                                         All Users
-                                    <span class="float-right">
+                                    <!-- <span class="float-right">
                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createIndustryModal"><i class="fas fa-plus"></i> Add</button>
-                                    </span></h2>
+                                    </span></h2> -->
                                 </div>
                                 <div class="card-body px-5">
                                     <table class="table data-table tech-table table-hover" style="width:100%">
@@ -1805,6 +1805,12 @@
         }
         tr.shown td.details-control {
             background: url('http://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+        }
+        table {
+            border-spacing: 0px;
+            table-layout: fixed;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
                     

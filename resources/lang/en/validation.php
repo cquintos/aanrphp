@@ -132,6 +132,21 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'date_published' => [
+            'before' => 'Date published can not be of future time.',
+        ],
+        'image' => [
+            'required' => 'Please upload an image before submitting the form.'
+        ],
+        'agrisyunaryo_check' => [
+            'required' => 'Please select an Agrisyunaryo first before attempting to delete.'
+        ],
+        'g-recaptcha-response' => [
+            'required' => 'Please check the CAPTCHA before submitting.'
+        ],
+        'terms_condition' => [
+            'required' => 'Please read and agree with our data privacy notice.'
+        ]
     ],
 
     /*

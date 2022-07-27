@@ -31,7 +31,7 @@
                     @endif
                 </button>
                 <ul class="dropdown-menu py-1 dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="min-width:3em;padding-left:6px;padding-right:6px">
-                    <li><a class="dropdown-item p-0" style="text-align:left" href="{{ url('/locale/en') }}">ALL CONSORTIA</a></li>
+                    <li><a class="dropdown-item p-0" style="text-align:left" href="{{ url('') }}">ALL CONSORTIA</a></li>
                     @foreach(App\Consortia::all() as $consortium)
                         <li class="dropdown-submenu dropleft">
                             <a class="dropdown-item p-0" style="text-align:left" href="{{route('consortiaLandingPage', ['consortia' => $consortium->short_name])}}"><img src="/storage/page_images/{{$consortium->thumbnail}}" style="width:2em"> {{$consortium->short_name}}<span class="caret"></span></a>

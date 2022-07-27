@@ -2,6 +2,15 @@
 
 @section('title', 'Register')
 @section('content')
+<body>
+<script type="text/javascript">
+    var onloadCallback = function() {
+    grecaptcha.render('captcha_element', {
+          'sitekey' : '6Ldcxx4hAAAAAHNwSiJDjRPp0tioB6Z6glyKKiQL'
+        });
+    };
+ 
+</script>
 <div class="container pb-5">
     @include('layouts.messages')
     <div class="row justify-content-center">
@@ -12,9 +21,11 @@
                     <div class="dropdown-divider-2 mb-3" style="border-top:2px solid #dedede !important"></div>
 
                     <form method="POST" action="{{ route('createUser') }}">
+                      
                         @csrf
                         <div class="form-group" style="margin-bottom:0.2rem">
                             <label for="name" class="col-form-label font-weight-bold required">{{ __('Full Name') }}</label>
+                          
                             <div class="row">
                                 <div class="col-md-7 pr-0">
                                     <input style="color:black" id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name" autofocus>
@@ -98,7 +109,17 @@
                             <label for="password-confirm" class="col-form-label font-weight-bold required">{{ __('Confirm Password') }}</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
-
+                        <div class="form-group">
+                            <input id="terms_condition" type="checkbox"  value="Data">
+                            <label for="terms_condition" class="font-weight-bold required">
+                                I have read and agreed with the 
+                                <a href="http://www.pcaarrd.dost.gov.ph/home/portal/index.php/transparency/privacy-statement/file" target="_blank" rel="noopener noreferrer">
+                                    DATA PRIVACY NOTICE.
+                                </a>
+                            </label>
+                        </div>
+                        <div class="form-group" id="captcha_element" ></div>
+                        <br>
                         <script>
                             $(document).ready(function() {
                                 $("#select_org").change(function(){
@@ -126,6 +147,10 @@
         </div>
     </div>
 </div>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+    async defer>
+</script>
+</body>
 @endsection
 <style>
     .required:after {

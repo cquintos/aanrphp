@@ -22,7 +22,7 @@
 @section('content')
 @include('layouts.messages')
 <?php 
-    $landing_page = App\LandingPageElement::find(1);
+    $landing_page = App\LandingPageElement::findOrFail(1);
     $aanrPage = App\AANRPage::first();
     $totalContent = App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
 
@@ -181,7 +181,7 @@
               </div>
               <div class="card-body" style="height:150px">
                   <span style="font-size:3.5rem; color:rgb(59,155,207)">
-                      {{request()->filter == 'yes' ? $averageSearchWithFilter : $averageSearchCurrentHalfMonth}}
+                      {{request()->filter == 'yes' ? ceil($averageSearchWithFilter) : ceil($averageSearchCurrentHalfMonth)}}
                   </span><br>
                   <h5 style="{{request()->filter != 'yes' ? 'display:none;' : ''}}; color:rgb(83,186,139)">
                       Searches per day
@@ -310,7 +310,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(58,136,235)">
                             <span style="font-size:4.5rem;color:white; line-height:1">
-                                <b>{{$merged_artifact_industry[1]->total}}</b>
+                                <b>{{$merged_artifact_industry[0]->total}}</b>
                             </span>
                             <h4 class="text-white">
                                 Aquatic Resources
@@ -326,7 +326,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(60,193,114)">
                             <span style="font-size:5.5rem; color:white; line-height:1">
-                                <b>{{$merged_artifact_industry[2]->total}}</b>
+                                <b>{{$merged_artifact_industry[1]->total}}</b>
                             </span>
                             <h4 class="text-white">
                                 Natural Resources
@@ -377,13 +377,13 @@
             maintainAspectRatio: false,
             responsive:true,
             scales: {
-                yAxes: [{
+                yAxes:{
                     display: true,
                     ticks: {
                         beginAtZero: true,
                         stepSize: 1
                     }
-                }]
+                }
             }
         }
     }); 
@@ -454,17 +454,35 @@
                 hoverBorderColor:'rgb(0,0,0)'
             }]
         },
+        axisX: {
+            labelMaxWidth: 100,
+        },
         options:{
             indexAxis: 'y',
             legend: {
                 display: false
             },
-            maintainAspectRatio: false,
-            responsive:true,
             elements: {
                 bar: {
                     borderWidth: 2,
                 }
+            },
+            maintainAspectRatio: false,
+            responsive:true,
+            scales: {         
+                yAxes: {
+                    ticks: {
+                        callback: function(value, index) {
+                            value = @php echo json_encode($search_query_freq_array[0]); @endphp;
+                            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+                            console.log(vw/30);
+                            if ((vw/30) < value[index].length) {
+                                return value[index].substr(0, (vw/30)) + " ...";
+                            }
+                            return value[index];
+                        },
+                    },
+                },
             },
             plugins: {
                 legend: {

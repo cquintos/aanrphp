@@ -240,37 +240,39 @@ class PagesController extends Controller
     }
 
     public function dashboardManage(){
-        if(Auth::check()){
-            $advertisements = Advertisement::all();
-            $agendas = Agenda::all();
-            $announcements = Announcement::all();
-            $artifactAANR = ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
-            $content = Content::pluck('type', 'id')->all();
-            $content_subtype = ContentSubtype::all();
-            $contributors = Contributor::all();
-            $consortia = Consortia::pluck('short_name', 'id')->all();
-            $isp = ISP::pluck('name', 'id')->all();
-            $sectors = Sector::pluck('name', 'id')->all();
-            $industries = Industry::pluck('name', 'id')->all();
-            $commodities = Commodity::pluck('name', 'id')->all();
-            $subscribers = Subscriber::all();
-            return view('dashboard.manage')
-                ->withAdvertisements($advertisements)
-                ->withAgendas($agendas)
-                ->withAnnouncements($announcements)
-                ->withArtifactAANR($artifactAANR)
-                ->withConsortia($consortia)
-                ->withContent($content)
-                ->withContentSubtypes($content_subtype)
-                ->withContributors($contributors)
-                ->withISP($isp)
-                ->withSectors($sectors)
-                ->withIndustries($industries)
-                ->withCommodities($commodities)
-                ->withSubscribers($subscribers);
-        } else {
+        if(!Auth::check()){
             return Redirect::route('login')->with('error','You have to be logged in to access this page.');
         }
+        if(!Auth::user()->role == 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
+        $advertisements = Advertisement::all();
+        $agendas = Agenda::all();
+        $announcements = Announcement::all();
+        $artifactAANR = ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
+        $content = Content::pluck('type', 'id')->all();
+        $content_subtype = ContentSubtype::all();
+        $contributors = Contributor::all();
+        $consortia = Consortia::pluck('short_name', 'id')->all();
+        $isp = ISP::pluck('name', 'id')->all();
+        $sectors = Sector::pluck('name', 'id')->all();
+        $industries = Industry::pluck('name', 'id')->all();
+        $commodities = Commodity::pluck('name', 'id')->all();
+        $subscribers = Subscriber::all();
+        return view('dashboard.manage')
+            ->withAdvertisements($advertisements)
+            ->withAgendas($agendas)
+            ->withAnnouncements($announcements)
+            ->withArtifactAANR($artifactAANR)
+            ->withConsortia($consortia)
+            ->withContent($content)
+            ->withContentSubtypes($content_subtype)
+            ->withContributors($contributors)
+            ->withISP($isp)
+            ->withSectors($sectors)
+            ->withIndustries($industries)
+            ->withCommodities($commodities)
+            ->withSubscribers($subscribers);
     }
 
     public function userDashboard(){

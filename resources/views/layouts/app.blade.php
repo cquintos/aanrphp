@@ -85,11 +85,18 @@
     gtag('js', new Date());
 
     gtag('config', 'G-BMSF26WS97');
+    $(document).ready(function() {
+        // show the alert
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 5000);
+    });
     </script>
 
 </head>
 <body style="background-color:white">
     <div id="app">
+        @unless(request()->is('dashboard/*'))
         <div class="icon-bar hide-when-mobile" style="z-index:500">
             <?php $sticky = App\SocialMediaSticky::all()?>
             <a target="_blank" href="{{$sticky->where('name', '=', 'PCAARRD')->first()->link}}" class="sarai"><img src="/storage/page_images/TRr6O4s.png" height="30" width="30"></a> 
@@ -100,12 +107,13 @@
             <a target="_blank" data-toggle="tooltip" title="Visit our YouTube" href="{{$sticky->where('name', '=', 'YouTube')->first()->link}}" class="youtube"><i class="fab fa-youtube"></i></a> 
             <a target="_blank" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="Please help us make this website better" title="Click to see feedback form" href="{{$sticky->where('name', '=', 'Survey Form')->first()->link}}" class="feedback"><i class="far fa-comment-dots"></i></a>
         </div>
+        @endunless
         <section class="sticky-top">
             @include('layouts.navbar')
         </section>
         @yield('content')
-            
-       @include('layouts.footer')
+        @yield('side_icon_bar')
+        @include('layouts.footer')
        
     </div>
     <style>

@@ -1,10 +1,12 @@
 @extends('layouts.app')
 @section('title', 'Home')
 @section('breadcrumb')
-    <?php
+
+<?php
+    use Illuminate\Support\Facades\Auth;
         $headlines = App\Headline::all();
         $count = 0;
-        $user = auth()->user();
+        $user = Auth::user();
     ?>
     <div id="carouselContent" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner" role="listbox">
@@ -21,9 +23,8 @@
 
 @include('layouts.messages')
 @include('pages.modals.landingPage')
-
 <?php 
-    $landing_page = App\LandingPageElement::find(1);
+    $landing_page = App\LandingPageElement::findOrFail(1);
     $aanrPage = App\AANRPage::first();
 ?>
 
@@ -41,7 +42,6 @@
         </nav>
     </div> 
 @endif
-
 <!-- CAROUSEL SLIDER SECTION -->
 <div class="container{{$landing_page->slider_container_toggle == 1 ? '-fluid' : ''}} pb-1 px-0" style="z-index:0">
     <div id="featuredBanner" style="" class="carousel slide" data-ride="carousel">
@@ -469,7 +469,7 @@
                 $compiled_featured_artifacts->push($organization_artifact);
             }
         }
-        if($user->interest != null){
+        if(!empty($user->interest) && $user->interest != "null" && $user->interest != "NULL"){
             //get all relevant consortia from the user's interest
             $all_consortia_interest = App\Consortia::whereIn('short_name', json_decode($user->interest))->get();
             $consortia_interest_array = array();

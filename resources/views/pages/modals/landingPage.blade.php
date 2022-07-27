@@ -1,6 +1,7 @@
 <?php 
-    $landing_page = App\LandingPageElement::find(1);
-    $footer_info = App\FooterInfo::find(1);
+
+$footer_info = App\FooterInfo::findOrFail(1);
+    $landing_page = App\LandingPageElement::findOrFail(1);
     $publications_list = App\ArtifactAANR::where('content_id', '=', '15')->pluck('title', 'id')->all();
 ?>
 

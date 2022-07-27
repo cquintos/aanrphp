@@ -387,13 +387,19 @@ class ConsortiaController extends Controller
             if($request->user_role == 1){
                 $user->consortia_admin_id = $request->consortia_admin_id;
                 $user->organization = Consortia::find($request->consortia_admin_id)->short_name;
+                $user->consortia_admin_request = 2;
+                $user->role = 2;
+                $log->changes = 'Set '.$user->email.' as '.$user->organization.' admin';
+                $log->action = 'Set \''. $user->email.' as '.$user->organization.' admin\'';
             } else {
                 $user->consortia_admin_id = null;
+                $user->consortia_admin_request = 0;
+                $user->role = 0;
+                $log->changes = 'Set '.$user->email.' as regular user';
+                $log->action = 'Set \''. $user->email.' as regular user\'';
             }
             $log->user_id = $admin->id;
-            $log->changes = 'Set '.$user->email.' as '.$user->organization.' admin';
             $log->user_email = $admin->email;
-            $log->action = 'Set \''. $user->email.' as '.$user->organization.' admin\'';
             $log->IP_address = $request->ip();
             $log->resource = 'Users';
             $log->save();

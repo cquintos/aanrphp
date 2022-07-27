@@ -46,7 +46,7 @@
                             @include('layouts.messages')
                             <style>
                                 .nav-link{
-                                    color:#495057 !important;
+                                    /* color:#495057 !important; */
                                 }
                                 .nav-link.active{
                                     color:black !important;

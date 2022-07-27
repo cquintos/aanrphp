@@ -12,7 +12,7 @@ class AgrisyunaryosController extends Controller
     public function addAgrisyunaryo(Request $request){
         $this->validate($request, array(
             'title' => 'required|max:255',
-            'image' => ['mimes:jpeg,jpg,png,gif', 'max:10240']
+            'image' => ['required', 'mimes:jpeg,jpg,png,gif', 'max:10240']
         ));
         $user = auth()->user();
         $temp_changes = '';
@@ -55,7 +55,7 @@ class AgrisyunaryosController extends Controller
     public function editAgrisyunaryo(Request $request, $agrisyunaryo_id){
         $this->validate($request, array(
             'title' => 'required|max:255',
-            'image' => ['mimes:jpeg,bmp,png,gif', 'max:10240']
+            'image' => ['required', 'mimes:jpeg,bmp,png,gif', 'max:10240']
         ));
         $user = auth()->user();
         $temp_changes = '';
@@ -121,6 +121,9 @@ class AgrisyunaryosController extends Controller
     }
 
     public function deleteAgrisyunaryo(Request $request){
+        $this->validate($request, array(
+            'agrisyunaryo_check' => 'required',
+        ));
 
         $user = auth()->user();
         $temp_changes = '';
@@ -130,20 +133,21 @@ class AgrisyunaryosController extends Controller
         } else {
             $agrisyunaryo = Agrisyunaryo::whereIn('id', $request->input('agrisyunaryo_check'))->get();
             foreach ($agrisyunaryo as $agrisyunaryo_single) {
-                if($agrisyunaryo_single->image != null){
+                if($agrisyunaryo_single->image){
                     $image_path = public_path().'/storage/page_images/'.$agrisyunaryo_single->image;
                     if(file_exists($image_path)){
                             unlink($image_path);
                         }
                 }
-                $temp_changes = $temp_changes.'<strong>Image:</strong> '.$agrisyunaryo->image.' <strong>-></strong> '.$imageName.'<br>';
+                $temp_changes = $temp_changes.'<strong>Image:</strong> '.$agrisyunaryo_single->title.' <strong>-></strong> '.$agrisyunaryo_single->image.'<br>';
                 $agrisyunaryo_single->delete();
             }
             
             $log->user_id = $user->id;
             $log->user_email = $user->email;
             $log->changes = $temp_changes;
-            $log->action = 'Edited \''. $agrisyunaryo->title.'\' details';
+            // $log->action = 'Edited \''. $agrisyunaryo->title.'\' details';
+            $log->action = 'Deleted content';
             $log->IP_address = $request->ip();
             $log->resource = 'Agrisyunaryo';
             $log->save();

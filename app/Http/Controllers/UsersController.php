@@ -22,47 +22,73 @@ class UsersController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'contact_number' => ['required', 'digits:10'],
-            'select_org' => 'required'
-        ],
-        [
-          'contact_number.digits' => 'Contact number is not valid!'
-        ]
-        );
-
-        $user = new User;
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->password = Hash::make($request->password);
-        if($request->select_org == 'other'){
-            $user->is_organization_other = 1;
-            $user->organization = $request->others_org;
-        } else {
-            $user->is_organization_other = 0;
-            $user->organization = $request->select_org;
-        }
-        $user->email = $request->email;
-        $user->age_range = $request->age_range;
-        $user->gender = $request->gender;
-        $user->contact_number = $request->contact_number;
-        $user->save();
-        Auth::loginUsingId($user->id);
-
-
-
-        Http::post('community.aanr.ph/user/register?_format=json', [
-            "name" => ["value" => $user->first_name],
-            "mail" => ["value" => $user->email],
-            "pass" => ["value" => $user->password]
+            'contact_number' => 'required|digits:10',
+            'select_org' => 'required',
+            'g-recaptcha-response' => 'required',
+            'terms_condition' => 'required',
         ]);
-        return redirect('/')->with('success','Registration Success! Welcome.');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'secret' => '6Ldcxx4hAAAAACIARW1bpo-SYbPZCcLqTFw0Qn5h',
+            'response' => $_POST['g-recaptcha-response'],
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        $resp = json_decode(curl_exec($ch));
+        curl_close($ch);
+        console_log("hiasd");
+        $previous = "javascript:history.go(-1)";
+        if(!$_POST['g-recaptcha-response']){
+            echo '<h2>Please check the the captcha form.</h2>';
+            return redirect('/register');
+        }
+        if ($resp->success) {
+            $user = new User;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->password = Hash::make($request->password);
+            if($request->select_org == 'other'){
+                $user->is_organization_other = 1;
+                $user->organization = $request->others_org;
+            } else {
+                $user->is_organization_other = 0;
+                $user->organization = $request->select_org;
+            }
+            $user->email = $request->email;
+            $user->age_range = $request->age_range;
+            $user->gender = $request->gender;
+            $user->contact_number = $request->contact_number;
+            $user->save();
+            Auth::loginUsingId($user->id);
+
+
+
+            Http::post('community.aanr.ph/user/register?_format=json', [
+                "name" => ["value" => $user->first_name],
+                "mail" => ["value" => $user->email],
+                "pass" => ["value" => $user->password]
+            ]);
+            return redirect('/')->with('success','Registration Success! Welcome.');
+        } else {
+            // failure
+            console_log($resp);
+            exit;
+
+        }
+      
+        
     }
 
     public function editUser(Request $request, $user_id){
         $this->validate($request, array(
             'first_name' => 'required|max:200',
-            'last_name' => 'required|max:200',
-            'phone' => ['required|regex:/(9)[0-9]{9}/']
+            'last_name' => 'required|max:200',            
+            'contact_number' => 'required|digits:10',
+
         ));
 
         $user = User::find($user_id);
@@ -77,7 +103,11 @@ class UsersController extends Controller
         $user->age_range = $request->age_range;
         $user->gender = $request->gender;
         $user->subscribed = $request->subscribe;
-        $user->interest = json_encode($request->interest);
+        if(!empty(($request->interest)) && $request->interest != "null" && $request->interest != "NULL") {
+            $user->interest = json_encode($request->interest);
+        } else {
+            $user->interest = null;
+        }
         if($request->select_org == 'other'){
             $user->is_organization_other = 1;
             $user->organization = $request->others_org;
@@ -87,7 +117,7 @@ class UsersController extends Controller
         }
         $user->save();
         Auth::loginUsingId($user->id);
-
+        $request->session()->flash('status', 'Task was successful!');
         return redirect()->back()->with('success','User account changes saved.');
     }
 

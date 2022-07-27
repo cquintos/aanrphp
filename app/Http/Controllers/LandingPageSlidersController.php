@@ -29,6 +29,9 @@ class LandingPageSlidersController extends Controller
             }
             if($request->is_video_create == '0'){
                 $slider->link = $request->link;
+                if(strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
+                    $slider->link = "https://" . $request->link;
+                }
                 $slider->description = $request->description;
                 $slider->caption_align = $request->caption_align;
                 $slider->textcard_enable = $request->textcard_enable;
@@ -120,8 +123,10 @@ class LandingPageSlidersController extends Controller
                 if($slider->button_color != $request->button_color){
                     $temp_changes = $temp_changes.'<strong>Button Color:</strong> '.$slider->button_color.' <strong>-></strong> '.$request->button_color.'<br>';
                 }
-
                 $slider->link = $request->link;
+                if(strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
+                    $slider->link = "https://" . $request->link;
+                }
                 $slider->description = $request->description;
                 $slider->caption_align = $request->caption_align;
                 $slider->textcard_enable = $request->textcard_enable;
@@ -171,7 +176,7 @@ class LandingPageSlidersController extends Controller
         }
     }
 
-    public function deleteSlider($slider_id){
+    public function deleteSlider(Request $request, $slider_id){
         $user = auth()->user();
         $temp_changes = '';
         $log = new Log;
