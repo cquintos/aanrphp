@@ -12,6 +12,7 @@ use App\Log;
 use Illuminate\Support\Facades\DB;
 use Session;
 
+//artifacts
 class ArtifactAANRController extends Controller{
     public function uploadPDFArtifact(Request $request)
     {
