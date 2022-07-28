@@ -87,6 +87,18 @@
                                 {{Form::text('others_org','', ['class' => 'form-control', 'style' => 'color:black'])}}
                             </div>
                         </div>
+                        <!-- <div class="form-group">
+                            {{Form::label('country', 'Country', ['class' => 'col-form-label font-weight-bold required'])}}
+                            <select class="form-control" data-live-search="true" name="select_country" id="select_country">
+                                @php 
+                                    $def_country = App\Country::find(175);
+                                @endphp
+                                <option value="{{$def_country->id}}" selected>{{$def_country->name}} - {{$def_country->code}}</option>
+                                @foreach (App\Country::all() as $country)
+                                    <option value="{{$country->id}}">{{$country->name}} - {{$country->code}}</option>
+                                @endforeach
+                            </select>
+                        </div> -->
                         <div class="form-group">
                             {{Form::label('contact_number', 'Contact Number', ['class' => 'col-form-label font-weight-bold required'])}}
                             <div class="input-group mb-3">
@@ -109,15 +121,16 @@
                             <label for="password-confirm" class="col-form-label font-weight-bold required">{{ __('Confirm Password') }}</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
-                        <div class="form-group">
-                            <input id="terms_condition" type="checkbox"  value="Data">
-                            <label for="terms_condition" class="font-weight-bold required">
+                        <div class="form-check">
+                            <input id="terms_condition" type="checkbox" class="form-check-input" name= "terms_condition">
+                            <label for="terms_condition" class="form-check-label required">
                                 I have read and agreed with the 
                                 <a href="http://www.pcaarrd.dost.gov.ph/home/portal/index.php/transparency/privacy-statement/file" target="_blank" rel="noopener noreferrer">
                                     DATA PRIVACY NOTICE.
                                 </a>
                             </label>
                         </div>
+                        <br>
                         <div class="form-group" id="captcha_element" ></div>
                         <br>
                         <script>

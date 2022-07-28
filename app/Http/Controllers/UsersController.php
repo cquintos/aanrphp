@@ -40,8 +40,6 @@ class UsersController extends Controller
         
         $resp = json_decode(curl_exec($ch));
         curl_close($ch);
-        console_log("hiasd");
-        $previous = "javascript:history.go(-1)";
         if(!$_POST['g-recaptcha-response']){
             echo '<h2>Please check the the captcha form.</h2>';
             return redirect('/register');
@@ -75,12 +73,8 @@ class UsersController extends Controller
             return redirect('/')->with('success','Registration Success! Welcome.');
         } else {
             // failure
-            console_log($resp);
             exit;
-
         }
-      
-        
     }
 
     public function editUser(Request $request, $user_id){
