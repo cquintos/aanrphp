@@ -88,7 +88,19 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {{Form::label('contact_number', 'Contact Number', ['class' => 'col-form-label font-weight-bold required'])}}
+                            {{Form::label('country', 'Country', ['class' => 'col-form-label font-weight-bold required'])}}
+                            <select class="form-control" data-live-search="true" name="select_country" id="select_country">
+                                @php 
+                                    $def_country = App\Country::find(175);
+                                @endphp
+                                <option value="{{$def_country->id}}" selected>{{$def_country->name}} - {{$def_country->code}}</option>
+                                @foreach (App\Country::all() as $country)
+                                    <option value="{{$country->id}}">{{$country->name}} - {{$country->code}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            {{Form::label('contact_number', 'Contact Number', ['class' => 'col-form-label font-weight-bold'])}}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">+63</span>

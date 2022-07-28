@@ -55,6 +55,7 @@ Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchA
 Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
 Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
 
+Route::get('countries', [CountryController::class, 'index']);
 //Social Media
 Route::post('headlines/addSocial', 'SocialMediaStickyController@addSocial')->name('addSocial');
 Route::post('headlines/{id}/editSocial', 'SocialMediaStickyController@editSocial')->name('editSocial');
