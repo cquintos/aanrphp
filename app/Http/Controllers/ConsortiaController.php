@@ -505,9 +505,10 @@ class ConsortiaController extends Controller
             $consortium->latest_aanr_header = $request->input('latest_aanr_header');
             $consortium->latest_aanr_subheader = $request->input('latest_aanr_subheader');
 
+            //bg image = 0, bg color = 1
             if($request->banner_color_radio_latest_aanr == 1){
                 $image_path = public_path().'/storage/page_images/'.$consortium->latest_aanr_bg;
-                if(file_exists($image_path)){
+                if($consortium->latest_aanr_bg != null && file_exists($image_path)){
                     unlink($image_path);
                 }
                 if($consortium->latest_aanr_bg != $request->banner_color){
@@ -521,7 +522,7 @@ class ConsortiaController extends Controller
                 if($request->hasFile('image')){
                     if($consortium->latest_aanr_bg != null){
                         $image_path = public_path().'/storage/page_images/'.$consortium->latest_aanr_bg;
-                        if(file_exists($image_path)){
+                        if($consortium->latest_aanr_bg != null && file_exists($image_path)){
                             unlink($image_path);
                         }
                     }
