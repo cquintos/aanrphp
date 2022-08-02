@@ -110,6 +110,43 @@
                                 {{Form::label('csv_file', 'Upload CSV File', ['class' => 'col-form-label required'])}}
                                 {{ Form::file('csv_file', ['class' => 'form-control mb-3 pt-1'])}}
                             </div>
+                            <br>
+                            <div>
+                                <h6>Entries with missing TITLE, CONSORTIA, and CONTENT_TYPE fields will be skipped.</h6>
+                                <br>
+                                <h6>Entries with the same title, date published, author, description, consortia, content type, and GAD are considered duplicate and will also be skipped.</h6>
+                                <br>
+                                <h6>Entries with invalid CONSORTIA, CMI, CONTENT TYPE, and SUBCONTENT TYPE will be also skipped.</h6>
+                                
+                                <br>
+                                <br>
+                                <h6>Check your entries if the consortia is aligned with the choices below:</h6>
+                                <div class="form-group">
+                                    <select name="consortia" class="form-control dynamic_consortia_member" id="consortia" data-dependent="Consortia Member">
+                                        <option value=""> Check Consortia </option>
+                                            @foreach(App\Consortia::all() as $consortium)
+                                                <option value="{{$consortium->id}}">{{$consortium->short_name}}</option>
+                                            @endforeach
+                                    </select> 
+                                </div>
+                                <h6>as well as the corresponding SUC/Unit/Institution (CMI):</h6>
+                                <div class="form-group">
+                                    <select name="consortia_member" class="form-control" id="consortia-member-create2">
+                                        <option value=""> ----------------------</option>
+                                    </select> 
+                                </div>
+                                <br>
+                                <h6>Check your entries if the content type is aligned with the choices below:</h6>
+                                    <div class="form-group">
+                                        {{Form::select('content', $content, '',['class' => 'dynamic_content_subtype form-control', 'placeholder' => 'Check Content Type', 'data-dependent' => "Content Subtype"]) }}
+                                    </div>
+                                <h6>as well as the corresponding content subtype:</h6>
+                                <div class="form-group">
+                                    <select name="subcontent_type2" class="form-control" id="content-subtype-create2">
+                                        <option value=""> ----------------------</option>
+                                    </select> 
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -259,6 +296,14 @@
                     $('#consortia-member-create').html(result);
                 }
             })
+            $.ajax({
+                url:"{{ route('fetchConsortiaMemberDependent') }}",
+                method:"POST",
+                data:{consortia_member:consortia_member, value:value, _token:_token, dependent:dependent},
+                success:function(result){
+                    $('#consortia-member-create2').html(result);
+                }
+            })
         }
     });
 
@@ -275,6 +320,14 @@
                 data:{content_subtype:content_subtype, value:value, _token:_token, dependent:dependent},
                 success:function(result){
                     $('#content-subtype-create').html(result);
+                }
+            })
+            $.ajax({
+                url:"{{ route('fetchContentSubtypeDependent') }}",
+                method:"POST",
+                data:{content_subtype:content_subtype, value:value, _token:_token, dependent:dependent},
+                success:function(result){
+                    $('#content-subtype-create2').html(result);
                 }
             })
         }
