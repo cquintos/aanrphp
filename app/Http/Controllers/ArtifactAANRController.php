@@ -165,10 +165,12 @@ class ArtifactAANRController extends Controller{
                         $err_CMI = $err_CMI + 1;
                         continue;
                     }
+                    $consortia_member_name = $data['CMI'];
                     $consortia_member_id = $consortia_member_id->id;
                 } else {
                     //null means no input and is acceptable
                     $consortia_member_id = null;
+                    $consortia_member_name = null;
                 }
                 //
                 // END OF DATA VALIDATION
@@ -195,6 +197,7 @@ class ArtifactAANRController extends Controller{
                 $artifact->embed_link = $embed_link;
                 $artifact->author = $author;
                 $artifact->author_affiliation = $author_affiliation;
+                $artifact->author_institution = $consortia_member_name;
                 $artifact->keywords = $keywords;            
                 $artifact->is_gad = $is_gad==null? 0 : $is_gad;
                 //
@@ -234,7 +237,12 @@ class ArtifactAANRController extends Controller{
             $artifactaanr->link = $request->link;
             $artifactaanr->embed_link = $request->embed_link;
             $artifactaanr->author = $request->author;
-            $artifactaanr->author_institution = $request->author_institution;
+
+            $consortia_member_name = ConsortiaMember::where('id' , '=', $request->consortia_member)->first();
+            if($consortia_member_name!=null) {
+                $consortia_member_name = $consortia_member_name->name;
+            }
+            $artifactaanr->author_institution = $consortia_member_name;
             $artifactaanr->author_affiliation = $request->author_affiliation;
             $artifactaanr->keywords = $request->keywords;
             $artifactaanr->is_gad = $request->is_gad;
