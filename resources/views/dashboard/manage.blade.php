@@ -296,7 +296,7 @@
                                         <br>  
                                         @if(auth()->user()->role == 5)
                                             <span class="badge bg-success px-3 pt-2 "><h5 class="text-white">Superadmin</h5></span>
-                                        @elseif(auth()->user()->role == 2 || auth()->user()->role == 1)
+                                        @elseif(auth()->user()->role == 1)
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Consortia Admin</h5></span>
                                         @else
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Regular User</h5></span>
@@ -1754,7 +1754,7 @@
                                 <h2 class="text-primary" >
                                     Activity Logs
                                 <span class="float-right">
-                                    <a href="{{ url('/logs/download') }}" type="button" class="btn btn-default"> <i class="fas fa-plus"></i> Download Excel</a>
+                                    <a href="{{ url('/logs/download') }}" type="button" class="btn btn-default"> <i class="fas fa-download"></i> Download Excel</a>
                                 </span></h2>
                             </div>
                             <div class="card-body">
