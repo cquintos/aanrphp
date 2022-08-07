@@ -144,7 +144,7 @@
                     <a class="list-group-item active" data-toggle="tab" href="#user_profile" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
-                    @if(auth()->user()->consortia_admin_request == 2)
+                    @if(auth()->user()->role == 1)
                     <a class="list-group-item" data-toggle="tab" href="#manage_consortia" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-home" style="margin-right:0.8rem"></i> Manage Consortia</span>
                     </a>
@@ -245,7 +245,7 @@
                                         <br>  
                                         @if(auth()->user()->role == 5)
                                             <span class="badge bg-success px-3 pt-2 "><h5 class="text-white">Superadmin</h5></span>
-                                        @elseif(auth()->user()->role == 2)
+                                        @elseif(auth()->user()->role == 1)
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Consortia Admin</h5></span>
                                         @else
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Regular User</h5></span>
@@ -320,7 +320,7 @@
                             {{Form::close()}}
                         </div>
                     </div>
-                    @if(auth()->user()->consortia_admin_request == 2)
+                    @if(auth()->user()->role == 1)
                     <div class="tab-pane fade" id="manage_consortia">
                         <div class="section-header shadow px-5" style="padding-top:23px">
                             <span class="text-white mr-3">Manage Consortia</span>
@@ -339,12 +339,12 @@
 
                         @if(request()->asset == 'Consortia' || !request()->asset)
                         <div class="card shadow mb-5 mt-0 ml-0">
-                            <div class="card-header px-5 pt-4" style="{{auth()->user()->consortia_admin_request != 2 ? 'filter: blur(0.6em);' : ''}}">
+                            <div class="card-header px-5 pt-4">
                                 <h2 class="text-primary" >
                                     Consortia
                                </h2>
                             </div>
-                            <div class="card-body px-5" style="{{auth()->user()->consortia_admin_request != 2 ? 'filter: blur(0.6em);' : ''}}">
+                            <div class="card-body px-5">
                                 <table class="table data-table tech-table table-hover" style="width:100%">
                                         <thead>
                                             <tr>
@@ -370,16 +370,6 @@
                                         </tbody>
                                 </table>
                             </div>
-                            @if(auth()->user()->consortia_admin_request != 2)
-                            <div class="card-cover">
-                                <h1 class="text-center text-white">
-                                    You need a consortia admin account to access this page.
-                                </h1><br>
-                                <button class="btn btn-lg btn-primary" data-toggle="modal" data-target="{{auth()->user()->consortia_admin_request == 0 ? '#consortiaRequestModal' : '#checkRequestModal'}}">
-                                    {{auth()->user()->consortia_admin_request == 0 ? 'Request Admin Account' : 'Request Pending'}}
-                                </button>
-                            </div>
-                            @endif
                         </div>
                         @elseif(request()->asset == 'Members')
                         <div class="card shadow mb-5 mt-0 ml-0">
@@ -476,7 +466,11 @@
                                 <h2 class="text-primary" >
                                     Activity Logs
                                 <span class="float-right">
-                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createGeneratorModal" data-placement="top" rel="tooltip" title="Export activity logs as an excel file"><i class="fas fa-plus"></i> Download Excel</button>
+                                    <a href="{{route('exportConsortiaLogs')}}">
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-placement="top" rel="tooltip" title="Export activity logs as an excel file">
+                                            <i class="fas fa-download"></i> Download Excel
+                                        </button>
+                                    </a>
                                 </span></h2>
                             </div>
                             <div class="card-body">

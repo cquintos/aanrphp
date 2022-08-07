@@ -380,15 +380,15 @@ class ConsortiaController extends Controller
         $admin = auth()->user();
         $log = new Log;
         $user = User::find($user_id);
-        if($admin->role != 5 && $admin->role != 1){
+        if($admin->role != 5){
             return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
         } else {
             $user->role = $request->user_role;
             if($request->user_role == 1){
                 $user->consortia_admin_id = $request->consortia_admin_id;
                 $user->organization = Consortia::find($request->consortia_admin_id)->short_name;
-                $user->consortia_admin_request = 2;
-                $user->role = 2;
+                $user->consortia_admin_request = 1;
+                $user->role = 1;
                 $log->changes = 'Set '.$user->email.' as '.$user->organization.' admin';
                 $log->action = 'Set \''. $user->email.' as '.$user->organization.' admin\'';
             } else {
