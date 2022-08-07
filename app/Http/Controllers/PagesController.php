@@ -44,14 +44,33 @@ class PagesController extends Controller
     }
 
     public function searchAnalytics(){
+        if(!Auth::check()){
+            return Redirect::route('login')->with('error','You have to be logged in to access this page.');
+        }
+        if(Auth::user()->role != 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
+
         return view('analytics.search');
     }
 
     public function searchAnalyticsWithFilter(Request $request){
+        if(!Auth::check()){
+            return Redirect::route('login')->with('error','You have to be logged in to access this page.');
+        }
+        if(Auth::user()->role != 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
         return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&filter=yes');
     }
 
     public function saveAnalytics(){
+        if(!Auth::check()){
+            return Redirect::route('login')->with('error','You have to be logged in to access this page.');
+        }
+        if(Auth::user()->role != 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
         $now = Carbon::now();
         $file_name = 'aanr_analytics'. $now->format('dmy').'.pdf';
         $file = Browsershot::url('http://aanr.ph/analytics/search')
@@ -102,6 +121,12 @@ class PagesController extends Controller
     }
 
     public function contentEdit($content_id){
+        if(!Auth::check()){
+            return Redirect::route('login')->with('error','You have to be logged in to access this page.');
+        }
+        if(Auth::user()->role != 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
 
         $advertisements = Advertisement::all();
         $content = Content::pluck('type', 'id')->all();
@@ -243,7 +268,7 @@ class PagesController extends Controller
         if(!Auth::check()){
             return Redirect::route('login')->with('error','You have to be logged in to access this page.');
         }
-        if(!Auth::user()->role == 5){
+        if(Auth::user()->role != 5){
             return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
         }
         $advertisements = Advertisement::all();
@@ -273,6 +298,17 @@ class PagesController extends Controller
             ->withIndustries($industries)
             ->withCommodities($commodities)
             ->withSubscribers($subscribers);
+    }
+
+    public function getManagePage(){
+        if(!Auth::check()){
+            return Redirect::route('login')->with('error','You have to be logged in to access this page.');
+        }
+        if(Auth::user()->role != 5){
+            return Redirect::route('userDashboard')->with('error','You have to be logged in as admin to access that page.');
+        }
+        
+        return view('pages.manage');
     }
 
     public function userDashboard(){
