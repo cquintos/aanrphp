@@ -45,10 +45,10 @@ class PagesController extends Controller
 
     public function searchAnalytics(){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
 
         return view('analytics.search');
@@ -56,20 +56,20 @@ class PagesController extends Controller
 
     public function searchAnalyticsWithFilter(Request $request){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
         return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&filter=yes');
     }
 
     public function saveAnalytics(){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
         $now = Carbon::now();
         $file_name = 'aanr_analytics'. $now->format('dmy').'.pdf';
@@ -122,10 +122,10 @@ class PagesController extends Controller
 
     public function contentEdit($content_id){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
 
         $advertisements = Advertisement::all();
@@ -266,10 +266,10 @@ class PagesController extends Controller
 
     public function dashboardManage(){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
         $advertisements = Advertisement::all();
         $agendas = Agenda::all();
@@ -302,10 +302,10 @@ class PagesController extends Controller
 
     public function getManagePage(){
         if(!Auth::check()){
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','! Admin users only.');
+            return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
         
         return view('pages.manage');
@@ -341,7 +341,7 @@ class PagesController extends Controller
                 ->withCommodities($commodities)
                 ->withSubscribers($subscribers);
         } else {
-            return Redirect::route('login')->with('error','! Login to access this page.');
+            return Redirect::route('login')->with('error','Login to access this page.');
         }
     }
 }
