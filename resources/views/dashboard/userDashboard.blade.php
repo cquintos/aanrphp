@@ -144,7 +144,7 @@
                     <a class="list-group-item active" data-toggle="tab" href="#user_profile" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
-                    @if(auth()->user()->role == 1)
+                    @if(auth()->user()->role == 2)
                     <a class="list-group-item" data-toggle="tab" href="#manage_consortia" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-home" style="margin-right:0.8rem"></i> Manage Consortia</span>
                     </a>
@@ -245,7 +245,7 @@
                                         <br>  
                                         @if(auth()->user()->role == 5)
                                             <span class="badge bg-success px-3 pt-2 "><h5 class="text-white">Superadmin</h5></span>
-                                        @elseif(auth()->user()->role == 1)
+                                        @elseif(auth()->user()->role == 2)
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Consortia Admin</h5></span>
                                         @else
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Regular User</h5></span>
@@ -320,7 +320,7 @@
                             {{Form::close()}}
                         </div>
                     </div>
-                    @if(auth()->user()->role == 1)
+                    @if(auth()->user()->role == 2)
                     <div class="tab-pane fade" id="manage_consortia">
                         <div class="section-header shadow px-5" style="padding-top:23px">
                             <span class="text-white mr-3">Manage Consortia</span>

@@ -384,17 +384,17 @@ class ConsortiaController extends Controller
             return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
         } else {
             $user->role = $request->user_role;
-            if($request->user_role == 1){
+            if($request->user_role == 2){
                 $user->consortia_admin_id = $request->consortia_admin_id;
                 $user->organization = Consortia::find($request->consortia_admin_id)->short_name;
-                $user->consortia_admin_request = 1;
-                $user->role = 1;
+                $user->consortia_admin_request = 2;
+                $user->role = 2;
                 $log->changes = 'Set '.$user->email.' as '.$user->organization.' admin';
                 $log->action = 'Set \''. $user->email.' as '.$user->organization.' admin\'';
             } else {
                 $user->consortia_admin_id = null;
                 $user->consortia_admin_request = 0;
-                $user->role = 0;
+                $user->role = 1;
                 $log->changes = 'Set '.$user->email.' as regular user';
                 $log->action = 'Set \''. $user->email.' as regular user\'';
             }
