@@ -14,7 +14,7 @@
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger">
+    <div class="alert" style="background-color: white, color:red">
         <button type="button" class="close" data-dismiss="alert">×</button>
         <strong>{{session('error')}}</strong>
     </div>
