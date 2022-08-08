@@ -393,6 +393,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                        @if(auth()->user()->consortia_admin_id != null)
                                         @foreach(App\ConsortiaMember::where('consortia_id', '=', auth()->user()->consortia_admin_id)->get() as $consortia_member)
                                             <tr>
                                                 <td style="text-align:center"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
@@ -407,6 +408,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                        @endif
                                         </tbody>
                                 </table>
                             </div>
