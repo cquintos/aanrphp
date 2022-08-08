@@ -356,7 +356,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        
+                                        @if($consortium_chosen != null)
                                             <tr>
                                                 <td>{{$consortium_chosen->id}}</td>
                                                 <td>{{$consortium_chosen->short_name}}</td>
@@ -367,6 +367,7 @@
                                                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium_chosen->id}}"  data-placement="top" rel="tooltip" title="Edit information in the consortium about page" ><i class="fas fa-edit"></i> Edit Details</button>
                                                 </td>
                                             </tr>
+                                        @endif 
                                         </tbody>
                                 </table>
                             </div>
