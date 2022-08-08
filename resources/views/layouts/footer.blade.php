@@ -15,7 +15,7 @@
                     </li>
                     <li>
                        <small class="text-muted">
-                            © 2023 - aanr.ph
+                            © 2019-2023 - aanr.ph
                         </small>
                     </li>
                 </ul>
