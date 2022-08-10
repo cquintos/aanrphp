@@ -5,23 +5,22 @@
             <div class="modal-content">
                 {{ Form::open(['action' => ['ConsortiaController@setUserAdmin', $user->id], 'method' => 'POST']) }}
                 <div class="modal-header">
-                    <h6 class="modal-title" id="exampleModalLabel">Set Consortia Admin</h6>
+                    <h6 class="modal-title" id="exampleModalLabel">Change User Role</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id = "lol">
                     <div class="form-group">
                         {{Form::label('consortia_admin_id', 'Set user role', ['class' => 'col-form-label'])}} 
                         <select class="form-control" name="user_role" id="user_role">
-                            <option value="0" {{$user->role == 0 ? 'selected' : ''}}>Regular User</option>
-                            <option value="1" {{$user->role == 1 ? 'selected' : ''}}>Consortia Admin</option>
-                            @if(auth()->user()->role == 5)
-                            <option value="5" {{$user->role == 5 ? 'selected' : ''}}>Superadmin</option>
-                            @endif
+                            <option value="" selected disabled hidden>Select Role</option>
+                            <option value="1">Regular User</option>
+                            <option value="2">Consortia Admin</option>
+                            <option value="5">Superadmin</option>
                         </select>
                     </div>
-                    <div class="form-group consortia-user-choice" style="{{$user->role == 1 ? '' : 'display:none'}}">
+                    <div class="form-group consortia-user-choice" style="{{$user->role == 2 ? '' : 'display:none'}}">
                         {{Form::label('consortia_admin_id', 'Choose consortia', ['class' => 'col-form-label required'])}} 
                         {{Form::select('consortia_admin_id', App\Consortia::where('short_name', '=', $user->organization)->pluck('short_name', 'id')->all(), $user->consortia_admin_id, ['class' => 'form-control', ])}}
                     </div>
@@ -90,7 +89,7 @@
 <script>
     $(document).ready(function() {
         $('select[name$="user_role"]').click(function() {
-            if($(this).val() == '1') {
+            if($(this).val() == '2') {
                 $('.consortia-user-choice').show();           
             }
             else {
@@ -99,4 +98,9 @@
         });
 
     });
+    $('.modal').on('show.bs.modal', function () {
+        $('select').prop('selectedIndex', "");
+        $('.consortia-user-choice').hide();   
+    });
+
 </script>
