@@ -82,7 +82,7 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             @if(auth()->user()->role == 5)
                                 <a href="/dashboard/manage" class="dropdown-item">Manage Dashboard</a>
-                                <a href="/manage" class= "dropdown-item">Configuration</a>
+                                <!-- <a href="/manage" class= "dropdown-item">Configuration</a> -->
                             @else
                                 <a href="/dashboard/userDashboard" class="dropdown-item">Manage Dashboard</a>
                             @endif
