@@ -1682,11 +1682,11 @@
                                                     <td style="width:30%">
                                                         @if(auth()->user()->role == 1 || auth()->user()->role == 2)
                                                             @if($user->role == 0 || ($user->consortia_admin_id == auth()->user()->consortia_admin_id && $user->role != 5) )
-                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Set as Consortia Admin</button>
+                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Change User Role</button>
                                                                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteUserModal-{{$user->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                             @endif
                                                         @elseif(auth()->user()->role == 5)
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Set as Consortia Admin</button>
+                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Change User Role</button>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteUserModal-{{$user->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                         @endif
                                                     </td>
