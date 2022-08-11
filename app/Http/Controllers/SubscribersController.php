@@ -5,30 +5,40 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Subscriber;
 
+// This file contains request handling logic for Subscriber.
+// functions included are:
+//     addSubscriber(Request $request)
+//     editSubscriber(Request $request, $subscriber_id)
+//     deleteSubscriber($subscriber_id, Request $request)
+//
+// Certain data are validated.
+
 class SubscribersController extends Controller
 {
-    public function addSubscriber(Request $request){
+    public function addSubscriber(Request $request)
+    {
         $this->validate($request, array(
             'first_name' => 'required|max:200',
             'last_name' => 'required|max:200'
         ));
 
         $user = auth()->user();
-        $subscriber = new Subscriber;
+        $subscriber = new Subscriber();
         $subscriber->first_name = $request->first_name;
         $subscriber->last_name = $request->last_name;
         $subscriber->email = $request->email;
         $subscriber->save();
 
-        return redirect()->back()->with('success','Subscriber Added.'); 
+        return redirect()->back()->with('success', 'Subscriber Added.');
     }
-    
-    public function editSubscriber(Request $request, $subscriber_id){
+
+    public function editSubscriber(Request $request, $subscriber_id)
+    {
         $this->validate($request, array(
             'first_name' => 'required|max:200',
             'last_name' => 'required|max:200'
         ));
-        
+
         $user = auth()->user();
         $subscriber = Subscriber::find($subscriber_id);
         $subscriber->first_name = $request->first_name;
@@ -36,13 +46,14 @@ class SubscribersController extends Controller
         $subscriber->email = $request->email;
         $subscriber->save();
 
-        return redirect()->back()->with('success','Subscriber Updated.'); 
+        return redirect()->back()->with('success', 'Subscriber Updated.');
     }
 
-    public function deleteSubscriber($subscriber_id, Request $request){
+    public function deleteSubscriber($subscriber_id, Request $request)
+    {
         $subscriber = Subscriber::find($subscriber_id);
         $subscriber->delete();
 
-        return redirect()->back()->with('success','Subscriber Deleted.'); 
+        return redirect()->back()->with('success', 'Subscriber Deleted.');
     }
 }

@@ -7,25 +7,39 @@ use App\Agrisyunaryo;
 use App\ArtifactAANR;
 use App\Log;
 
+// This file contains request handling logic for Agrisyunaryo.
+// functions included are:
+//     addAgrisyunaryo(Request $request)
+//     editAgrisyunaryo(Request $request, $agrisyunaryo_id)
+//     deleteAgrisyunaryo(Request $request)editAANRPageDetails(Request $request, $consortia_id) 
+//
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class AgrisyunaryosController extends Controller
 {
-    public function addAgrisyunaryo(Request $request){
+    public function addAgrisyunaryo(Request $request)
+    {
         $this->validate($request, array(
             'title' => 'required|max:255',
             'image' => ['required', 'mimes:jpeg,jpg,png,gif', 'max:10240']
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $agrisyunaryo = new Agrisyunaryo;
+            $agrisyunaryo = new Agrisyunaryo();
             $agrisyunaryo->title = $request->title;
             $agrisyunaryo->description = $request->description;
             $agrisyunaryo->link = $request->link;
             $agrisyunaryo->keywords = $request->keywords;
-            if($request->hasFile('image')){
+            if ($request->hasFile('image')) {
                 $imageFile = $request->file('image');
                 $imageName = uniqid().$imageFile->getClientOriginalName();
                 $imageFile->move(public_path('/storage/page_images/'), $imageName);
@@ -48,33 +62,34 @@ class AgrisyunaryosController extends Controller
             $log->IP_address = $request->ip();
             $log->resource = 'Agrisyunaryo';
             $log->save();
-            return redirect()->back()->with('success','Agrisyunaryo Added.');
-        } 
+            return redirect()->back()->with('success', 'Agrisyunaryo Added.');
+        }
     }
-    
-    public function editAgrisyunaryo(Request $request, $agrisyunaryo_id){
+
+    public function editAgrisyunaryo(Request $request, $agrisyunaryo_id)
+    {
         $this->validate($request, array(
             'title' => 'required|max:255',
             'image' => ['required', 'mimes:jpeg,bmp,png,gif', 'max:10240']
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $agrisyunaryo = Agrisyunaryo::find($agrisyunaryo_id);
 
-            if($agrisyunaryo->title != $request->title){
+            if ($agrisyunaryo->title != $request->title) {
                 $temp_changes = $temp_changes.'<strong>Title:</strong> '.$agrisyunaryo->title.' <strong>-></strong> '.$request->title.'<br>';
             }
-            if($agrisyunaryo->description != $request->description){
+            if ($agrisyunaryo->description != $request->description) {
                 $temp_changes = $temp_changes.'<strong>Description:</strong> '.$agrisyunaryo->description.' <strong>-></strong> '.$request->description.'<br>';
             }
-            if($agrisyunaryo->link != $request->link){
+            if ($agrisyunaryo->link != $request->link) {
                 $temp_changes = $temp_changes.'<strong>Link:</strong> '.$agrisyunaryo->link.' <strong>-></strong> '.$request->link.'<br>';
             }
-            if($agrisyunaryo->keywords != $request->keywords){
+            if ($agrisyunaryo->keywords != $request->keywords) {
                 $temp_changes = $temp_changes.'<strong>Keywords:</strong> '.$agrisyunaryo->keywords.' <strong>-></strong> '.$request->keywords.'<br>';
             }
 
@@ -91,10 +106,10 @@ class AgrisyunaryosController extends Controller
             $agrisyunaryo->description = $request->description;
             $agrisyunaryo->link = $request->link;
             $agrisyunaryo->keywords = $request->keywords;
-            if($request->hasFile('image')){
-                if($agrisyunaryo->image != null){
+            if ($request->hasFile('image')) {
+                if ($agrisyunaryo->image != null) {
                     $image_path = public_path().'/storage/page_images/'.$agrisyunaryo->image;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -116,43 +131,43 @@ class AgrisyunaryosController extends Controller
             $log->resource = 'Agrisyunaryo';
             $log->save();
 
-            return redirect()->back()->with('success','Agrisyunaryo Updated.'); 
+            return redirect()->back()->with('success', 'Agrisyunaryo Updated.');
         }
     }
 
-    public function deleteAgrisyunaryo(Request $request){
+    public function deleteAgrisyunaryo(Request $request)
+    {
         $this->validate($request, array(
             'agrisyunaryo_check' => 'required',
         ));
 
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $agrisyunaryo = Agrisyunaryo::whereIn('id', $request->input('agrisyunaryo_check'))->get();
             foreach ($agrisyunaryo as $agrisyunaryo_single) {
-                if($agrisyunaryo_single->image){
+                if ($agrisyunaryo_single->image) {
                     $image_path = public_path().'/storage/page_images/'.$agrisyunaryo_single->image;
-                    if(file_exists($image_path)){
-                            unlink($image_path);
-                        }
+                    if (file_exists($image_path)) {
+                        unlink($image_path);
+                    }
                 }
                 $temp_changes = $temp_changes.'<strong>Image:</strong> '.$agrisyunaryo_single->title.' <strong>-></strong> '.$agrisyunaryo_single->image.'<br>';
                 $agrisyunaryo_single->delete();
             }
-            
+
             $log->user_id = $user->id;
             $log->user_email = $user->email;
             $log->changes = $temp_changes;
-            // $log->action = 'Edited \''. $agrisyunaryo->title.'\' details';
             $log->action = 'Deleted content';
             $log->IP_address = $request->ip();
             $log->resource = 'Agrisyunaryo';
             $log->save();
 
-            return redirect()->back()->with('success','Agrisyunaryo Deleted.'); 
+            return redirect()->back()->with('success', 'Agrisyunaryo Deleted.');
         }
     }
 }

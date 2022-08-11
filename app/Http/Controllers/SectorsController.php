@@ -6,20 +6,34 @@ use Illuminate\Http\Request;
 use App\Sector;
 use App\Log;
 
+// This file contains request handling logic for Sectors.
+// functions included are:
+//     addSector(Request $request)
+//     editSector(Request $request, $sector_id)
+//     deleteSector($sector_id, Request $request)
+//
+//  if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class SectorsController extends Controller
 {
-    public function addSector(Request $request){
+    public function addSector(Request $request)
+    {
         $this->validate($request, array(
             'name' => 'required|max:100',
             'industry' => 'required'
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $sector = new Sector;
+            $sector = new Sector();
             $sector->name = $request->name;
             $sector->industry_id = $request->industry;
             $sector->description = $request->description;
@@ -33,34 +47,35 @@ class SectorsController extends Controller
             $log->resource = 'Sectors';
             $log->save();
 
-            return redirect()->back()->with('success','Sector Added.'); 
+            return redirect()->back()->with('success', 'Sector Added.');
         }
     }
-    
-    public function editSector(Request $request, $sector_id){
+
+    public function editSector(Request $request, $sector_id)
+    {
         $this->validate($request, array(
             'name' => 'required|max:100',
             'industry' => 'required'
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $sector = Sector::find($sector_id);
 
-            if($sector->name != $request->name){
+            if ($sector->name != $request->name) {
                 $temp_changes = $temp_changes.'<strong>Name:</strong> '.$sector->name.' <strong>-></strong> '.$request->name.'<br>';
             }
-            if($sector->industry_id != $request->industry){
+            if ($sector->industry_id != $request->industry) {
                 $temp_changes = $temp_changes.'<strong>Industry ID:</strong> '.$sector->industry_id.' <strong>-></strong> '.$request->industry.'<br>';
             }
-            if($sector->description != $request->description){
+            if ($sector->description != $request->description) {
                 $temp_changes = $temp_changes.'<strong>Description:</strong> '.$sector->description.' <strong>-></strong> '.$request->description.'<br>';
             }
 
-            $sector->name = $request->name; 
+            $sector->name = $request->name;
             $sector->industry_id = $request->industry;
             $sector->description = $request->description;
             $sector->save();
@@ -73,16 +88,17 @@ class SectorsController extends Controller
             $log->resource = 'Sectors';
             $log->save();
 
-            return redirect()->back()->with('success','Sector Updated.'); 
+            return redirect()->back()->with('success', 'Sector Updated.');
         }
     }
 
-    public function deleteSector($sector_id, Request $request){
+    public function deleteSector($sector_id, Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $sector = Sector::find($sector_id);
             $deletedName = $sector->name;
@@ -96,7 +112,7 @@ class SectorsController extends Controller
             $log->resource = 'Sectors';
             $log->save();
 
-            return redirect()->back()->with('success','Sector Deleted.'); 
+            return redirect()->back()->with('success', 'Sector Deleted.');
         }
     }
 }

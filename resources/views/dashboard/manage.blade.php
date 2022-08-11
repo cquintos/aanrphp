@@ -764,24 +764,6 @@
                                                     <td>{{$artifact->date_published}}</td>
                                                     <td>{{$artifact->author}}</td>
                                                     <td>
-                                                        <!--<button type="button" class="btn btn-default" 
-                                                            data-toggle="modal" 
-                                                            data-id="{{$artifact->id}}" 
-                                                            data-consortia="{{$artifact->consortia_id}}"
-                                                            data-consortia-member="{{$artifact->consortia_member_id}}"
-                                                            data-title="{{$artifact->title}}"
-                                                            data-content="{{$artifact->content_id}}"
-                                                            data-content-subtype="{{$artifact->contentsubtype_id}}"
-                                                            data-date-published="{{$artifact->date_published}}"
-                                                            data-author="{{$artifact->author}}"
-                                                            data-author-affiliation="{{$artifact->author_institution}}"
-                                                            data-description="{{$artifact->description}}"
-                                                            data-link="{{$artifact->link}}"
-                                                            data-keywords="{{$artifact->keywords}}"
-                                                            data-commodities="{{$artifact->commodities()->allRelatedIds()}}"
-                                                            data-target="#editArtifactModal">
-                                                            <i class="fas fa-edit"></i> Edit Details
-                                                        </button>-->
                                                         <a class="btn btn-default" href="/dashboard/manage/content/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
                                                     </td>
                                                 </tr>

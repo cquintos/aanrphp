@@ -6,42 +6,56 @@ use Illuminate\Http\Request;
 use App\LandingPageSlider;
 use App\Log;
 
+// This file contains request handling logic for the Landing Page Slider.
+// functions included are:
+//     addSlider(Request $request)
+//     editSlider(Request $request,)
+//     deleteSlider(Request $request,)
+//
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class LandingPageSlidersController extends Controller
 {
-    public function addSlider(Request $request){
+    public function addSlider(Request $request)
+    {
         $this->validate($request, array(
             'title' => 'required|max:255',
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $slider = new LandingPageSlider;
+            $slider = new LandingPageSlider();
             $slider->title = $request->title;
             $slider->weight = $request->weight;
-            if($request->consortia == null || $request->consortia == 0){
+            if ($request->consortia == null || $request->consortia == 0) {
                 $slider->is_consortia = 0;
             } else {
                 $slider->is_consortia = 1;
                 $slider->consortia_id = $request->consortia;
             }
-            if($request->is_video_create == '0'){
+            if ($request->is_video_create == '0') {
                 $slider->link = $request->link;
-                if(strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
+                if (strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
                     $slider->link = "https://" . $request->link;
                 }
                 $slider->description = $request->description;
                 $slider->caption_align = $request->caption_align;
                 $slider->textcard_enable = $request->textcard_enable;
-                if(!$request->button_text){
+                if (!$request->button_text) {
                     $slider->button_text = 'Learn More';
                 } else {
-                $slider->button_text = $request->button_text;
+                    $slider->button_text = $request->button_text;
                 }
                 $slider->button_color = '#3490dc';
-                if($request->hasFile('image')){
+                if ($request->hasFile('image')) {
                     $imageFile = $request->file('image');
                     $imageName = uniqid().$imageFile->getClientOriginalName();
                     $imageFile->move(public_path('/storage/cover_images/'), $imageName);
@@ -74,57 +88,57 @@ class LandingPageSlidersController extends Controller
             $log->resource = 'Sliders';
             $log->save();
 
-            return redirect()->back()->with('success','Slider Added.'); 
+            return redirect()->back()->with('success', 'Slider Added.');
         }
     }
-    
-    public function editSlider(Request $request, $slider_id){
+
+    public function editSlider(Request $request, $slider_id)
+    {
         $this->validate($request, array(
             'title' => 'required|max:255',
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $slider = LandingPageSlider::find($slider_id);
 
-            if($slider->title != $request->title){
+            if ($slider->title != $request->title) {
                 $temp_changes = $temp_changes.'<strong>Title:</strong> '.$slider->title.' <strong>-></strong> '.$request->title.'<br>';
             }
-            if($slider->weight != $request->weight){
+            if ($slider->weight != $request->weight) {
                 $temp_changes = $temp_changes.'<strong>Weight:</strong> '.$slider->weight.' <strong>-></strong> '.$request->weight.'<br>';
             }
 
             $slider->title = $request->title;
             $slider->weight = $request->weight;
-            if($request->consortia == null || $request->consortia == 0){
+            if ($request->consortia == null || $request->consortia == 0) {
                 $slider->is_consortia = 0;
                 $slider->consortia_id = null;
             } else {
                 $slider->is_consortia = 1;
                 $slider->consortia_id = $request->consortia;
             }
-            if($request->is_video_edit == '0'){
-
-                if($slider->link != $request->link){
+            if ($request->is_video_edit == '0') {
+                if ($slider->link != $request->link) {
                     $temp_changes = $temp_changes.'<strong>Link:</strong> '.$slider->link.' <strong>-></strong> '.$request->link.'<br>';
                 }
-                if($slider->description != $request->description){
+                if ($slider->description != $request->description) {
                     $temp_changes = $temp_changes.'<strong>Description:</strong> '.$slider->description.' <strong>-></strong> '.$request->description.'<br>';
                 }
-                if($slider->description != $request->description){
+                if ($slider->description != $request->description) {
                     $temp_changes = $temp_changes.'<strong>Caption Align:</strong> '.$slider->description.' <strong>-></strong> '.$request->description.'<br>';
                 }
-                if($slider->button_text != $request->button_text){
+                if ($slider->button_text != $request->button_text) {
                     $temp_changes = $temp_changes.'<strong>Button Text:</strong> '.$slider->button_text.' <strong>-></strong> '.$request->button_text.'<br>';
                 }
-                if($slider->button_color != $request->button_color){
+                if ($slider->button_color != $request->button_color) {
                     $temp_changes = $temp_changes.'<strong>Button Color:</strong> '.$slider->button_color.' <strong>-></strong> '.$request->button_color.'<br>';
                 }
                 $slider->link = $request->link;
-                if(strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
+                if (strcasecmp($request->link, "https://") < 0 ||  strcasecmp($request->link, "http://") < 0) {
                     $slider->link = "https://" . $request->link;
                 }
                 $slider->description = $request->description;
@@ -132,12 +146,12 @@ class LandingPageSlidersController extends Controller
                 $slider->textcard_enable = $request->textcard_enable;
                 $slider->button_text = $request->button_text;
                 $slider->button_color = $request->button_color;
-                if($request->hasFile('image')){
-                    if($slider->image != null){
+                if ($request->hasFile('image')) {
+                    if ($slider->image != null) {
                         $image_path = public_path().'/storage/cover_images/'.$slider->image;
-                        if(file_exists($image_path)){
-                        unlink($image_path);
-                    }
+                        if (file_exists($image_path)) {
+                            unlink($image_path);
+                        }
                     }
                     $imageFile = $request->file('image');
                     $imageName = uniqid().$imageFile->getClientOriginalName();
@@ -172,16 +186,17 @@ class LandingPageSlidersController extends Controller
             $log->resource = 'Sliders';
             $log->save();
 
-            return redirect()->back()->with('success','Slider Updated.'); 
+            return redirect()->back()->with('success', 'Slider Updated.');
         }
     }
 
-    public function deleteSlider(Request $request, $slider_id){
+    public function deleteSlider(Request $request, $slider_id)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $slider = LandingPageSlider::find($slider_id);
 
@@ -193,14 +208,14 @@ class LandingPageSlidersController extends Controller
             $log->resource = 'Sliders';
             $log->save();
 
-            if($slider->image != null){
+            if ($slider->image != null) {
                 $image_path = public_path().'/storage/cover_images/'.$slider->image;
-                if(file_exists($image_path)){
-                        unlink($image_path);
-                    }
+                if (file_exists($image_path)) {
+                    unlink($image_path);
+                }
             }
             $slider->delete();
-            return redirect()->back()->with('success','Slider Deleted.'); 
+            return redirect()->back()->with('success', 'Slider Deleted.');
         }
     }
 }

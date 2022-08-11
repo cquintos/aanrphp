@@ -5,31 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Contributor;
 
+// This file contains request handling logic for Contributors.
+// functions included are:
+//     addContributor(Request $request)
+//     editContributor(Request $request, $contributor_id)
+//     deleteContributor($contributor_id, Request $request)
+//
+// Certain data are validated.
+
 class ContributorsController extends Controller
 {
-    public function addContributor(Request $request){
+    public function addContributor(Request $request)
+    {
         $this->validate($request, array(
             'first_name' => 'required|max:200',
             'last_name' => 'required|max:200'
         ));
 
         $user = auth()->user();
-        $contributor = new Contributor;
+        $contributor = new Contributor();
         $contributor->first_name = $request->first_name;
         $contributor->last_name = $request->last_name;
         $contributor->email = $request->email;
         $contributor->feedback = $request->feedback;
         $contributor->save();
 
-        return redirect()->back()->with('success','Contributor Added.'); 
+        return redirect()->back()->with('success', 'Contributor Added.');
     }
-    
-    public function editContributor(Request $request, $contributor_id){
+
+    public function editContributor(Request $request, $contributor_id)
+    {
         $this->validate($request, array(
             'first_name' => 'required|max:200',
             'last_name' => 'required|max:200'
         ));
-        
+
         $user = auth()->user();
         $contributor = Contributor::find($contributor_id);
         $contributor->first_name = $request->first_name;
@@ -38,13 +48,14 @@ class ContributorsController extends Controller
         $contributor->feedback = $request->feedback;
         $contributor->save();
 
-        return redirect()->back()->with('success','Contributor Updated.'); 
+        return redirect()->back()->with('success', 'Contributor Updated.');
     }
 
-    public function deleteContributor($contributor_id, Request $request){
+    public function deleteContributor($contributor_id, Request $request)
+    {
         $contributor = Contributor::find($contributor_id);
         $contributor->delete();
 
-        return redirect()->back()->with('success','Contributor Deleted.'); 
+        return redirect()->back()->with('success', 'Contributor Deleted.');
     }
 }

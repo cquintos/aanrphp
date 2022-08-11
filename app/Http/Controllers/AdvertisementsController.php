@@ -5,23 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Advertisement;
 
+// This file contains request handling logic for Advertisements.
+// functions included are:
+//      addAdvertisement(Request $request)
+//      editAdvertisement(Request $request, $advertisement_id)
+//      deleteAdvertisement($advertisement_id, Request $request)
+//
+// Certain data are validated.
+//
 class AdvertisementsController extends Controller
 {
-    public function addAdvertisement(Request $request){
+    public function addAdvertisement(Request $request)
+    {
         $this->validate($request, array(
             'title' => 'required|max:100'
         ));
 
         $user = auth()->user();
-        $advertisement = new Advertisement;
+        $advertisement = new Advertisement();
         $advertisement->title = $request->title;
         $advertisement->ad_overview = $request->ad_overview;
         $advertisement->feature = $request->feature;
         $advertisement->link = $request->link;
-        if($request->hasFile('image')){
-            if($advertisement->img_filename != null){
+        if ($request->hasFile('image')) {
+            if ($advertisement->img_filename != null) {
                 $image_path = public_path().'/storage/page_images/'.$advertisement->img_filename;
-                if(file_exists($image_path)){
+                if (file_exists($image_path)) {
                     unlink($image_path);
                 }
             }
@@ -32,24 +41,25 @@ class AdvertisementsController extends Controller
         }
         $advertisement->save();
 
-        return redirect()->back()->with('success','Advertisement Added.'); 
+        return redirect()->back()->with('success', 'Advertisement Added.');
     }
-    
-    public function editAdvertisement(Request $request, $advertisement_id){
+
+    public function editAdvertisement(Request $request, $advertisement_id)
+    {
         $this->validate($request, array(
             'title' => 'required|max:100'
         ));
-        
+
         $user = auth()->user();
         $advertisement = Advertisement::find($advertisement_id);
         $advertisement->title = $request->title;
         $advertisement->ad_overview = $request->ad_overview;
         $advertisement->feature = $request->feature;
         $advertisement->link = $request->link;
-        if($request->hasFile('image')){
-            if($advertisement->img_filename != null){
+        if ($request->hasFile('image')) {
+            if ($advertisement->img_filename != null) {
                 $image_path = public_path().'/storage/page_images/'.$advertisement->img_filename;
-                if(file_exists($image_path)){
+                if (file_exists($image_path)) {
                     unlink($image_path);
                 }
             }
@@ -60,19 +70,20 @@ class AdvertisementsController extends Controller
         }
         $advertisement->save();
 
-        return redirect()->back()->with('success','Advertisement Updated.'); 
+        return redirect()->back()->with('success', 'Advertisement Updated.');
     }
 
-    public function deleteAdvertisement($advertisement_id, Request $request){
+    public function deleteAdvertisement($advertisement_id, Request $request)
+    {
         $advertisement = Advertisement::find($advertisement_id);
-        if($advertisement->img_filename != null){
+        if ($advertisement->img_filename != null) {
             $image_path = public_path().'/storage/page_images/'.$advertisement->img_filename;
-            if(file_exists($image_path)){
-                    unlink($image_path);
-                }
+            if (file_exists($image_path)) {
+                unlink($image_path);
+            }
         }
         $advertisement->delete();
 
-        return redirect()->back()->with('success','Advertisement Deleted.'); 
+        return redirect()->back()->with('success', 'Advertisement Deleted.');
     }
 }

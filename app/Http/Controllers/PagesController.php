@@ -28,6 +28,31 @@ use Stevebauman\Location\Facades\Location;
 use Spatie\Browsershot\Browsershot;
 use Elastic\Elasticsearch\ClientBuilder;
 
+// This file contains application logic on how to view each page.
+// functions included are:
+//     industryProfileView()
+//     aboutUs()
+//     usefulLinks()
+//     searchAnalytics()
+//     searchAnalyticsWithFilter(Request $request)
+//     saveAnalytics()
+//     testElastic($age, $name)
+//     getLandingPage()
+//     contentEdit($content_id)
+//     search(Request $request)
+//     advancedSearch(Request $request)
+//     agrisyunaryo(Request $request)
+//     agrisyunaryoSearch(Request $request)
+//     consortiaAboutPage()
+//     consortiaLandingPage()
+//     AANRAboutPage()
+//     PCAARRDAboutPage()
+//     unitAboutPage()
+//     dashboardManage()
+//     getManagePage()
+//     userDashboard()
+//  if(!Auth::check()) checks for registered user
+//  if(Auth::user()-role != 5) means the page is restricted to a SUPER ADMIN only
 
 class PagesController extends Controller
 {

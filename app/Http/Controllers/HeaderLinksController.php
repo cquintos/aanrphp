@@ -6,20 +6,33 @@ use Illuminate\Http\Request;
 use App\HeaderLink;
 use App\Log;
 
+// This file contains request handling logic for Header Links.
+// functions included are:
+//     addHeaderLink(Request $request)
+//     editHeaderLink(Request $request, $header_id)
+//     deleteHeaderLink($header_id)
+//
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class HeaderLinksController extends Controller
 {
-    //
-    public function AddHeaderLink(Request $request){
+    public function addHeaderLink(Request $request)
+    {
         $this->validate($request, array(
             'name' => 'required|max:50'
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $header = new HeaderLink;
+            $header = new HeaderLink();
             $header->name = $request->name;
             $header->position = $request->weight;
             $header->link = "http://" . $request->link;
@@ -33,39 +46,34 @@ class HeaderLinksController extends Controller
             $log->resource = 'Header Links';
             $log->save();
 
-            return redirect()->back()->with('success','Header Link Updated.');
-        } 
+            return redirect()->back()->with('success', 'Header Link Updated.');
+        }
     }
-    public function editHeaderLink(Request $request, $header_id){
+    public function editHeaderLink(Request $request, $header_id)
+    {
         $this->validate($request, array(
             'name' => 'required|max:50'
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $header = HeaderLink::find($header_id);
 
-            if($header->name != $request->name){
+            if ($header->name != $request->name) {
                 $temp_changes = $temp_changes.'<strong>Name:</strong> '.$header->name.' <strong>-></strong> '.$request->name.'<br>';
             }
-            if($header->position != $request->position){
+            if ($header->position != $request->position) {
                 $temp_changes = $temp_changes.'<strong>Position:</strong> '.$header->position.' <strong>-></strong> '.$request->position.'<br>';
             }
-            if($header->link != $request->link){
+            if ($header->link != $request->link) {
                 $temp_changes = $temp_changes.'<strong>Link:</strong> '.$header->link.' <strong>-></strong> '.$request->link.'<br>';
             }
 
             $header->name = $request->name;
             $header->position = $request->weight;
-            /*
-            if($request->link){
-                if (!preg_match("~^(?:f|ht)tps?://~i", $request->link)) {
-                    $header->link = "http://" . $request->link;
-                }
-            } */
             $header->link = $request->link;
             $header->save();
 
@@ -77,15 +85,16 @@ class HeaderLinksController extends Controller
             $log->resource = 'Header Links';
             $log->save();
 
-            return redirect()->back()->with('success','Header Link Updated.'); 
+            return redirect()->back()->with('success', 'Header Link Updated.');
         }
     }
-    public function deleteHeaderLink($header_id){
+    public function deleteHeaderLink($header_id)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $header = HeaderLink::find($header_id);
 
@@ -98,7 +107,7 @@ class HeaderLinksController extends Controller
             $log->save();
 
             $header->delete();
-            return redirect()->back()->with('success','Header Link Deleted.'); 
+            return redirect()->back()->with('success', 'Header Link Deleted.');
         }
     }
 }

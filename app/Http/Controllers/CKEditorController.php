@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 
 class CKEditorController extends Controller
 {
-    //
-    public function store(Request $request)
+   public function store(Request $request)
    {
       $path_url = 'storage/' . Auth::id();
 
@@ -22,5 +21,4 @@ class CKEditorController extends Controller
 
       return response()->json(['url' => $url]);
    }
-
 }

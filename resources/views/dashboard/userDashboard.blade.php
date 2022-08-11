@@ -441,7 +441,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)->where('consortia_id', '=', auth()->user()->consortia_admin_id)->get() as $artifact)
+                                                @foreach(App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)
+                                                                            ->where('consortia_id', '=', auth()->user()->consortia_admin_id)
+                                                                            ->get() as $artifact)
                                                     <tr>
                                                         <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
                                                         <td>{{$artifact->id}}</td>

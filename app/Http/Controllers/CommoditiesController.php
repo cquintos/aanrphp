@@ -6,21 +6,35 @@ use Illuminate\Http\Request;
 use App\Commodity;
 use App\Log;
 
+// This file contains request handling logic for Commodities.
+// functions included are:
+//     addCommodity(Request $request)
+//     editCommodity(Request $request, $commodity_id)
+//     deleteCommodity($commodity_id, Request $request)
+//
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class CommoditiesController extends Controller
 {
-    public function addCommodity(Request $request){
+    public function addCommodity(Request $request)
+    {
         $this->validate($request, array(
             'name' => 'required|max:100',
         ));
 
-        
+
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $commodity = new Commodity;
+            $commodity = new Commodity();
             $commodity->name = $request->name;
             $commodity->isp_id = $request->isp;
             $commodity->description = $request->description;
@@ -34,30 +48,31 @@ class CommoditiesController extends Controller
             $log->resource = 'Commodities';
             $log->save();
 
-            return redirect()->back()->with('success','Commodity Added.'); 
+            return redirect()->back()->with('success', 'Commodity Added.');
         }
     }
-    
-    public function editCommodity(Request $request, $commodity_id){
+
+    public function editCommodity(Request $request, $commodity_id)
+    {
         $this->validate($request, array(
             'name' => 'required|max:100',
         ));
-        
+
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $commodity = Commodity::find($commodity_id);
 
-            if($commodity->name != $request->name){
+            if ($commodity->name != $request->name) {
                 $temp_changes = $temp_changes.'<strong>Name:</strong> '.$commodity->name.' <strong>-></strong> '.$request->name.'<br>';
             }
-            if($commodity->isp_id != $request->isp_id){
+            if ($commodity->isp_id != $request->isp_id) {
                 $temp_changes = $temp_changes.'<strong>ISP ID:</strong> '.$commodity->isp_id.' <strong>-></strong> '.$request->isp.'<br>';
             }
-            if($commodity->description != $request->description){
+            if ($commodity->description != $request->description) {
                 $temp_changes = $temp_changes.'<strong>Description:</strong> '.$commodity->description.' <strong>-></strong> '.$request->description.'<br>';
             }
 
@@ -66,7 +81,7 @@ class CommoditiesController extends Controller
             $commodity->description = $request->description;
             $commodity->save();
 
-            
+
 
             $log->user_id = $user->id;
             $log->user_email = $user->email;
@@ -76,16 +91,17 @@ class CommoditiesController extends Controller
             $log->resource = 'Commodities';
             $log->save();
 
-            return redirect()->back()->with('success','Commodity Updated.');
-        } 
+            return redirect()->back()->with('success', 'Commodity Updated.');
+        }
     }
 
-    public function deleteCommodity($commodity_id, Request $request){
+    public function deleteCommodity($commodity_id, Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $commodity = Commodity::find($commodity_id);
             $deletedName = $commodity->name;
@@ -99,7 +115,7 @@ class CommoditiesController extends Controller
             $log->resource = 'Commodities';
             $log->save();
 
-            return redirect()->back()->with('success','Commodity Deleted.'); 
+            return redirect()->back()->with('success', 'Commodity Deleted.');
         }
     }
 }

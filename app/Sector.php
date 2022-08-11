@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Sector extends Model
 {
     use HasFactory;
-    public function industry(){
+    public function industry()
+    {
         return $this->belongsTo('App\Industry');
     }
 
-    public function isps(){
+    public function isps()
+    {
         return $this->hasMany('App\ISP');
     }
 }
