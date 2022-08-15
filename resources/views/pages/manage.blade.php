@@ -184,7 +184,7 @@
                                         <td>{{$count++}}</td>
                                         <td>{{$consortium->short_name}}</td>
                                         <td>{{$consortium->full_name}}</td>
-                                        <td><img src="/storage/images/{{$consortium->thumbnail}}" class="card-img-top" style="width:50px;height:50px;" ></td>
+                                        <td><img src="/storage/page_images/{{$consortium->thumbnail}}" class="card-img-top" style="width:50px;height:50px;" ></td>
                                         <td class="text-center">
                                             <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium->id}}"><i class="fas fa-edit"></i></button>
                                             <button class="btn btn-danger pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#deleteConsortiaModal-{{$consortium->id}}"><i class="fas fa-minus"></i></button>

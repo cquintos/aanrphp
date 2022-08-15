@@ -14,10 +14,7 @@ use Elasticsearch\ClientBuilder;
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/manage', function () {
-    return view('pages.manage');
-});
+Route::get('/manage', 'PagesController@getManagePage')->name('manage');
 
 
 //LandingPageController
@@ -217,5 +214,6 @@ Route::post('ckeditor/upload', 'CKEditorController@store')->name('ckeditor.uploa
 
 //Logs
 Route::get('logs/download', 'LogsController@exportLogs')->name('exportLogs');
+Route::get('logs/consortia/download', 'LogsController@exportConsortiaLogs')->name('exportConsortiaLogs');
 
 Route::get('/enter/{age}/{name}', 'PagesController@testElastic')->name('testElastic');
