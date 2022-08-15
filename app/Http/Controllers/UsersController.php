@@ -22,7 +22,8 @@ class UsersController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'contact_number' => 'required|digits:10',
+            'select_country' => ['required'],
+            'contact_number' => ['nullable', 'digits:10'],
             'select_org' => 'required',
             'g-recaptcha-response' => 'required',
             'terms_condition' => 'required',
@@ -59,6 +60,7 @@ class UsersController extends Controller
             $user->email = $request->email;
             $user->age_range = $request->age_range;
             $user->gender = $request->gender;
+            $user->country_id = $request->select_country;
             $user->contact_number = $request->contact_number;
             $user->save();
             Auth::loginUsingId($user->id);
@@ -80,9 +82,9 @@ class UsersController extends Controller
     public function editUser(Request $request, $user_id){
         $this->validate($request, array(
             'first_name' => 'required|max:200',
-            'last_name' => 'required|max:200',            
-            'contact_number' => 'required|digits:10',
-
+            'last_name' => 'required|max:200',    
+            'select_country' => ['required'],     
+            'contact_number' => ['nullable', 'digits:10'],
         ));
 
         $user = User::find($user_id);
@@ -93,6 +95,7 @@ class UsersController extends Controller
         $user->region = $request->region;
         $user->city = $request->city;
         $user->zip_code = $request->zipcode;
+        $user->country_id = $request->select_country;
         $user->contact_number = $request->contact_number;
         $user->age_range = $request->age_range;
         $user->gender = $request->gender;

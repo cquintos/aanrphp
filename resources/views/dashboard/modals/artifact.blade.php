@@ -66,7 +66,7 @@
                                 {{Form::select('commodities[]', $commodities, null, ['class' => 'form-control multi-commodity-create w-100', 'multiple' => 'multiple'])}}
                             </div>
                             <div class="form-group">
-                                {{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}
+                                {{Form::label('date_published', 'Date Published', ['class' => 'col-form-label required'])}}
                                 {{ Form::date('date_published','',['class' => 'form-control', 'id' => 'artifact_date_published']) }}
                             </div>
                             <div class="form-group">
@@ -109,6 +109,16 @@
                             <div class="form-group">
                                 {{Form::label('csv_file', 'Upload CSV File', ['class' => 'col-form-label required'])}}
                                 {{ Form::file('csv_file', ['class' => 'form-control mb-3 pt-1'])}}
+                            </div>
+                            <br>
+                            <div>
+                                <h3> IMPORTANT REMINDERS: </h3>
+                                <br>
+                                <h6>Entries with missing TITLE, CONSORTIA, and CONTENT_TYPE fields will be skipped.</h6>
+                                <br>
+                                <h6>Entries with the same title, date published, author, description, consortia, content type, and GAD are considered duplicate and will also be skipped.</h6>
+                                <br>
+                                <h6>Entries with invalid CONSORTIA, CMI, CONTENT TYPE, and SUBCONTENT TYPE will also be skipped.</h6>
                             </div>
                         </div>
                     </div>

@@ -46,7 +46,14 @@ class ArtifactAANRController extends Controller{
     }
 
     public function addArtifact(Request $request){
-        $user = auth()->user();
+        function console_log($output, $with_script_tags=true) { 
+            $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+                if ($with_script_tags) {
+                    $js_code = '<script>' . $js_code . '</script>';
+                }
+                echo $js_code;
+        } 
+
         if($request->api_link != null){
             $url = $request->api_link;
             $data = @file_get_contents($url);
@@ -87,105 +94,184 @@ class ArtifactAANRController extends Controller{
                 $artifact->content_id = $content_id;
                 $artifact->contentsubtype_id = $contentsubtype_id;
                 $artifact->save();
-            }
-        } else {
-            if($request->file('csv_file')){
-                $upload = $request->file('csv_file');
-                $filePath = $upload->getRealPath();
-                $file = fopen($filePath, 'r');
+            }            
+        } else if($request->file('csv_file')){
+            $upload = $request->file('csv_file');
+            $filePath = $upload->getRealPath();
+            $file = fopen($filePath, 'r');
+            $header = fgetcsv($file);
 
-                $header = fgetcsv($file);
-                while($columns = fgetcsv($file)){
-                    if($columns[0] == ""){
-                        continue;
-                    }
+            $err_required = 0;
+            $err_consortia = 0;
+            $err_cType = 0;
+            $err_subCType = 0;
+            $err_CMI = 0;
+            $count = 0;
+            $err_duplicate = 0;
 
-                    $data = array_combine($header, $columns);
-                    foreach($data as $key => &$value){
-                        $key = strtolower($key);
-                        $value = ($key == "gad") ? (integer)$value:(string)$value;
-                    }
+            while($columns = fgetcsv($file)){
+                $count = $count + 1;
+                console_log("count: " . $count);
 
-
-                    $title = $data['title'];
-                    $date_published = strtotime($data['date_published']);
-                    $description = $data['abstract'];
-                    $link = $data['link'];
-                    $imglink = $data['imagelink'];
-                    $author = $data['authors'];
-                    $author_institution = $data['CMI'];
-                    $keywords = $data['keywords'];
-                    $content_id = Content::where('type' , '=', $data['content_type'])->first()->id;
-                    $contentsubtype_id = ContentSubtype::where('name' , '=', $data['subcontent_type'])->first()->id;
-                    $consortia_id = Consortia::where('short_name' , '=', $data['consortia'])->first()->id;
-                    $consortia_member_id = ConsortiaMember::where('name' , '=', $data['CMI'])->first()->id;
-                    
-                    $artifact = ArtifactAANR::firstOrNew(['title' => $title]);
-                    $artifact->date_published = date("Y-m-d",$date_published);
-                    $artifact->description = $description;
-                    $artifact->link = $link;
-                    $artifact->imglink = $imglink;
-                    $artifact->author = $author;
-                    $artifact->author_institution = $author_institution;
-                    $artifact->keywords = $keywords;
-                    $artifact->content_id = $content_id;
-                    $artifact->contentsubtype_id = $contentsubtype_id;
-                    $artifact->consortia_id = $consortia_id;
-                    $artifact->consortia_member_id = $consortia_member_id;
-                    $artifact->save();
+                $data = array_combine($header, $columns);
+                foreach($data as $key => &$value){
+                    $key = strtolower($key);
+                    $value = ($key == "gad") ? (integer)$value:(string)$value;
+                }      
+                //
+                // DATA VALIDATION
+                //
+                //checks if the required fields: title, consortia, and content type are included in the entry
+                if($data['title']==null || $data['consortia'] ==null || $data['content_type'] ==null) {
+                    $err_required = $err_required + 1;
+                    continue;
                 }
 
-            } else {
-                $this->validate($request, [
-                    'title' => 'required',
-                    'date_published' => 'before:tomorrow',
-                    'content' => 'required',
-                    'consortia' => 'required',
-                    'manual_file' => 'file|max:10240|mimes:pdf,jpeg,png'
-                ]);
-                $artifactaanr = new ArtifactAANR;
-                $artifactaanr->title = $request->title;
-                $artifactaanr->date_published = $request->date_published;
-                $artifactaanr->description = $request->description;
-                $artifactaanr->content_id = $request->content;
-                $artifactaanr->consortia_id = $request->consortia;
-                $artifactaanr->consortia_member_id = $request->consortia_member;
-                $artifactaanr->contentsubtype_id = $request->subcontent_type;
-                $artifactaanr->link = $request->link;
-                $artifactaanr->embed_link = $request->embed_link;
-                $artifactaanr->author = $request->author;
-                $artifactaanr->author_institution = $request->author_institution;
-                $artifactaanr->author_affiliation = $request->author_affiliation;
-                $artifactaanr->keywords = $request->keywords;
-                $artifactaanr->is_gad = $request->is_gad;
-                $artifactaanr->imglink = $request->imglink;
-                if($request->hasFile('manual_file')){
-                    $pdfFile = $request->file('manual_file');
-                    $pdfName = uniqid().$pdfFile->getClientOriginalName();
-                    $pdfFile->move(public_path('/storage/files/'), $pdfName);
-                    $artifactaanr->file = $pdfName;
-                    $artifactaanr->file_type = pathinfo(storage_path().'/storage/files/'.$pdfName, PATHINFO_EXTENSION);
-                }   
-                $artifactaanr->save();
-                $artifactaanrobject = ArtifactAANR::find($artifactaanr->id);
-                $artifactaanrobject->isp()->sync($request->isp);
-                $artifactaanrobject->commodities()->sync($request->commodities);
-                foreach(DB::table('artifactaanr_isp')->where('artifactaanr_id', '=', $artifactaanr->id)->get() as $entry){
-                    $temp_sector_id = DB::table('isp')->where('id', '=', $entry->isp_id)->first()->sector_id;
-                    $temp_industry_id = DB::table('sectors')->where('id', '=', $temp_sector_id)->first()->industry_id;
-                    DB::table('artifactaanr_isp')->where('id', '=', $entry->id)->update(['industry_id' => DB::table('industries')->where('id', '=', $temp_industry_id)->first()->id]);
+                //checks if the content id is in the database to make sure it is a valid content type
+                $content_id = Content::where('type' , '=', $data['content_type'])->first();
+                if($content_id==null) {
+                    $err_cType = $err_cType + 1;
+                    continue;
                 }
-                foreach(DB::table('artifactaanr_commodity')->where('artifactaanr_id', '=', $artifactaanr->id)->get() as $entry){
-                    $temp_isp_id = DB::table('commodities')->where('id', '=', $entry->commodity_id)->first()->isp_id;
-                    $temp_sector_id = DB::table('isp')->where('id', '=', $temp_isp_id)->first()->sector_id;
-                    $temp_industry_id = DB::table('sectors')->where('id', '=', $temp_sector_id)->first()->industry_id;
-                    DB::table('artifactaanr_commodity')->where('id', '=', $entry->id)->update(['industry_id' => DB::table('industries')->where('id', '=', $temp_industry_id)->first()->id]);
+
+                //checks if the content id is in the database to make sure it is a valid consortia
+                $consortia_id = Consortia::where('short_name' , '=', $data['consortia'])->first();
+                if($consortia_id == null) {
+                    $err_consortia = $err_consortia + 1;
+                    continue;
                 }
                 
-                $artifactaanrobject->save();
-            }
-        }
+                //content subtype is nullable but user input still needs to be checked
+                $contentsubtype_id = $data['subcontent_type'];
+                if($contentsubtype_id != null) {
+                    //null result means user input is invalid
+                    $contentsubtype_id = ContentSubtype::where('name' , '=', $data['subcontent_type'])->first();
+                    if($contentsubtype_id == null) {
+                        $err_subCType = $err_subCType+1;
+                        continue;
+                    }
+                    $contentsubtype_id = $contentsubtype_id->id;
+                } else {
+                    //null means no input and is acceptable
+                    $contentsubtype_id = null;
+                }
+                
+                //consortia id is nullable but user input still needs to be checked
+                $consortia_member_id = $data['CMI'];
+                if($consortia_member_id != null) {
+                    //null result means user input is invalid
+                    $consortia_member_id = ConsortiaMember::where('name' , '=', $data['CMI'])->first();
+                    if($consortia_member_id == null) {
+                        $err_CMI = $err_CMI + 1;
+                        continue;
+                    }
+                    $consortia_member_name = $data['CMI'];
+                    $consortia_member_id = $consortia_member_id->id;
+                } else {
+                    //null means no input and is acceptable
+                    $consortia_member_id = null;
+                    $consortia_member_name = null;
+                }
+                //
+                // END OF DATA VALIDATION
+                //
+                $artifact = new ArtifactAANR;
+                $title = $data['title'];
+                $date_published = strtotime($data['date_published']);
+                $description = $data['abstract'];
+                $link = $data['link'];
+                $embed_link = $data['embed_link'];
+                $author = $data['author'];
+                $author_affiliation = $data['author_affiliation'];
+                $keywords = $data['keywords'];
+                $is_gad = $data['is_gad'];
 
+                $artifact->title = $title;
+                $artifact->date_published = date("Y-m-d",$date_published);
+                $artifact->description = $description;
+                $artifact->content_id = $content_id->id;    
+                $artifact->consortia_id = $consortia_id->id;
+                $artifact->consortia_member_id = $consortia_member_id;
+                $artifact->contentsubtype_id = $contentsubtype_id;
+                $artifact->link = $link;
+                $artifact->embed_link = $embed_link;
+                $artifact->author = $author;
+                $artifact->author_affiliation = $author_affiliation;
+                $artifact->author_institution = $consortia_member_name;
+                $artifact->keywords = $keywords;            
+                $artifact->is_gad = $is_gad==null? 0 : $is_gad;
+                //
+                //  CHECK IF THIS ENTRY EXISTS
+                //
+                if(DB::table('artifactaanr')
+                    ->where('title', $artifact->title)
+                    ->where('date_published',  $artifact->date_published)
+                    ->where('author',  $artifact->author)
+                    ->where('description', $artifact->description)
+                    ->where('consortia_id', $artifact->consortia_id)
+                    ->where('content_id', $artifact->content_id)
+                    ->where('is_gad', $artifact->is_gad)
+                    ->exists()) {
+                        $err_duplicate = $err_duplicate + 1;
+                        continue;
+                }
+
+                $artifact->save();
+            }
+        } else {
+            $this->validate($request, [
+                'title' => 'required',
+                'date_published' => 'before:tomorrow',
+                'content' => 'required',
+                'consortia' => 'required',
+                'manual_file' => 'file|max:10240|mimes:pdf,jpeg,png'
+            ]);
+            $artifactaanr = new ArtifactAANR;
+            $artifactaanr->title = $request->title;
+            $artifactaanr->date_published = $request->date_published;
+            $artifactaanr->description = $request->description;
+            $artifactaanr->content_id = $request->content;
+            $artifactaanr->consortia_id = $request->consortia;
+            $artifactaanr->consortia_member_id = $request->consortia_member;
+            $artifactaanr->contentsubtype_id = $request->subcontent_type;
+            $artifactaanr->link = $request->link;
+            $artifactaanr->embed_link = $request->embed_link;
+            $artifactaanr->author = $request->author;
+
+            $consortia_member_name = ConsortiaMember::where('id' , '=', $request->consortia_member)->first();
+            if($consortia_member_name!=null) {
+                $consortia_member_name = $consortia_member_name->name;
+            }
+            $artifactaanr->author_institution = $consortia_member_name;
+            $artifactaanr->author_affiliation = $request->author_affiliation;
+            $artifactaanr->keywords = $request->keywords;
+            $artifactaanr->is_gad = $request->is_gad;
+            $artifactaanr->imglink = $request->imglink;
+            if($request->hasFile('manual_file')){
+                $pdfFile = $request->file('manual_file');
+                $pdfName = uniqid().$pdfFile->getClientOriginalName();
+                $pdfFile->move(public_path('/storage/files/'), $pdfName);
+                $artifactaanr->file = $pdfName;
+                $artifactaanr->file_type = pathinfo(storage_path().'/storage/files/'.$pdfName, PATHINFO_EXTENSION);
+            }   
+            $artifactaanr->save();
+            $artifactaanrobject = ArtifactAANR::find($artifactaanr->id);
+            $artifactaanrobject->isp()->sync($request->isp);
+            $artifactaanrobject->commodities()->sync($request->commodities);
+            foreach(DB::table('artifactaanr_isp')->where('artifactaanr_id', '=', $artifactaanr->id)->get() as $entry){
+                $temp_sector_id = DB::table('isp')->where('id', '=', $entry->isp_id)->first()->sector_id;
+                $temp_industry_id = DB::table('sectors')->where('id', '=', $temp_sector_id)->first()->industry_id;
+                DB::table('artifactaanr_isp')->where('id', '=', $entry->id)->update(['industry_id' => DB::table('industries')->where('id', '=', $temp_industry_id)->first()->id]);
+            }
+            foreach(DB::table('artifactaanr_commodity')->where('artifactaanr_id', '=', $artifactaanr->id)->get() as $entry){
+                $temp_isp_id = DB::table('commodities')->where('id', '=', $entry->commodity_id)->first()->isp_id;
+                $temp_sector_id = DB::table('isp')->where('id', '=', $temp_isp_id)->first()->sector_id;
+                $temp_industry_id = DB::table('sectors')->where('id', '=', $temp_sector_id)->first()->industry_id;
+                DB::table('artifactaanr_commodity')->where('id', '=', $entry->id)->update(['industry_id' => DB::table('industries')->where('id', '=', $temp_industry_id)->first()->id]);
+            }
+            
+            $artifactaanrobject->save();
+        }
         return redirect()->back()->with('success','ArtifactAANR Added.'); 
     }
     

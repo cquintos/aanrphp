@@ -257,7 +257,7 @@
 </style>
 
 @if($consortium->latest_aanr_bg_type == 1)
-<div class="parallax-section pb-2 pt-1 {{request()->edit == '1' ? 'overlay-container' : ''}}" style="background: {{$consortium->latest_aanr_bg}});">
+<div class="parallax-section pb-2 pt-1 {{request()->edit == '1' ? 'overlay-container' : ''}}" style="background: {{$consortium->latest_aanr_bg}}">
 @else
 <div class="parallax-section pb-2 pt-1 {{request()->edit == '1' ? 'overlay-container' : ''}}" style="background-image: url('/storage/page_images/{{$consortium->latest_aanr_bg}}');">
 @endif
