@@ -9,6 +9,19 @@ use App\Consortia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
+// This file contains request handling logic for the AANR page.
+// functions included are:
+//
+//     get(Request $request){
+//     createUser(Request $request){
+//     editUser(Request $request, $user_id){
+//     sendConsortiaAdminRequest(Request $request, $user_id){
+//     consortiaAdminRequestApprove(Request $request, $user_id){
+//     consortiaAdminRequestDecline(Request $request, $user_id){
+//     deleteUser( $user_id){
+// 
+// Certain data are validated.
+
 class UsersController extends Controller
 {
     public function get(Request $request){
