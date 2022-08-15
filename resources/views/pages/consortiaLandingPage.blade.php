@@ -256,6 +256,7 @@
     }
 </style>
 
+@if(App\ArtifactAANR::where('imglink', '!=', null)->count() != 0)
 @if($consortium->latest_aanr_bg_type == 1)
 <div class="parallax-section pb-2 pt-1 {{request()->edit == '1' ? 'overlay-container' : ''}}" style="background: {{$consortium->latest_aanr_bg}}">
 @else
@@ -264,87 +265,40 @@
     <div class="container section-margin">
         <h2 class="mb-2 font-weight-bold" style="color:rgb(220,220,220)">{{$consortium->latest_aanr_header}}</h2>
         <h5 class="mb-0" style="color:rgb(48, 152, 197)">{{$consortium->latest_aanr_subheader}}</h5>
-        <div class="row w-100">
+        <div class="row">
+            @foreach(App\ArtifactAANR::where('is_agrisyunaryo', '!=', 1)->orderBy('date_published')->take(3)->get() as $artifact)
             <div class="col-sm-4">
                 <div class="card front-card h-auto shadow rounded">
-                    <img src="https://www.agriculture.com.ph/wp-content/uploads/2020/10/Photo-by-Kristi-Evans-from-Pexels-759x500.jpeg" class="card-img-top" height="175" style="object-fit: cover;">
+                    @if($artifact->imglink != null)
+                        <img src="{{$artifact->imglink}}" class="card-img-top" height="200" style="object-fit: cover;">
+                    @else
+                        <div class="card-img-top center-vertically px-3" style="height:200; background-color:rgb(150,150,150)">
+                                <span class="font-weight-bold" style="font-size: 17px;line-height: 1.5em;color: white;">
+                                    {{$artifact->title}}
+                                </span>
+                            </div>
+                    @endif
                     <div class="card-body">
-                        <h4 class="card-title trail-end">Itik production and management, part 2: Proper feeds and housing requirements</h4>
+                        <h4 class="card-title trail-end">{{$artifact->title}}</h4>
                         <div class="card-text trail-end" style="line-height: 120%;">
-                            <p class="mb-2"><b>November 11-13, 2019</b></p>
-                            <small>Region 10 · Robinson's Place, Valencia City, Bukidnon<br>
-                                                                                    
-                                        ILAARRDEC 
-                                    
-                                                                                                                                            · SMAARRDEC
-                                    
-                                                                                                                                            · CVAARRDEC
-                                    
-                                                                                                                                            · NOMCAARRD
-                                    
-                                                                                <br>
-                                                                            </small>
+                            <p class="mb-2"><b>{{$artifact->author}}</b></p>
+                            <small>{{isset($artifact->consortia->short_name) ? $artifact->consortia->short_name : ''}}<br>           
+                                        {{isset($artifact->content->type) ? $artifact->content->type : ''}} <br> </small>
                         </div>
                     </div>
-                    <a href="/posts/76" class="stretched-link"></a>
+                    <a href="{{$artifact->link != null ? $artifact->link : '/search?search='.$artifact->title.'#search-anchor'}}" target="_blank" class="stretched-link"></a>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="card front-card h-auto shadow rounded">
-                    <img src="https://www.agriculture.com.ph/wp-content/uploads/2020/10/File-photo-agriculture.com_.ph_.jpg" class="card-img-top" height="175" style="object-fit: cover;">
-                    <div class="card-body">
-                        <h4 class="card-title trail-end">Itik Production and Management, Part 1: Benefits of Integrated Rice-Duck Farming</h4>
-                        <div class="card-text trail-end" style="line-height: 120%;">
-                            <p class="mb-2"><b>November 11-13, 2019</b></p>
-                            <small>Region 10 · Robinson's Place, Valencia City, Bukidnon<br>
-                                                                                    
-                                        ILAARRDEC 
-                                    
-                                                                                                                                            · SMAARRDEC
-                                    
-                                                                                                                                            · CVAARRDEC
-                                    
-                                                                                                                                            · NOMCAARRD
-                                    
-                                                                                <br>
-                                                                            </small>
-                        </div>
-                    </div>
-                    <a href="/posts/76" class="stretched-link"></a>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card front-card h-auto shadow rounded">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/06659jfCandaba_Pampanga_Fields_Duck_Farming_Bahay_Pare_Dulong_Ilog_Bulacanfvf_35.JPG" class="card-img-top" height="175" style="object-fit: cover;">
-                    <div class="card-body">
-                        <h4 class="card-title trail-end">Itik production and management, part 2: Proper feeds and housing requirements</h4>
-                        <div class="card-text trail-end" style="line-height: 120%;">
-                            <p class="mb-2"><b>November 11-13, 2019</b></p>
-                            <small>Region 10 · Robinson's Place, Valencia City, Bukidnon<br>
-                                                                                    
-                                        ILAARRDEC 
-                                    
-                                                                                                                                            · SMAARRDEC
-                                    
-                                                                                                                                            · CVAARRDEC
-                                    
-                                                                                                                                            · NOMCAARRD
-                                    
-                                                                                <br>
-                                                                            </small>
-                        </div>
-                    </div>
-                    <a href="/posts/76" class="stretched-link"></a>
-                </div>
-            </div>
+            @endforeach
         </div>
-        @if(request()->edit == 1)
-            <div class="hover-overlay" style="width:100%">    
-                <button type="button" class="btn btn-xs btn-primary" data-target="#editLatestAANRSectionModal" data-toggle="modal"><i class="far fa-edit"></i></button>      
-            </div>
-        @endif
     </div>
+    @if(request()->edit == 1)
+        <div class="hover-overlay" style="width:100%">    
+            <button type="button" class="btn btn-xs btn-primary" data-target="#editLatestAANRSectionModal" data-toggle="modal"><i class="far fa-edit"></i></button>      
+        </div>
+    @endif
 </div>
+@endif
 
 <div class="container section-margin {{request()->edit == '1' ? 'overlay-container' : ''}}">
     <?php
@@ -769,7 +723,7 @@
             ClassicEditor
                 .create(document.querySelector('#profile'))
                 .catch(error => {
-                    console.error(error);
+                    // console.error(error);
             });
         });
     </script>

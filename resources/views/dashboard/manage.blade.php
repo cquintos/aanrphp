@@ -747,9 +747,9 @@
                                                 <tr>
                                                     <th style="width:5%"></th>
                                                     <th style="width:5%">ID</th>
-                                                    <th style="width:45%">Title</th>
-                                                    <th style="width:5%">Content Type</th>
-                                                    <th style="width:5%">Date Published</th>
+                                                    <th style="width:35%">Title</th>
+                                                    <th style="width:10%">Content Type</th>
+                                                    <th style="width:10%">Date Published</th>
                                                     <th style="width:25%">Author</th>
                                                     <th style="width:10%">Action</th>
                                                 </tr>
@@ -1643,9 +1643,6 @@
                                 <div class="card-header px-5 pt-4">
                                     <h2 class="text-primary" >
                                         All Users
-                                    <!-- <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createIndustryModal"><i class="fas fa-plus"></i> Add</button>
-                                    </span></h2> -->
                                 </div>
                                 <div class="card-body px-5">
                                     <table class="table data-table tech-table table-hover" style="width:100%">
