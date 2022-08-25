@@ -6,9 +6,23 @@ use Illuminate\Http\Request;
 use App\ContentSubtype;
 use App\Log;
 
+// This file contains request handling logic for Content Subtypes.
+// functions included are:
+//     addContentSubtype(Request $request)
+//     editContentSubtype(Request $request, $content_subtype_id)
+//     deleteContentSubtype(Request $request, $content_subtype_id)
+//
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class ContentSubtypesController extends Controller
 {
-    public function addContentSubtype(Request $request){
+    public function addContentSubtype(Request $request)
+    {
         $this->validate($request, array(
             'name' => 'required|max:50',
             'content' => 'required'
@@ -16,15 +30,15 @@ class ContentSubtypesController extends Controller
 
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
-            $content_subtype = new ContentSubtype;
+            $content_subtype = new ContentSubtype();
             $content_subtype->name = $request->name;
             $content_subtype->content_id = $request->content;
             $content_subtype->save();
-            
+
             $log->user_id = $user->id;
             $log->user_email = $user->email;
             $log->changes = '<strong>Added:</strong> '.$content_subtype->name.'';
@@ -33,27 +47,28 @@ class ContentSubtypesController extends Controller
             $log->resource = 'Content Subtype';
             $log->save();
 
-            return redirect()->back()->with('success','Content Subtype Added.'); 
+            return redirect()->back()->with('success', 'Content Subtype Added.');
         }
     }
-    
-    public function editContentSubtype(Request $request, $content_subtype_id){
+
+    public function editContentSubtype(Request $request, $content_subtype_id)
+    {
         $this->validate($request, array(
             'name' => 'required|max:50',
             'content' => 'required'
         ));
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $content_subtype = ContentSubtype::find($content_subtype_id);
 
-            if($content_subtype->name != $request->name){
+            if ($content_subtype->name != $request->name) {
                 $temp_changes = $temp_changes.'<strong>Name:</strong> '.$content_subtype->name.' <strong>-></strong> '.$request->name.'<br>';
             }
-            if($content_subtype->content_id != $request->content){
+            if ($content_subtype->content_id != $request->content) {
                 $temp_changes = $temp_changes.'<strong>Content ID:</strong> '.$content_subtype->content_id.' <strong>-></strong> '.$request->content.'<br>';
             }
 
@@ -69,16 +84,17 @@ class ContentSubtypesController extends Controller
             $log->resource = 'Content Subtype';
             $log->save();
 
-            return redirect()->back()->with('success','Content Subtype Updated.'); 
+            return redirect()->back()->with('success', 'Content Subtype Updated.');
         }
     }
 
-    public function deleteContentSubtype(Request $request, $content_subtype_id){
+    public function deleteContentSubtype(Request $request, $content_subtype_id)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $content_subtype = ContentSubtype::find($content_subtype_id);
 
@@ -91,7 +107,7 @@ class ContentSubtypesController extends Controller
             $log->save();
 
             $content_subtype->delete();
-            return redirect()->back()->with('success','Content Subtype Deleted.'); 
+            return redirect()->back()->with('success', 'Content Subtype Deleted.');
         }
     }
 }

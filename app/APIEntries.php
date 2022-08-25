@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class APIEntries extends Model
 {
+    use HasFactory;
     protected $table = 'api_entries';
     protected $dates = ['time'];
-    use HasFactory;
 }

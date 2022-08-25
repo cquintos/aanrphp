@@ -7,23 +7,50 @@ use App\LandingPageElement;
 use App\FooterInfo;
 use App\Log;
 
+// This file contains request handling logic for the Landing Page's CMS.
+// functions included are:
+//      updateTopBanner(Request $request)
+//      updateConsortiaBanner(Request $request)
+//      updateHeaderLogo(Request $request)
+//      updateLandingPageViews(Request $request)
+//      editIndustryProfileSection(Request $request)
+//      editLatestAANRSection(Request $request)
+//      editUserTypeRecommendationSection(Request $request)
+//      editFeaturedPublicationsSection(Request $request)
+//      editFeaturedVideosSection(Request $request)
+//      editRecommendedForYouSection(Request $request)
+//      editConsortiaMembersSection(Request $request)
+//      editIndustryProfile(Request $request)
+//      editAgrisyunaryoSearchBanner(Request $request)
+//      editFooterinfo(Request $request)
+//      editUsefulLinks(Request $request)
+// 
+//  This file also has the helper function sendEmailToRegister(Request $request)
+// if ($user->role != 5 && $user->role != 2)
+//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
+//
+// Certain data are validated.
+//
+// all changes are logged in a new Log object
+
 class LandingPageElementsController extends Controller
 {
-    public function updateTopBanner(Request $request){
+    public function updateTopBanner(Request $request)
+    {
         $this->validate($request, [
             'image' => ['required', 'mimes:jpeg,bmp,png,gif', 'max:10240']
         ]);
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            if($request->hasFile('image')){
-                if($page->top_banner != null){
+            if ($request->hasFile('image')) {
+                if ($page->top_banner != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->top_banner;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -48,22 +75,23 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function updateConsortiaBanner(Request $request){
+    public function updateConsortiaBanner(Request $request)
+    {
         $this->validate($request, [
             'image' => ['required', 'mimes:jpeg,bmp,png,gif', 'max:10240']
         ]);
 
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            if($request->hasFile('image')){
-                if($page->consortia_banner != null){
+            if ($request->hasFile('image')) {
+                if ($page->consortia_banner != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->consortia_banner;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -88,21 +116,22 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function updateHeaderLogo(Request $request){
+    public function updateHeaderLogo(Request $request)
+    {
         $this->validate($request, [
             'image' => ['required', 'mimes:jpeg,bmp,png,gif', 'max:10240']
         ]);
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            if($request->hasFile('image')){
-                if($page->header_logo != null){
+            if ($request->hasFile('image')) {
+                if ($page->header_logo != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->header_logo;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -127,37 +156,38 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function updateLandingPageViews(Request $request){
+    public function updateLandingPageViews(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->landing_page_item_carousel != $request->landing_page_item_carousel){
+            if ($page->landing_page_item_carousel != $request->landing_page_item_carousel) {
                 $temp_changes = $temp_changes.'<strong>Carousel:</strong> '.$page->landing_page_item_carousel.' <strong>-></strong> '.$request->landing_page_item_carousel.'<br>';
             }
-            if($page->landing_page_item_social_media_button != $request->landing_page_item_social_media_button){
+            if ($page->landing_page_item_social_media_button != $request->landing_page_item_social_media_button) {
                 $temp_changes = $temp_changes.'<strong>Social Media Button:</strong> '.$page->landing_page_item_social_media_button.' <strong>-></strong> '.$request->landing_page_item_social_media_button.'<br>';
             }
-            if($page->landing_page_item_search_bar != $request->landing_page_item_search_bar){
+            if ($page->landing_page_item_search_bar != $request->landing_page_item_search_bar) {
                 $temp_changes = $temp_changes.'<strong>Search Bar:</strong> '.$page->landing_page_item_search_bar.' <strong>-></strong> '.$request->landing_page_item_search_bar.'<br>';
             }
-            if($page->landing_page_item_technology_latest_in_aanr != $request->landing_page_item_technology_latest_in_aanr){
+            if ($page->landing_page_item_technology_latest_in_aanr != $request->landing_page_item_technology_latest_in_aanr) {
                 $temp_changes = $temp_changes.'<strong>Latest in AANR:</strong> '.$page->landing_page_item_technology_latest_in_aanr.' <strong>-></strong> '.$request->landing_page_item_technology_latest_in_aanr.'<br>';
             }
-            if($page->landing_page_item_consortia != $request->landing_page_item_consortia){
+            if ($page->landing_page_item_consortia != $request->landing_page_item_consortia) {
                 $temp_changes = $temp_changes.'<strong>Consortia:</strong> '.$page->landing_page_item_consortia.' <strong>-></strong> '.$request->landing_page_item_consortia.'<br>';
             }
-            if($page->landing_page_item_explore_aanr != $request->landing_page_item_explore_aanr){
+            if ($page->landing_page_item_explore_aanr != $request->landing_page_item_explore_aanr) {
                 $temp_changes = $temp_changes.'<strong>Explore AANR:</strong> '.$page->landing_page_item_explore_aanr.' <strong>-></strong> '.$request->landing_page_item_explore_aanr.'<br>';
             }
-            if($page->landing_page_item_need_help != $request->landing_page_item_need_help){
+            if ($page->landing_page_item_need_help != $request->landing_page_item_need_help) {
                 $temp_changes = $temp_changes.'<strong>Need Help:</strong> '.$page->landing_page_item_need_help.' <strong>-></strong> '.$request->landing_page_item_need_help.'<br>';
             }
-            if($page->landing_page_item_elib_publication != $request->landing_page_item_elib_publication){
+            if ($page->landing_page_item_elib_publication != $request->landing_page_item_elib_publication) {
                 $temp_changes = $temp_changes.'<strong>eLib Publication:</strong> '.$page->landing_page_item_elib_publication.' <strong>-></strong> '.$request->landing_page_item_elib_publication.'<br>';
             }
 
@@ -183,7 +213,8 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editIndustryProfileSection(Request $request){
+    public function editIndustryProfileSection(Request $request)
+    {
         $this->validate($request, [
             'agri_icon' => ['mimes:jpeg,bmp,png,gif', 'max:10240'],
             'agri_bg' => ['mimes:jpeg,bmp,png,gif', 'max:10240'],
@@ -194,33 +225,33 @@ class LandingPageElementsController extends Controller
         ]);
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->industry_profile_visibility != $request->industry_profile_visibility){
+            if ($page->industry_profile_visibility != $request->industry_profile_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->industry_profile_visibility.' <strong>-></strong> '.$request->industry_profile_visibility.'<br>';
             }
-            if($page->industry_profile_header != $request->industry_profile_header){
+            if ($page->industry_profile_header != $request->industry_profile_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->industry_profile_header.' <strong>-></strong> '.$request->industry_profile_header.'<br>';
             }
-            if($page->industry_profile_subheader != $request->industry_profile_subheader){
+            if ($page->industry_profile_subheader != $request->industry_profile_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->industry_profile_subheader.' <strong>-></strong> '.$request->industry_profile_subheader.'<br>';
             }
 
-            if($request->industry_profile_visibility == 'on'){
+            if ($request->industry_profile_visibility == 'on') {
                 $page->industry_profile_visibility = 1;
             } else {
                 $page->industry_profile_visibility = 0;
             }
             $page->industry_profile_header = $request->input('industry_profile_header');
             $page->industry_profile_subheader = $request->input('industry_profile_subheader');
-            if($request->hasFile('agri_icon')){
-                if($page->industry_profile_agri_icon != null){
+            if ($request->hasFile('agri_icon')) {
+                if ($page->industry_profile_agri_icon != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_agri_icon;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -230,10 +261,10 @@ class LandingPageElementsController extends Controller
                 $temp_changes = $temp_changes.'<strong>Agri Icon:</strong> '.$page->industry_profile_agri_icon.' <strong>-></strong> '.$imageName.'<br>';
                 $page->industry_profile_agri_icon = $imageName;
             }
-            if($request->hasFile('agri_bg')){
-                if($page->industry_profile_agri_bg != null){
+            if ($request->hasFile('agri_bg')) {
+                if ($page->industry_profile_agri_bg != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_agri_bg;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -243,10 +274,10 @@ class LandingPageElementsController extends Controller
                 $temp_changes = $temp_changes.'<strong>Agri BG:</strong> '.$page->industry_profile_agri_bg.' <strong>-></strong> '.$imageName.'<br>';
                 $page->industry_profile_agri_bg = $imageName;
             }
-            if($request->hasFile('aqua_icon')){
-                if($page->industry_profile_aqua_icon != null){
+            if ($request->hasFile('aqua_icon')) {
+                if ($page->industry_profile_aqua_icon != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_aqua_icon;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -256,10 +287,10 @@ class LandingPageElementsController extends Controller
                 $temp_changes = $temp_changes.'<strong>Aqua Icon:</strong> '.$page->industry_profile_aqua_icon.' <strong>-></strong> '.$imageName.'<br>';
                 $page->industry_profile_aqua_icon = $imageName;
             }
-            if($request->hasFile('aqua_bg')){
-                if($page->industry_profile_aqua_bg != null){
+            if ($request->hasFile('aqua_bg')) {
+                if ($page->industry_profile_aqua_bg != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_aqua_bg;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -269,10 +300,10 @@ class LandingPageElementsController extends Controller
                 $temp_changes = $temp_changes.'<strong>Aqua BG:</strong> '.$page->industry_profile_aqua_bg.' <strong>-></strong> '.$imageName.'<br>';
                 $page->industry_profile_aqua_bg = $imageName;
             }
-            if($request->hasFile('natural_icon')){
-                if($page->industry_profile_natural_icon != null){
+            if ($request->hasFile('natural_icon')) {
+                if ($page->industry_profile_natural_icon != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_natural_icon;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -282,10 +313,10 @@ class LandingPageElementsController extends Controller
                 $temp_changes = $temp_changes.'<strong>Natural Icon:</strong> '.$page->industry_profile_natural_icon.' <strong>-></strong> '.$imageName.'<br>';
                 $page->industry_profile_natural_icon = $imageName;
             }
-            if($request->hasFile('natural_bg')){
-                if($page->industry_profile_natural_bg != null){
+            if ($request->hasFile('natural_bg')) {
+                if ($page->industry_profile_natural_bg != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->industry_profile_natural_bg;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -309,29 +340,30 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editLatestAANRSection(Request $request){
+    public function editLatestAANRSection(Request $request)
+    {
         $this->validate($request, [
             'image' => ['mimes:jpeg,bmp,png,gif', 'max:10240']
         ]);
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->latest_aanr_visibility != $request->latest_aanr_visibility){
+            if ($page->latest_aanr_visibility != $request->latest_aanr_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->latest_aanr_visibility.' <strong>-></strong> '.$request->latest_aanr_visibility.'<br>';
             }
-            if($page->latest_aanr_header != $request->latest_aanr_header){
+            if ($page->latest_aanr_header != $request->latest_aanr_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->latest_aanr_header.' <strong>-></strong> '.$request->latest_aanr_header.'<br>';
             }
-            if($page->latest_aanr_subheader != $request->latest_aanr_subheader){
+            if ($page->latest_aanr_subheader != $request->latest_aanr_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->latest_aanr_subheader.' <strong>-></strong> '.$request->latest_aanr_subheader.'<br>';
             }
 
-            if($request->latest_aanr_visibility == 'on'){
+            if ($request->latest_aanr_visibility == 'on') {
                 $page->latest_aanr_visibility = 1;
             } else {
                 $page->latest_aanr_visibility = 0;
@@ -339,18 +371,18 @@ class LandingPageElementsController extends Controller
             $page->latest_aanr_header = $request->input('latest_aanr_header');
             $page->latest_aanr_subheader = $request->input('latest_aanr_subheader');
 
-            if($request->banner_color_radio_latest_aanr == 1){
+            if ($request->banner_color_radio_latest_aanr == 1) {
                 $image_path = public_path().'/storage/page_images/'.$page->latest_aanr_bg;
-                if(file_exists($image_path)){
+                if (file_exists($image_path)) {
                     unlink($image_path);
                 }
                 $page->latest_aanr_bg = $request->input('banner_color');
                 $page->latest_aanr_bg_type = 1;
             } else {
-                if($request->hasFile('image')){
-                    if($page->latest_aanr_bg != null){
+                if ($request->hasFile('image')) {
+                    if ($page->latest_aanr_bg != null) {
                         $image_path = public_path().'/storage/page_images/'.$page->latest_aanr_bg;
-                        if(file_exists($image_path)){
+                        if (file_exists($image_path)) {
                             unlink($image_path);
                         }
                     }
@@ -377,30 +409,31 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editUserTypeRecommendationSection(Request $request){
+    public function editUserTypeRecommendationSection(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->user_type_recommendation_visibility != $request->user_type_recommendation_visibility){
+            if ($page->user_type_recommendation_visibility != $request->user_type_recommendation_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->user_type_recommendation_visibility.' <strong>-></strong> '.$request->user_type_recommendation_visibility.'<br>';
             }
-            if($page->user_type_recommendation_header != $request->user_type_recommendation_header){
+            if ($page->user_type_recommendation_header != $request->user_type_recommendation_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->user_type_recommendation_header.' <strong>-></strong> '.$request->user_type_recommendation_header.'<br>';
             }
-            if($page->user_type_recommendation_subheader != $request->user_type_recommendation_subheader){
+            if ($page->user_type_recommendation_subheader != $request->user_type_recommendation_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->user_type_recommendation_subheader.' <strong>-></strong> '.$request->user_type_recommendation_subheader.'<br>';
             }
 
-            if($request->user_type_recommendation_visibility == 'on'){
+            if ($request->user_type_recommendation_visibility == 'on') {
                 $page->user_type_recommendation_visibility = 1;
             } else {
                 $page->user_type_recommendation_visibility = 0;
-            }        
+            }
             $page->user_type_recommendation_header = $request->input('user_type_recommendation_header');
             $page->user_type_recommendation_subheader = $request->input('user_type_recommendation_subheader');
             $page->save();
@@ -417,37 +450,38 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editFeaturedPublicationsSection(Request $request){
+    public function editFeaturedPublicationsSection(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->featured_publications_visibility != $request->featured_publications_visibility){
+            if ($page->featured_publications_visibility != $request->featured_publications_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->featured_publications_visibility.' <strong>-></strong> '.$request->featured_publications_visibility.'<br>';
             }
-            if($page->featured_publications_header != $request->featured_publications_header){
+            if ($page->featured_publications_header != $request->featured_publications_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->featured_publications_header.' <strong>-></strong> '.$request->featured_publications_header.'<br>';
             }
-            if($page->featured_publications_subheader != $request->featured_publications_subheader){
+            if ($page->featured_publications_subheader != $request->featured_publications_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->featured_publications_subheader.' <strong>-></strong> '.$request->featured_publications_subheader.'<br>';
             }
-            if($page->featured_artifact_id_1 != $request->featured_1){
+            if ($page->featured_artifact_id_1 != $request->featured_1) {
                 $temp_changes = $temp_changes.'<strong>Featured Publication 1:</strong> '.$page->featured_artifact_id_1.' <strong>-></strong> '.$request->featured_1.'<br>';
             }
-            if($page->featured_artifact_id_2 != $request->featured_2){
+            if ($page->featured_artifact_id_2 != $request->featured_2) {
                 $temp_changes = $temp_changes.'<strong>Featured Publication 2:</strong> '.$page->featured_artifact_id_2.' <strong>-></strong> '.$request->featured_2.'<br>';
             }
 
 
-            if($request->featured_publications_visibility == 'on'){
+            if ($request->featured_publications_visibility == 'on') {
                 $page->featured_publications_visibility = 1;
             } else {
                 $page->featured_publications_visibility = 0;
-            }     
+            }
             $page->featured_publications_header = $request->input('featured_publications_header');
             $page->featured_publications_subheader = $request->input('featured_publications_subheader');
             $page->featured_artifact_id_1 = $request->featured_1;
@@ -466,39 +500,40 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editFeaturedVideosSection(Request $request){
+    public function editFeaturedVideosSection(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->featured_videos_visibility != $request->featured_videos_visibility){
+            if ($page->featured_videos_visibility != $request->featured_videos_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->featured_videos_visibility.' <strong>-></strong> '.$request->featured_videos_visibility.'<br>';
             }
-            if($page->featured_videos_header != $request->featured_videos_header){
+            if ($page->featured_videos_header != $request->featured_videos_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->featured_videos_header.' <strong>-></strong> '.$request->featured_videos_header.'<br>';
             }
-            if($page->featured_videos_subheader != $request->featured_videos_subheader){
+            if ($page->featured_videos_subheader != $request->featured_videos_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->featured_videos_subheader.' <strong>-></strong> '.$request->featured_videos_subheader.'<br>';
             }
-            if($page->featured_video_link_1 != $request->first_link){
+            if ($page->featured_video_link_1 != $request->first_link) {
                 $temp_changes = $temp_changes.'<strong>Featured Video 1:</strong> '.$page->featured_video_link_1.' <strong>-></strong> '.$request->first_link.'<br>';
             }
-            if($page->featured_video_link_2 != $request->second_link){
+            if ($page->featured_video_link_2 != $request->second_link) {
                 $temp_changes = $temp_changes.'<strong>Featured Video 2:</strong> '.$page->featured_video_link_2.' <strong>-></strong> '.$request->second_link.'<br>';
             }
-            if($page->featured_video_link_3 != $request->third_link){
+            if ($page->featured_video_link_3 != $request->third_link) {
                 $temp_changes = $temp_changes.'<strong>Featured Video 3:</strong> '.$page->featured_video_link_3.' <strong>-></strong> '.$request->third_link.'<br>';
             }
 
-            if($request->featured_videos_visibility == 'on'){
+            if ($request->featured_videos_visibility == 'on') {
                 $page->featured_videos_visibility = 1;
             } else {
                 $page->featured_videos_visibility = 0;
-            }     
+            }
             $page->featured_videos_header = $request->input('featured_videos_header');
             $page->featured_videos_subheader = $request->input('featured_videos_subheader');
             $page->featured_video_link_1 = $request->input('first_link');
@@ -515,48 +550,48 @@ class LandingPageElementsController extends Controller
             $log->save();
 
             return redirect('/?edit=1')->with('success', 'Landing Page Featured Videos Section Updated');
-            
         }
     }
 
-    public function editRecommendedForYouSection(Request $request){
+    public function editRecommendedForYouSection(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
 
-            if($page->recommended_for_you_visibility != $request->recommended_for_you_visibility){
+            if ($page->recommended_for_you_visibility != $request->recommended_for_you_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->recommended_for_you_visibility.' <strong>-></strong> '.$request->recommended_for_you_visibility.'<br>';
             }
-            if($page->recommended_for_you_header != $request->recommended_for_you_header){
+            if ($page->recommended_for_you_header != $request->recommended_for_you_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->recommended_for_you_header.' <strong>-></strong> '.$request->recommended_for_you_header.'<br>';
             }
-            if($page->recommended_for_you_subheader != $request->recommended_for_you_subheader){
+            if ($page->recommended_for_you_subheader != $request->recommended_for_you_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->recommended_for_you_subheader.' <strong>-></strong> '.$request->recommended_for_you_subheader.'<br>';
             }
 
-            if($request->recommended_for_you_visibility == 'on'){
+            if ($request->recommended_for_you_visibility == 'on') {
                 $page->recommended_for_you_visibility = 1;
             } else {
                 $page->recommended_for_you_visibility = 0;
-            }     
+            }
             $page->recommended_for_you_header = $request->input('recommended_for_you_header');
             $page->recommended_for_you_subheader = $request->input('recommended_for_you_subheader');
-            if($request->banner_color_radio == 1){
+            if ($request->banner_color_radio == 1) {
                 $image_path = public_path().'/storage/page_images/'.$page->recommended_for_you_bg;
-                if(file_exists($image_path)){
+                if (file_exists($image_path)) {
                     unlink($image_path);
                 }
                 $page->recommended_for_you_bg = $request->input('banner_color');
                 $page->recommended_for_you_bg_type = 1;
             } else {
-                if($request->hasFile('image')){
-                    if($page->recommended_for_you_bg != null){
+                if ($request->hasFile('image')) {
+                    if ($page->recommended_for_you_bg != null) {
                         $image_path = public_path().'/storage/page_images/'.$page->recommended_for_you_bg;
-                        if(file_exists($image_path)){
+                        if (file_exists($image_path)) {
                             unlink($image_path);
                         }
                     }
@@ -582,30 +617,31 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editConsortiaMembersSection(Request $request){
+    public function editConsortiaMembersSection(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            
-            if($page->consortia_members_visibility != $request->consortia_members_visibility){
+
+            if ($page->consortia_members_visibility != $request->consortia_members_visibility) {
                 $temp_changes = $temp_changes.'<strong>Section Visibility:</strong> '.$page->consortia_members_visibility.' <strong>-></strong> '.$request->consortia_members_visibility.'<br>';
             }
-            if($page->consortia_members_header != $request->consortia_members_header){
+            if ($page->consortia_members_header != $request->consortia_members_header) {
                 $temp_changes = $temp_changes.'<strong>Header:</strong> '.$page->consortia_members_header.' <strong>-></strong> '.$request->consortia_members_header.'<br>';
             }
-            if($page->consortia_members_subheader != $request->consortia_members_subheader){
+            if ($page->consortia_members_subheader != $request->consortia_members_subheader) {
                 $temp_changes = $temp_changes.'<strong>Subheader:</strong> '.$page->consortia_members_subheader.' <strong>-></strong> '.$request->consortia_members_subheader.'<br>';
             }
 
-            if($request->consortia_members_visibility == 'on'){
+            if ($request->consortia_members_visibility == 'on') {
                 $page->consortia_members_visibility = 1;
             } else {
                 $page->consortia_members_visibility = 0;
-            }     
+            }
             $page->consortia_members_header = $request->input('consortia_members_header');
             $page->consortia_members_subheader = $request->input('consortia_members_subheader');
             $page->save();
@@ -621,23 +657,24 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editIndustryProfile(Request $request){
+    public function editIndustryProfile(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            if($request->profile_1){
+            if ($request->profile_1) {
                 $page->agriculture_profile = $request->profile_1;
                 $page->save();
                 return redirect('/aanr-industry-profile?edit=1&industry=1')->with('success', 'Profile Updated');
-            } elseif($request->profile_2){
+            } elseif ($request->profile_2) {
                 $page->aquatic_profile = $request->profile_2;
                 $page->save();
                 return redirect('/aanr-industry-profile?edit=1&industry=2')->with('success', 'Profile Updated');
-            } elseif($request->profile_3){
+            } elseif ($request->profile_3) {
                 $page->natural_profile = $request->profile_3;
                 $page->save();
                 return redirect('/aanr-industry-profile?edit=1&industry=3')->with('success', 'Profile Updated');
@@ -652,18 +689,19 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editAgrisyunaryoSearchBanner(Request $request){
+    public function editAgrisyunaryoSearchBanner(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
-            if($request->hasFile('image')){
-                if($page->agrisyunaryo_search_banner != null){
+            if ($request->hasFile('image')) {
+                if ($page->agrisyunaryo_search_banner != null) {
                     $image_path = public_path().'/storage/page_images/'.$page->agrisyunaryo_search_banner;
-                    if(file_exists($image_path)){
+                    if (file_exists($image_path)) {
                         unlink($image_path);
                     }
                 }
@@ -687,36 +725,37 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function editFooterinfo(Request $request){
+    public function editFooterinfo(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $footer = FooterInfo::find(1);
-            if($footer->about != $request->about){
+            if ($footer->about != $request->about) {
                 $temp_changes = $temp_changes.'<strong>About:</strong> '.$footer->about.' <strong>-></strong> '.$request->about.'<br>';
             }
-            if($footer->phone_number != $request->phone_number){
+            if ($footer->phone_number != $request->phone_number) {
                 $temp_changes = $temp_changes.'<strong>Phone Number:</strong> '.$footer->phone_number.' <strong>-></strong> '.$request->phone_number.'<br>';
             }
-            if($footer->address != $request->address){
+            if ($footer->address != $request->address) {
                 $temp_changes = $temp_changes.'<strong>Address:</strong> '.$footer->address.' <strong>-></strong> '.$request->address.'<br>';
             }
-            if($footer->email != $request->email){
+            if ($footer->email != $request->email) {
                 $temp_changes = $temp_changes.'<strong>Email:</strong> '.$footer->email.' <strong>-></strong> '.$request->email.'<br>';
             }
-            if($footer->fb_link != $request->fb_link){
+            if ($footer->fb_link != $request->fb_link) {
                 $temp_changes = $temp_changes.'<strong>FB Link:</strong> '.$footer->fb_link.' <strong>-></strong> '.$request->fb_link.'<br>';
             }
-            if($footer->twitter_link != $request->twitter_link){
+            if ($footer->twitter_link != $request->twitter_link) {
                 $temp_changes = $temp_changes.'<strong>Twitter Link:</strong> '.$footer->twitter_link.' <strong>-></strong> '.$request->twitter_link.'<br>';
             }
-            if($footer->instagram_link != $request->instagram_link){
+            if ($footer->instagram_link != $request->instagram_link) {
                 $temp_changes = $temp_changes.'<strong>Instagram Link:</strong> '.$footer->instagram_link.' <strong>-></strong> '.$request->instagram_link.'<br>';
             }
-            if($footer->youtube_link != $request->youtube_link){
+            if ($footer->youtube_link != $request->youtube_link) {
                 $temp_changes = $temp_changes.'<strong>YouTube Link:</strong> '.$footer->youtube_link.' <strong>-></strong> '.$request->youtube_link.'<br>';
             }
 
@@ -742,16 +781,18 @@ class LandingPageElementsController extends Controller
         }
     }
 
-    public function sendEmailToRegister(Request $request){
+    public function sendEmailToRegister(Request $request)
+    {
         return redirect('/register?email='.$request->email)->with('success', 'Please fill up the rest of the form to register.');
     }
 
-    public function editUsefulLinks(Request $request){
+    public function editUsefulLinks(Request $request)
+    {
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log;
-        if($user->role != 5 && $user->role != 1){
-            return redirect()->back()->with('error','Your account is not authorized to use this function.'); 
+        $log = new Log();
+        if ($user->role != 5 && $user->role != 2) {
+            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $page = LandingPageElement::find(1);
             $page->useful_links = $request->useful_links;
@@ -767,6 +808,5 @@ class LandingPageElementsController extends Controller
 
             return redirect('/usefulLinks?edit=1')->with('success', 'Useful Links Updated');
         }
-
     }
 }

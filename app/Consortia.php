@@ -10,19 +10,23 @@ class Consortia extends Model
     protected $fillable = ['link'];
 
 
-    public function consortia_members(){
+    public function consortia_members()
+    {
         return $this->hasMany('App\ConsortiaMember');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->hasMany('App\User');
     }
 
-    public function artifacts(){
+    public function artifacts()
+    {
         return $this->hasMany('App\ArtifactAANR');
     }
 
-    public function slider(){
+    public function slider()
+    {
         return $this->hasMany('App\LandingPageSlider');
     }
 }

@@ -12,31 +12,33 @@ use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
-    //
-
-    public function subscriptionSuccess(){
+    public function subscriptionSuccess()
+    {
         Mail::to('info@ajgarcia.com')->send(new SubscriptionSuccessMail());
         return new SubscriptionSuccessMail();
     }
 
-    public function confirm(){
+    public function confirm()
+    {
         Mail::to('info@ajgarcia.com')->send(new ConfirmRegistrationMail());
         return new ConfirmRegistrationMail();
     }
 
-    public function digest(){
+    public function digest()
+    {
         Mail::to('arvinjohnbgarcia@gmail.com')->send(new DigestMail());
         return new DigestMail();
     }
 
-    public function unsub(){
+    public function unsub()
+    {
         Mail::to('info@ajgarcia.com')->send(new UnsubscribeMail());
         return new UnsubscribeMail();
     }
 
-    public function unsubsuccess(){
+    public function unsubsuccess()
+    {
         Mail::to('info@ajgarcia.com')->send(new UnsubscribeSuccessMail());
         return new UnsubscribeSuccessMail();
     }
-
 }

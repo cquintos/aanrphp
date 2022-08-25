@@ -413,19 +413,24 @@ class ConsortiaController extends Controller
             return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
         } else {
             $user->role = $request->user_role;
-            if ($request->user_role == 2) {
+            if($user->role == 5) {
+                $user->consortia_admin_id = null;
+                $log->changes = 'Set '.$user->email.' as SUPERADMIN';
+                $log->action = 'Set \''. $user->email.' as SUPERADMIN\'';
+                $mess = "User set as SUPERADMIN!";
+            } elseif ($request->user_role == 2) {
                 $user->consortia_admin_id = $request->consortia_admin_id;
                 $user->organization = Consortia::find($request->consortia_admin_id)->short_name;
                 $user->consortia_admin_request = 2;
-                $user->role = 2;
                 $log->changes = 'Set '.$user->email.' as '.$user->organization.' admin';
                 $log->action = 'Set \''. $user->email.' as '.$user->organization.' admin\'';
+                $mess = 'User set as '.$user->organization.' admin!';
             } else {
                 $user->consortia_admin_id = null;
                 $user->consortia_admin_request = 0;
-                $user->role = 1;
                 $log->changes = 'Set '.$user->email.' as regular user';
                 $log->action = 'Set \''. $user->email.' as regular user\'';
+                $mess = 'User set as regular user!';
             }
             $log->user_id = $admin->id;
             $log->user_email = $admin->email;
@@ -434,7 +439,7 @@ class ConsortiaController extends Controller
             $log->save();
 
             $user->save();
-            return redirect()->back()->with('success', 'User role set.');
+            return redirect()->back()->with('success', $mess);
         }
     }
 

@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ConsortiaMember extends Model
 {
     use HasFactory;
-    public function consortia(){
+    public function consortia()
+    {
         return $this->belongsTo('App\Consortia');
     }
 }
