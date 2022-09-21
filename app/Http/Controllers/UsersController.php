@@ -88,7 +88,7 @@ class UsersController extends Controller
                 "mail" => ["value" => $user->email],
                 "pass" => ["value" => $user->password]
             ]);
-            return redirect('/')->with('modal_message', 'Welcome!');
+            return redirect()->route('verification.notice');
         } else {
             // failure
 

@@ -15,24 +15,11 @@ use Illuminate\Support\Facades\Mail;
 Auth::routes();
 
 //Pages Controller
-Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
-Route::get('aanr-industry-profile', 'PagesController@industryProfileView')->name('industryProfileView');
-Route::get('about', 'PagesController@aboutUs')->name('aboutUs');
-Route::get('usefulLinks', 'PagesController@usefulLinks')->name('usefulLinks');
-Route::get('search', 'PagesController@search')->name('search');
-Route::get('consortia/about', 'PagesController@consortiaAboutPage')->name('consortiaAboutPage');
-Route::get('consortia/landing', 'PagesController@consortiaLandingPage')->name('consortiaLandingPage');
-Route::get('unit/about', 'PagesController@unitAboutPage')->name('unitAboutPage');
 Route::get('aanr/about', 'PagesController@AANRAboutPage')->name('AANRAboutPage');
-Route::get('pcaarrd/about', 'PagesController@PCAARRDAboutPage')->name('PCAARRDAboutPage');
-Route::get('agrisyunaryo', 'PagesController@agrisyunaryo')->name('agrisyunaryo');
-Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
-Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
-Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
+Route::get('about', 'PagesController@aboutUs')->name('aboutUs');
 Route::post('signup/createUser', 'UsersController@createUser')->name('createUser');
-Route::get('dashboard/userDashboard', 'PagesController@userDashboard')->name('userDashboard');
-Route::post('headlines/{id}/editUser', 'UsersController@editUser')->name('editUser');
 Route::get('countries', [CountryController::class, 'index']);
+Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
 
 Route::get('send-mail', function () {
     
@@ -61,6 +48,22 @@ Route::group(['middleware' => ['auth']], function() {
     //only verified account can access with this group
     Route::group(['middleware' => ['verified']], function() {
         //LandingPageController
+
+        Route::get('search', 'PagesController@search')->name('search');
+        Route::get('unit/about', 'PagesController@unitAboutPage')->name('unitAboutPage');
+        Route::get('usefulLinks', 'PagesController@usefulLinks')->name('usefulLinks');
+        Route::get('agrisyunaryo', 'PagesController@agrisyunaryo')->name('agrisyunaryo');
+        Route::get('pcaarrd/about', 'PagesController@PCAARRDAboutPage')->name('PCAARRDAboutPage');
+        Route::get('consortia/about', 'PagesController@consortiaAboutPage')->name('consortiaAboutPage');
+        Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
+        Route::get('consortia/landing', 'PagesController@consortiaLandingPage')->name('consortiaLandingPage');
+        Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
+        Route::get('aanr-industry-profile', 'PagesController@industryProfileView')->name('industryProfileView');
+        Route::get('dashboard/userDashboard', 'PagesController@userDashboard')->name('userDashboard');
+        Route::post('headlines/{id}/editUser', 'UsersController@editUser')->name('editUser');
+        Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
+
+
         Route::post('manage/updateTopBanner', ['uses' => 'LandingPageElementsController@updateTopBanner', 'as' => 'landing.updateTopBanner']);
         Route::post('manage/updateConsortiaBanner', ['uses' => 'LandingPageElementsController@updateConsortiaBanner', 'as' => 'landing.updateConsortiaBanner']);
         Route::post('manage/updateHeaderLogo', ['uses' => 'LandingPageElementsController@updateHeaderLogo', 'as' => 'landing.updateHeaderLogo']);
