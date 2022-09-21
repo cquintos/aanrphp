@@ -41,9 +41,9 @@
         </nav>
     </div> 
 @endif
-<div class="verification-header  px-5">
-    @if(auth()->user() != null)
-        @if(!auth()->user()->hasVerifiedEmail())
+@if(auth()->user() != null)
+    @if(!auth()->user()->hasVerifiedEmail())
+        <div class="verification-header  px-5">
             <span class="text-black">Please verify your email within 24 hours. If you did not receive the email,</span>
             <form action="{{ route('verification.resend') }}" method="POST" class="d-inline">
                 @csrf
@@ -51,9 +51,9 @@
                     <span class="text-black" style="font-weight: 600; font-size:1rem">click here to request another</span>
                 </button>.
             </form>
-        @endif
+        </div>
     @endif
-</div>
+@endif
 @if (session('resent'))
     <div class="alert alert-success px-5" role="alert">
         A new verification link has been sent to your email address.
