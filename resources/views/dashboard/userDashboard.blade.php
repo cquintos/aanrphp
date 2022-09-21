@@ -101,13 +101,6 @@
         font-weight: 900;
         box-shadow: inset 0px 0px 15px 5px #6dbddd !important;
    }
-   .verification-header{
-        height:2.5rem;
-        padding-top: 10px;
-        font-size: 1rem;
-        font-weight: 600;
-        background-color:gold;
-   }
    .list-group-item{
         width:100%;
         border: 0px;
@@ -167,22 +160,6 @@
                         <div class="section-header shadow px-5">
                             <span class="text-white mr-3">Manage Profile </span>
                         </div>
-                        <div class="verification-header  px-5">
-                            @if(!auth()->user()->hasVerifiedEmail())
-                                <span class="text-black">Please verify your email. If you did not receive the email,</span>
-                                <form action="{{ route('verification.resend') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="d-inline btn btn-link p-0">
-                                        <span class="text-black" style="font-weight: 600; font-size:1rem">click here to request another</span>
-                                    </button>.
-                                </form>
-                            @endif
-                        </div>
-                        @if (session('resent'))
-                            <div class="alert alert-success px-5" role="alert">
-                                A new verification link has been sent to your email address.
-                            </div>
-                        @endif
                         @include('layouts.messages')
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4" >

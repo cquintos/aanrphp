@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Home')
 @section('breadcrumb')
-
 <?php
     use Illuminate\Support\Facades\Auth;
         $headlines = App\Headline::all();
@@ -41,6 +40,24 @@
             @endif
         </nav>
     </div> 
+@endif
+<div class="verification-header  px-5">
+    @if(auth()->user() != null)
+        @if(!auth()->user()->hasVerifiedEmail())
+            <span class="text-black">Please verify your email within 24 hours. If you did not receive the email,</span>
+            <form action="{{ route('verification.resend') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="d-inline btn btn-link p-0">
+                    <span class="text-black" style="font-weight: 600; font-size:1rem">click here to request another</span>
+                </button>.
+            </form>
+        @endif
+    @endif
+</div>
+@if (session('resent'))
+    <div class="alert alert-success px-5" role="alert">
+        A new verification link has been sent to your email address.
+    </div>
 @endif
 <!-- CAROUSEL SLIDER SECTION -->
 <div class="container{{$landing_page->slider_container_toggle == 1 ? '-fluid' : ''}} pb-1 px-0" style="z-index:0">
@@ -779,6 +796,13 @@
         bottom: 0;
         left: 0;
         padding: 1.25rem;
+    }
+    .verification-header{
+        height:2.5rem;
+        padding-top: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color:gold;
     }
 
     #techCards .tech-card-container:nth-child(3n+1) div .tech-card-color{
