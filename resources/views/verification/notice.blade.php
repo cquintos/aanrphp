@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-light p-5 rounded">
-        <h1><b>Email Verification<b></h1>
+        <h1><b>Email Verification</b></h1>
         <br>    
         @if (session('resent'))
             <div class="alert alert-success" role="alert">
