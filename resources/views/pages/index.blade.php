@@ -670,6 +670,34 @@
     <img src="/storage/page_images/KM4AANR Footer_sample.png" class="card-img-top" style="object-fit: cover;">
 </div>
 -->
+
+@if(Session::has('modal_message'))
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#new_user_modal').modal();
+        });
+    </script>
+
+    <div id="new_user_modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Welcome to KM4AANR, {{$user->first_name}}!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>To fully access our portal, please check your email for the verification.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 @endsection
 <style>
     .featured-publication-text{
