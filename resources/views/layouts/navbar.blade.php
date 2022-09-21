@@ -14,7 +14,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         
-        <div class="collapse navbar-collapse" i d="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto upper-nav">
                 @foreach(App\HeaderLink::all()->sortBy('position') as $header_link)
                     <li class="nav-item">
@@ -86,7 +86,7 @@
                             @else
                                 <a href="/dashboard/userDashboard" class="dropdown-item">Manage Dashboard</a>
                             @endif
-                            
+                                <a href="/analytics/search" class="dropdown-item">Analytics Dashboard</a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">

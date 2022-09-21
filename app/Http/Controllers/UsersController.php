@@ -8,6 +8,7 @@ use Auth;
 use App\Consortia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Auth\Events\Registered;
 
 // This file contains request handling logic for the AANR page.
 // functions included are:
@@ -58,6 +59,7 @@ class UsersController extends Controller
             echo '<h2>Please check the the captcha form.</h2>';
             return redirect('/register');
         }
+
         if ($resp->success) {
             $user = new User;
             $user->first_name = $request->first_name;
@@ -76,18 +78,20 @@ class UsersController extends Controller
             $user->country_id = $request->select_country;
             $user->contact_number = $request->contact_number;
             $user->save();
+
+            event(new Registered($user));
+            
             Auth::loginUsingId($user->id);
-
-
 
             Http::post('community.aanr.ph/user/register?_format=json', [
                 "name" => ["value" => $user->first_name],
                 "mail" => ["value" => $user->email],
                 "pass" => ["value" => $user->password]
             ]);
-            return redirect('/')->with('success','Registration Success! Welcome.');
+            return redirect('/')->with('modal_message', 'Welcome!');
         } else {
             // failure
+
             exit;
         }
     }
