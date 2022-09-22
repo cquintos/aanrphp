@@ -96,8 +96,8 @@
    .section-header{
         height:4.5rem;
         background-image: linear-gradient(to bottom, rgb(95,189,226) , rgb(77,171,214));
-        padding-top: 20px;
-        font-size: 1.125rem;
+        padding-top: 10px;
+        font-size: 2rem;
         font-weight: 900;
         box-shadow: inset 0px 0px 15px 5px #6dbddd !important;
    }
@@ -160,7 +160,6 @@
                         <div class="section-header shadow px-5">
                             <span class="text-white mr-3">Manage Profile </span>
                         </div>
-                        
                         @include('layouts.messages')
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4" >

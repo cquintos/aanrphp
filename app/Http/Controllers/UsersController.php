@@ -8,6 +8,7 @@ use Auth;
 use App\Consortia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Auth\Events\Registered;
 
 // This file contains request handling logic for the AANR page.
 // functions included are:
@@ -55,7 +56,7 @@ class UsersController extends Controller
         
         $resp = json_decode(curl_exec($ch));
         curl_close($ch);
-
+        
         if ($resp->success) {
             $user = new User;
             $user->first_name = $request->first_name;
@@ -80,10 +81,11 @@ class UsersController extends Controller
                 $user->interest = null;
             }
             $user->save();
+
+            event(new Registered($user));
+            
             Auth::loginUsingId($user->id);
-
-
-
+            
             // Http::post('community.aanr.ph/user/register?_format=json', [
             //     "name" => ["value" => $user->first_name],
             //     "mail" => ["value" => $user->email],

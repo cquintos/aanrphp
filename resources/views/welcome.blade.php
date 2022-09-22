@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-         <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BMSF26WS97"></script>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5X459N98J"></script>
         <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-        gtag('config', 'G-BMSF26WS97');
-        $(document).ready(function() {
-            // show the alert
-            setTimeout(function() {
-                $(".alert").alert('close');
-            }, 5000);
-        });
+            gtag('config', 'G-T5X459N98J');
+        </script>
+
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-T776QSC');
+        </script>
+        <!-- End Google Tag Manager -->
+
+        <script>
+            $(document).ready(function() {
+                // show the alert
+                setTimeout(function() {
+                    $(".alert").alert('close');
+                }, 5000);
+            });
         </script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">

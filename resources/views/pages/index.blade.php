@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Home')
 @section('breadcrumb')
-
 <?php
     use Illuminate\Support\Facades\Auth;
         $headlines = App\Headline::all();
@@ -41,6 +40,24 @@
             @endif
         </nav>
     </div> 
+@endif
+@if(auth()->user() != null)
+    @if(!auth()->user()->hasVerifiedEmail())
+        <div class="verification-header  px-5">
+            <span class="text-black">Please verify your email within 24 hours. If you did not receive the email,</span>
+            <form action="{{ route('verification.resend') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="d-inline btn btn-link p-0">
+                    <span class="text-black" style="font-weight: 600; font-size:1rem">click here to request another</span>
+                </button>.
+            </form>
+        </div>
+    @endif
+@endif
+@if (session('resent'))
+    <div class="alert alert-success px-5" role="alert">
+        A new verification link has been sent to your email address.
+    </div>
 @endif
 <!-- CAROUSEL SLIDER SECTION -->
 <div class="container{{$landing_page->slider_container_toggle == 1 ? '-fluid' : ''}} pb-1 px-0" style="z-index:0">
@@ -670,6 +687,34 @@
     <img src="/storage/page_images/KM4AANR Footer_sample.png" class="card-img-top" style="object-fit: cover;">
 </div>
 -->
+
+@if(Session::has('modal_message'))
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#new_user_modal').modal();
+        });
+    </script>
+
+    <div id="new_user_modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Welcome to KM4AANR, {{$user->first_name}}!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>To fully access our portal, please check your email for the verification.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 @endsection
 <style>
     .featured-publication-text{
@@ -751,6 +796,13 @@
         bottom: 0;
         left: 0;
         padding: 1.25rem;
+    }
+    .verification-header{
+        height:2.5rem;
+        padding-top: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color:gold;
     }
 
     #techCards .tech-card-container:nth-child(3n+1) div .tech-card-color{
