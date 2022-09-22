@@ -121,6 +121,41 @@
                             <label for="password-confirm" class="col-form-label font-weight-bold required">{{ __('Confirm Password') }}</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
+                        <div id="accordion">
+                            <div class="form-check">
+                                <label for="subscription" class="form-check-label" data-toggle="collapse" data-target="#interests">
+                                <input id="subscription" type="checkbox" class="form-check-input" name= "subscription_check" />
+                                    Subscribe to the latest updates and KM4AANR newsletter. 
+                                </label>
+                            </div>
+                            <div id="interests" class="form-group panel-collapse collapse show" style="margin-bottom:0.2rem">
+                                <?php 
+                                    $user_interests = '[]';
+                                ?>
+                                {{Form::label('interests', 'Thank you for subscribing! Please check at least one.', ['class' => 'col-form-label font-weight-bold required'])}}
+                                <div class="btn-group-toggle" data-toggle="buttons">
+                                    @foreach(App\Consortia::all() as $consortium)
+                                        <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
+                                            <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'checked' : ''  }}  value="{{$consortium->short_name}}"> {{$consortium->short_name}}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                <div class="btn-group-toggle mt-3" data-toggle="buttons">
+                                    @foreach(App\ISP::groupBy('name')->get() as $isp)
+                                        <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
+                                            <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true ? 'checked' : ''  }}  value="{{$isp->name}}"> {{$isp->name}}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                <div class="btn-group-toggle mt-3" data-toggle="buttons">
+                                    @foreach(App\Commodity::groupBy('name')->get() as $commodity)
+                                        <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
+                                            <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true ? 'checked' : ''  }} value="{{$commodity->name}}"> {{$commodity->name}}
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-check">
                             <input id="terms_condition" type="checkbox" class="form-check-input" name= "terms_condition">
                             <label for="terms_condition" class="form-check-label required">
@@ -148,6 +183,7 @@
                                     });
                                 }).change();
                             });
+                            $('.collapse').collapse()
                         </script>
                         <div class="form-group mb-0">
                             <button type="submit" class="btn btn-primary">
@@ -170,4 +206,4 @@
       content:" *";
       color: red;
     }
-  </style>
+</style>

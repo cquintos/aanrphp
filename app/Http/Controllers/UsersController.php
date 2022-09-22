@@ -41,6 +41,7 @@ class UsersController extends Controller
             'select_org' => 'required',
             'g-recaptcha-response' => 'required',
             'terms_condition' => 'required',
+            'interest' => $request->subscription_check === 'on' ? 'required': 'nullable',
         ]);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
@@ -55,11 +56,7 @@ class UsersController extends Controller
         
         $resp = json_decode(curl_exec($ch));
         curl_close($ch);
-        if(!$_POST['g-recaptcha-response']){
-            echo '<h2>Please check the the captcha form.</h2>';
-            return redirect('/register');
-        }
-
+        
         if ($resp->success) {
             $user = new User;
             $user->first_name = $request->first_name;
@@ -77,22 +74,27 @@ class UsersController extends Controller
             $user->gender = $request->gender;
             $user->country_id = $request->select_country;
             $user->contact_number = $request->contact_number;
+            $user->subscribed = $request->subscription_check === "on" ? 1 : 0;
+            if(!empty(($request->interest)) && $request->interest != "null" && $request->interest != "NULL") {
+                $user->interest = json_encode($request->interest);
+            } else {
+                $user->interest = null;
+            }
             $user->save();
 
             event(new Registered($user));
             
             Auth::loginUsingId($user->id);
-
-            Http::post('community.aanr.ph/user/register?_format=json', [
-                "name" => ["value" => $user->first_name],
-                "mail" => ["value" => $user->email],
-                "pass" => ["value" => $user->password]
-            ]);
-            return redirect()->route('verification.notice');
+            
+            // Http::post('community.aanr.ph/user/register?_format=json', [
+            //     "name" => ["value" => $user->first_name],
+            //     "mail" => ["value" => $user->email],
+            //     "pass" => ["value" => $user->password]
+            // ]);
+            return redirect('/')->with('success','Registration Success! Welcome.');
         } else {
             // failure
-
-            exit;
+            return redirect('/register')->with('error','Something went wrong with the registration. Please try again later.');
         }
     }
 
@@ -130,6 +132,8 @@ class UsersController extends Controller
             $user->organization = $request->select_org;
         }
         $user->save();
+
+        // event(new Registered($user));
         Auth::loginUsingId($user->id);
         $request->session()->flash('status', 'Task was successful!');
         return redirect()->back()->with('success','User account changes saved.');

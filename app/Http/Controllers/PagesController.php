@@ -86,7 +86,13 @@ class PagesController extends Controller
         if(Auth::user()->role != 5){
             return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
-        return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&filter=yes');
+        if($request->year_from_filter > $request->year_to_filter) {
+            return Redirect::route('searchAnalytics')->with('error','Start date cannot be after end date.');
+        }
+        if($request->isp_filter == 'selected') {
+            return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&filter=yes');
+        }
+        return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&withISP='.$request->isp_filter.'&filter=yes');
     }
 
     public function saveAnalytics(){
