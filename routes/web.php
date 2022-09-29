@@ -24,7 +24,7 @@ Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
 
 // Route::get('/test', function(){
 //     event(new Registered(auth()->user()));
-});
+// });
 
 Route::group(['middleware' => ['auth']], function() {
     //only verified account can access with this group
