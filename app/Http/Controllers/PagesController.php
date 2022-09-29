@@ -175,6 +175,22 @@ class PagesController extends Controller
             ->withCommodities($commodities);
     }
 
+    public function contentView($content_id){
+        $content = Content::pluck('type', 'id')->all();
+        $content_subtype = ContentSubtype::all();
+        $consortia = Consortia::pluck('short_name', 'id')->all();
+        $isp = ISP::pluck('name', 'id')->all();
+        $commodities = Commodity::pluck('name', 'id')->all();
+        $artifact = ArtifactAANR::find($content_id);
+        return view('pages.artifactView')
+            ->withArtifact($artifact)
+            ->withConsortia($consortia)
+            ->withContent($content)
+            ->withContentSubtypes($content_subtype)
+            ->withISP($isp)
+            ->withCommodities($commodities);
+    }
+
     public function search(Request $request){
         $query = $request->search;
         if($query != null){

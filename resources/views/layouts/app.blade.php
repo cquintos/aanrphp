@@ -4,6 +4,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5X459N98J"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-T5X459N98J');
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-T776QSC');
+            </script>
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -24,11 +42,6 @@
     <link rel="icon" type="image/png" href="/storage/page_images/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/storage/page_images/favicon-16x16.png" sizes="16x16" />
 
-
-    <!-- Scripts
-    <script src="https://kit.fontawesome.com/e0784f1094.js"></script>
-    -->
-    
     <script src="{{ asset('js/lightbox.js') }}" defer></script>
     <script async charset="utf-8" src="//cdn.embedly.com/widgets/platform.js"></script>
     
@@ -36,11 +49,7 @@
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="{{ asset('js/dropzone.js') }}"></script>
 
-    <!-- jquery ui 
-    <link rel="stylesheet" href="{{ asset('jquery-ui-1.13.1.custom/jquery-ui.min.css') }}">
-    <script src="{{ asset('jquery-ui-1.13.1.custom/external/jquery/jquery.js') }}" defer></script>
-    <script src="{{ asset('jquery-ui-1.13.1.custom/jquery-ui.min.js') }}" defer></script>
--->
+
     <!-- no-ui-slider -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css" integrity="sha512-qveKnGrvOChbSzAdtSs8p69eoLegyh+1hwOMbmpCViIwj7rn4oJjdmMvWOuyQlTOZgTlZA0N2PXA7iA8/2TUYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js" integrity="sha512-ZKqmaRVpwWCw7S7mEjC89jDdWRD/oMS0mlfH96mO0u3wrPYoN+lXmqvyptH4P9mY6zkoPTSy5U2SwKVXRY5tYQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -71,20 +80,11 @@
     <!-- Datatables -->
     <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" defer></script> 
-
     <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
 
-
     @yield('top_scripts')
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BMSF26WS97"></script>
+   
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-BMSF26WS97');
     $(document).ready(function() {
         // show the alert
         setTimeout(function() {
@@ -96,7 +96,7 @@
 </head>
 <body style="background-color:white">
     <div id="app">
-        @unless(request()->is('dashboard/*'))
+        @unless(request()->is('dashboard/*') || request()->is('analytics/*'))
         <div class="icon-bar hide-when-mobile" style="z-index:500">
             <?php $sticky = App\SocialMediaSticky::all()?>
             <a target="_blank" href="{{$sticky->where('name', '=', 'PCAARRD')->first()->link}}" class="sarai"><img src="/storage/page_images/TRr6O4s.png" height="30" width="30"></a> 

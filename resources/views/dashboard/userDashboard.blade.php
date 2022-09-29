@@ -202,7 +202,10 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
-                                        <label class="checkbox-inline mt-2"><input type="checkbox" name="subscribe" {{auth()->user()->subscribed == 1 ? 'checked' : ''}} value="1"> Get emails and latest updates from us</label>
+                                        <label class="checkbox-inline mt-2">
+                                            <input type="checkbox" name="subscribe" {{auth()->user()->subscribed == 1 ? 'checked' : ''}} value="1"> 
+                                            Subscribe to the latest updates and KM4AANR newsletter. (Once checked, please select at least one interest.)
+                                        </label>
                                     </div>
                                     <div class="form-group">
                                         {{Form::label('gender', 'Gender', ['class' => 'col-form-label font-weight-bold'])}}
