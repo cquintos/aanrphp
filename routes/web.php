@@ -1,6 +1,7 @@
 <?php
 use Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,27 +22,8 @@ Route::post('signup/createUser', 'UsersController@createUser')->name('createUser
 Route::get('countries', [CountryController::class, 'index']);
 Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
 
-Route::get('send-mail', function () {
-    
-    // Email data details
-    $details = [
-        'title' => 'TEST EMAILS',
-        'body' => 'Congratulations! Your email has been chosen as part of the testing period for this week. You will receieve various emails for testing purposes.'
-    ];
-
-
-    // Email to users
-    $users = [
-        "jcarlo.quintos@gmail.com",
-        "kathleensarriola@gmail.com"
-    ];
-
-    foreach ($users as $user) { // sending mail to users.
-
-        Mail::to($user)->send(new \App\Mail\Mail($details));
-    }
-
-    dd("Email is Sent, please check your inbox.");
+// Route::get('/test', function(){
+//     event(new Registered(auth()->user()));
 });
 
 Route::group(['middleware' => ['auth']], function() {
@@ -185,6 +167,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('dashboard/manage/fetchContentSubtypeDependent', 'ArtifactAANRController@fetchContentSubtypeDependent')->name('fetchContentSubtypeDependent');
         Route::post('dashboard/manage/fetchCommodityDependent', 'ArtifactAANRController@fetchCommodityDependent')->name('fetchCommodityDependent');
         Route::get('dashboard/manage/content/{id}/edit', 'PagesController@contentEdit')->name('contentEdit');
+        Route::get('dashboard/manage/content/{id}/view', 'PagesController@contentView')->name('contentView');
         Route::post('headlines/createArtifactViewLog', 'ArtifactAANRViewsController@createArtifactViewLog')->name('createArtifactViewLog');
         Route::post('headlines/createISPViewLog', 'ISPViewsController@createISPViewLog')->name('createISPViewLog');
         Route::post('headlines/createCommodityViewLog', 'CommodityViewsController@createCommodityViewLog')->name('createCommodityViewLog');
@@ -226,11 +209,11 @@ Route::group(['middleware' => ['auth']], function() {
         Route::delete('headlines/{id}/deleteSubscriber', 'SubscribersController@deleteSubscriber')->name('deleteSubscriber');
 
         //Mailing
-        Route::get('email/subsuccess', 'MailController@subscriptionSuccess')->name('subscriptionSuccess');
-        Route::get('email/confirm', 'MailController@confirm')->name('confirm');
-        Route::get('email/digest', 'MailController@digest')->name('digest');
-        Route::get('email/unsub', 'MailController@unsub')->name('unsub');
-        Route::get('email/unsubsuccess', 'MailController@unsubsuccess')->name('unsubsuccess');
+        // Route::get('email/subsuccess', 'MailController@subscriptionSuccess')->name('subscriptionSuccess');
+        // Route::get('email/confirm', 'MailController@confirm')->name('confirm');
+        // Route::get('email/digest', 'MailController@digest')->name('digest');
+        // Route::get('email/unsub', 'MailController@unsub')->name('unsub');
+        // Route::get('email/unsubsuccess', 'MailController@unsubsuccess')->name('unsubsuccess');
 
         //API Entry
         Route::post('headlines/addAPIEntry', 'APIEntriesController@addAPIEntry')->name('addAPIEntry');
