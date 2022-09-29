@@ -9,6 +9,7 @@ use App\Consortia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Auth\Events\Registered;
+use App\Events\NewSubscriberEvent; 
 
 // This file contains request handling logic for the AANR page.
 // functions included are:
@@ -62,30 +63,29 @@ class UsersController extends Controller
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->password = Hash::make($request->password);
-            if($request->select_org == 'other'){
-                $user->is_organization_other = 1;
-                $user->organization = $request->others_org;
-            } else {
-                $user->is_organization_other = 0;
-                $user->organization = $request->select_org;
-            }
+            $user->interest = null;
             $user->email = $request->email;
-            $user->age_range = $request->age_range;
             $user->gender = $request->gender;
+            $user->is_organization_other = 0;
+            $user->age_range = $request->age_range;
+            $user->organization = $request->select_org;
             $user->country_id = $request->select_country;
             $user->contact_number = $request->contact_number;
             $user->subscribed = $request->subscription_check === "on" ? 1 : 0;
-            if(!empty(($request->interest)) && $request->interest != "null" && $request->interest != "NULL") {
-                $user->interest = json_encode($request->interest);
-            } else {
-                $user->interest = null;
-            }
-            $user->save();
 
+            if($request->select_org == 'other'){
+                $user->is_organization_other = 1;
+                $user->organization = $request->others_org;
+            }
+
+            if($user->subscribed) {
+                $user->interest = json_encode($request->interest);
+            }
+
+            $user->save();
             event(new Registered($user));
-            
             Auth::loginUsingId($user->id);
-            
+
             // Http::post('community.aanr.ph/user/register?_format=json', [
             //     "name" => ["value" => $user->first_name],
             //     "mail" => ["value" => $user->email],
@@ -104,6 +104,7 @@ class UsersController extends Controller
             'last_name' => 'required|max:200',    
             'select_country' => ['required'],     
             'contact_number' => ['nullable', 'digits:10'],
+            'interest' => $request->subscribe == 1 ? 'required': 'nullable',
         ));
 
         $user = User::find($user_id);
@@ -118,22 +119,29 @@ class UsersController extends Controller
         $user->contact_number = $request->contact_number;
         $user->age_range = $request->age_range;
         $user->gender = $request->gender;
-        $user->subscribed = $request->subscribe;
-        if(!empty(($request->interest)) && $request->interest != "null" && $request->interest != "NULL") {
-            $user->interest = json_encode($request->interest);
-        } else {
-            $user->interest = null;
+        
+        //from unsubscribed to subscribed - send subscription email
+        if(!$user->subscribed) {
+            if($request->subscribe) {
+                event(new NewSubscriberEvent($user));
+            }
         }
+
+        $user->subscribed = $request->subscribe;
+        $user->interest = null;
+        $user->is_organization_other = 0;
+        $user->organization = $request->select_org;
+
+        if($request->interest) {
+            $user->interest = json_encode($request->interest);
+        }
+
         if($request->select_org == 'other'){
             $user->is_organization_other = 1;
             $user->organization = $request->others_org;
-        } else {
-            $user->is_organization_other = 0;
-            $user->organization = $request->select_org;
         }
-        $user->save();
 
-        // event(new Registered($user));
+        $user->save();
         Auth::loginUsingId($user->id);
         $request->session()->flash('status', 'Task was successful!');
         return redirect()->back()->with('success','User account changes saved.');

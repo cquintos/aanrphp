@@ -7,18 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SubscriptionSuccessMail extends Mailable
+class SendInitialNewsletterClass extends Mailable
 {
     use Queueable, SerializesModels;
     
+    public $details;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($details)
     {
-        //
+        $this->details = $details;
     }
 
     /**
@@ -28,6 +30,9 @@ class SubscriptionSuccessMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.subscriptionSuccess');
+        return $this->subject('Welcome to KM4AANR!')
+                    ->markdown('emails.sendInitialNewsletterMail', [
+                        'details' => $this->details,
+                    ]);
     }
 }

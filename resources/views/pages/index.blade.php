@@ -531,6 +531,82 @@
             }
         }
 
+        // $id_array = collect();
+        // $result = collect();
+        
+        // foreach($compiled_featured_artifacts as $artifacts) {
+        //     $id_array->push($artifacts->id);
+        // }
+
+        // $from = now()->addDays(4)->subMonths(1)->subYear()->firstOfQuarter();
+        // $to = now()->addDays(4)->subMonths(1)->subYear()->endOfQuarter();
+        
+
+        // //content with most hits as priority
+        // $content_most_views = DB::table('artifactaanr_views')
+        //                 ->select('*',  DB::raw('count(*) as total'))
+        //                 ->whereIn('id_artifact', $id_array)
+        //                 ->whereBetween('date_published', [$to, $from])
+        //                 ->groupBy('title')
+        //                 ->orderByDesc('total')
+        //                 ->take(5)
+        //                 ->get();
+
+        //newest related content as priority
+        // $content_latest = DB::table('artifactaanr')
+        //                 ->select('id')
+        //                 ->whereIn('id', $id_array)
+        //                 ->whereBetween('date_published', [$from, $to])
+        //                 ->orderByDesc('date_published')
+        //                 ->take(5)
+        //                 ->get();
+
+        //newest unrelated content as fall back if both above are null
+        // $content_latest_unrelated = DB::table('artifactaanr')
+        //                 ->select('*')
+        //                 // ->whereBetween('date_published', [$date->subYear()->firstOfQuarter(), $to])
+        //                 ->whereBetween('date_published', [$from, $to])
+        //                 ->orderByDesc('date_published')
+        //                 ->take(5)
+        //                 ->get();
+
+        // function console_log($output, $with_script_tags=true) { 
+        //     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+        //         if ($with_script_tags) {
+        //             $js_code = '<script>' . $js_code . '</script>';
+        //         }
+        //         echo $js_code;
+        // }
+        // console_log($from);
+        // console_log($to);
+
+        // $subscriber_list = DB::table('users')
+        //                 ->select('email','first_name')
+        //                 ->where('subscribed', '=' ,'1')
+        //                 ->get();
+        // foreach ($subscriber_list as $a) {
+        //     console_log($a->email);
+            
+        // }
+        
+
+        // console_log( $date->subYear()->firstOfQuarter());
+        // console_log( $date->endOfQuarter());
+        
+        // $result = $content_most_views->merge($content_latest)->unique('id');
+        // $result = $result->merge($content_latest_unrelated)->unique('id');
+
+        // $result = $content_latest->merge($content_latest_unrelated)->unique('id');
+
+
+        // $result_ids = collect();
+        // foreach ($result as $content) {
+        //     $result_ids->push($content->id);
+        // }
+        // console_log($content_latest->toArray());
+
+        
+
         $compiled_featured_artifacts = $compiled_featured_artifacts->shuffle()->take(3)->all();
         if($compiled_featured_artifacts == null){
             $compiled_featured_artifacts = App\ArtifactAANR::inRandomOrder()->limit(3)->get();
@@ -538,6 +614,11 @@
     } else {
         $recommended_artifacts_not_logged_in = App\ArtifactAANR::inRandomOrder()->limit(3)->get();
     }
+
+    
+
+
+
 ?>
 
 <!-- RECOMMENDED SECTION -->
@@ -666,22 +747,6 @@
     @endif
 </div>
 
-
-<div class="last-section">
-    <div class="container text-center px-5">
-        <h1 class="font-weight-bold">Never miss an update</h1>
-        <p style="font-size:120%">Get recommendations straight in your inbox. Keep up-to-date with the latest research and development in agriculture, aquatic and natural resources here in the Philippines. Let us know what topics you are interested in!</p>
-        <div class="input-group" style="font-size:2.5rem">
-            {{ Form::open(['action' => ['LandingPageElementsController@sendEmailToRegister'], 'style' => 'width:100%; display:flex', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
-            <input type="text" class="form-control" style="height:2.5rem" name="email"
-                placeholder="Input your email address"> 
-            <span class="input-group-btn">
-                {{Form::submit('Subscribe and sign up', ['class' => 'btn btn-outline-secondary', 'style' => 'color:white;border:1px solid #ced4da;height:100%;background-color:rgb(40,109,158)'])}}
-            </span>
-            {{Form::close()}}
-        </div>
-    </div>
-</div>
 <!--
 <div class="px-5 mt-5">
     <img src="/storage/page_images/KM4AANR Footer_sample.png" class="card-img-top" style="object-fit: cover;">
