@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\DigestMail;
+use App\Mail\QuarterlyMailClass;
 use App\Mail\WelcomeMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use DB;
 
-class QuarterlyEmail implements ShouldQueue
+class QuarterlyMailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -89,37 +89,34 @@ class QuarterlyEmail implements ShouldQueue
         }
 
         $id_array = collect();
-        $result = collect();
-        $from = now()->addDays(4)->subMonths(1)->subYear()->firstOfQuarter();
-        $to = now()->addDays(4)->subMonths(1)->subYear()->endOfQuarter();
+        $from = now()->subMonths(1)->subYear()->firstOfQuarter();
+        $to = now()->subMonths(1)->subYear()->endOfQuarter();
 
         foreach($compiled_featured_artifacts as $artifacts) {
             $id_array->push($artifacts->id);
         }
 
         //newest related content as priority
-        $content_latest = DB::table('artifactaanr')
-                        ->select('id')
+        $contents = DB::table('artifactaanr')
+                        ->select('*', DB::raw("MONTHNAME(date_published) as month"))
                         ->whereIn('id', $id_array)
                         ->whereBetween('date_published', [$from, $to])
-                        ->orderByDesc('date_published')
+                        ->orderBy('month')
                         ->get();
 
-        //newest unrelated content as fall back if both above are null
-        // $content_latest_unrelated = DB::table('artifactaanr')
-        //                 ->select('id')
-        //                 ->orderByDesc('date_published')
-        //                 ->take(5)
-        //                 ->get();
+        $months = DB::table('artifactaanr')
+                        ->select(DB::raw("count(id)"), DB::raw("MONTHNAME(date_published) as month"))
+                        ->whereIn('id', $id_array)
+                        ->whereBetween('date_published', [$from, $to])
+                        ->groupBy('month')
+                        ->get();
 
-        // $result = $content_latest->merge($content_latest_unrelated)->unique('id');
-        $result_ids = collect();
+        $details = [
+            'months' => $months,
+            'contents' => $contents,
+        ];
 
-        foreach ($content_latest as $content) {
-            $result_ids->push($content->id);
-        }
-        
-        return $result_ids;
+        return $details;
     }
     /**
      * Execute the job.
@@ -134,15 +131,7 @@ class QuarterlyEmail implements ShouldQueue
                         ->get();
         
         foreach($subscribers as $user) {
-            echo $user->email;
-
-            $details = [
-                'title' => 'Quarterly set of digest from '.now()->subMonths(3)->format('F')." to ".now()->subMonths(1)->format('F'),
-                'body' => 'Here is what we got for this quarter for you: ',
-                'ids' => $this->getInterest($user)
-            ];
-
-            Mail::to($user->email)->send(new DigestMail($details));
+            Mail::to($user->email)->send(new QuarterlyMailClass($this->getInterest($user)));
         }
     }
 }
