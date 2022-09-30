@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\QuarterlyMailJob;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,8 +29,11 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('backup:run')->weeklyOn(1, '2:00');
-        $schedule->command('email:sendDigestToAllSubscribed')->weeklyOn(2, '8:00');
+        // $schedule->command('backup:run')->weeklyOn(1, '2:00');
+        // $schedule->command('email:sendDigestToAllSubscribed')->weeklyOn(2, '8:00');
+
+        $schedule->job(new QuarterlyMailJob)->everyMinute();
+        // $schedule->job(new QuarterlyMailJob)->quarterly();
     }
 
     /**
