@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-sm-4">
                                         {{Form::label('author_affiliation', 'Author Affilitation', ['class' => 'col-form-label'])}}
-                                        {{Form::text('author_affiliation', $artifact->author_affiliation, ['class' => 'form-control', 'disabled', 'readonly'])}}
+                                        {{Form::text('author_affiliation', $artifact->author_affiliation, ['class' => 'form-control', 'disabled', 'readonly', 'placeholder'=>'N/A'])}}
                                     </div>
                                     <div class="col-sm-3">
                                         {{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}
@@ -83,9 +83,9 @@
                                 <div class="form-group mt-4">
                                     <h3 class="mt-5 mb-3 font-weight-bold">File and Links</h3>
                                     <div class="dropdown-divider mb-3"></div>
-                                    @if($artifact->file)
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <div class="col-sm-6">
+                                            @if($artifact->file)
                                                 <b>PDF Preview</b><br>
                                                 <iframe 
                                                     class="mt-2"
@@ -93,9 +93,11 @@
                                                     style="width:180%; height:1200px;" 
                                                     frameborder="0">
                                                 </iframe>
-                                            </div>
+                                            @else
+                                                <b>None Available</b><br>
+                                            @endif
                                         </div>
-                                    @endif
+                                    </div>
                                 </div>
                                 
                             </div>
@@ -304,10 +306,10 @@
             }
         });
         $('.multi-commodity-edit').select2({
-            placeholder: " Select commodity"
+            placeholder: " N/A"
         }).val({!! json_encode($artifact->commodities()->allRelatedIds()) !!}).trigger('change');
         $('.multi-isp-edit').select2({
-            placeholder: " Select ISP"
+            placeholder: " N/A"
         }).val({!! json_encode($artifact->isp()->allRelatedIds()) !!}).trigger('change');
     </script>
 @endsection
