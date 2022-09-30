@@ -69,7 +69,7 @@
                                 <div class="form-group row">
                                     <div class="col-sm-4">
                                         {{Form::label('author', 'Author', ['class' => 'col-form-label'])}}
-                                        {{Form::text('author', $artifact->author, ['class' => 'form-control', 'disabled', 'readonly'])}}
+                                        {{Form::text('author', $artifact->author, ['class' => 'form-control', 'disabled', 'readonly', 'placeholder'=>'N/A'])}}
                                     </div>
                                     <div class="col-sm-4">
                                         {{Form::label('author_affiliation', 'Author Affilitation', ['class' => 'col-form-label'])}}
