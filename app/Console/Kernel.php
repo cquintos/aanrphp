@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
 
         // $schedule->command('backup:run')->weeklyOn(1, '2:00');
         // $schedule->command('email:sendDigestToAllSubscribed')->weeklyOn(2, '8:00');
-        $schedule->command('database:backup')->daily();
+        $schedule->command('database:backup')->everyMinute();
         $schedule->job(new QuarterlyMailJob)->dailyAt('9:00');
         // $schedule->job(new QuarterlyMailJob)->quarterly();
     }
