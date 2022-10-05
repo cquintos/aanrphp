@@ -33,15 +33,9 @@
                 <li class="nav-item">
                     <a class="nav-links" href="https://techdashboard.aanr.ph/">Technology</a>
                 </li>
-                @auth
-                    <li class="nav-item">
-                        <a class="nav-links" href="http://community.aanr.ph/moLogin">Community</a>
-                    </li>
-                @else
-                    <li class="nav-item">
-                        <a class="nav-links" href="http://community.aanr.ph/">Community</a>
-                    </li>
-                @endauth
+                <li class="nav-item">
+                        <a class="nav-links" href="/community" target=”_blank”>Community</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-links" href="/agrisyunaryo">Agrisyunaryo</a>
                 </li>
