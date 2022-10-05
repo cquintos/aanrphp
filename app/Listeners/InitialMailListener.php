@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Http;
 use DB;
 
 class InitialMailListener
@@ -32,6 +33,12 @@ class InitialMailListener
     {
         $user = $event->user;
         echo $user;
+
+        Http::post('community.aanr.ph/user/register?_format=json', [
+            "name" => ["value" => $user->first_name],
+            "mail" => ["value" => $user->email],
+            "pass" => ["value" => $user->password]
+        ]);
 
         if($user->subscribed && $user != null) {
             $compiled_featured_artifacts = collect();
