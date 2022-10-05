@@ -83,14 +83,9 @@ class UsersController extends Controller
             }
 
             $user->save();
-            event(new Registered($user));
             Auth::loginUsingId($user->id);
+            event(new Registered($user));
 
-            // Http::post('community.aanr.ph/user/register?_format=json', [
-            //     "name" => ["value" => $user->first_name],
-            //     "mail" => ["value" => $user->email],
-            //     "pass" => ["value" => $user->password]
-            // ]);
             return redirect('/')->with('success','Registration Success! Welcome.');
         } else {
             // failure
