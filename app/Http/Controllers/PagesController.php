@@ -391,4 +391,11 @@ class PagesController extends Controller
             return Redirect::route('login')->with('error','Login to access this page.');
         }
     }
+
+    public function communityPage() {
+        if(Auth::check() && Auth::user()->hasVerifiedEmail()) {
+            return Redirect::away('http://community.aanr.ph/moLogin');
+        } 
+        return Redirect::away('http://community.aanr.ph');
+    }
 }
