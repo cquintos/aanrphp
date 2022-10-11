@@ -75,9 +75,6 @@
     $analytics_query_user_results = Analytics::performQuery($period, $metric_user, $dimensions_date);
     $analytics_query_search_results = Analytics::performQuery($period, $metric_search, $dimensions_search);
 
-    console_log($analytics_query_sessions_result);
-    // console_log($analytics_query_user_results);
-
     // TOTAL SEARCH USING GOOGLE ANALYTICS
     $prev_total_search = $prev_analytics_query_search_results->totalsForAllResults['ga:searchUniques'];
     $total_search = $analytics_query_search_results->totalsForAllResults['ga:searchUniques'];
@@ -107,9 +104,8 @@
     $new_users_total = $analytics_user_types->totalsForAllResults['ga:newUsers'];
     $old_users_total = $analytics_user_types->totalsForAllResults['ga:users'];
     $total_users = $new_users_total + $old_users_total;
-    $new_users_percentage = $new_users_total/$total_users*100;
-    $old_users_percentage = $old_users_total/$total_users*100;
-
+    $new_users_percentage = number_format((float)($new_users_total/$total_users*100), 2, '.', '');
+    $old_users_percentage = number_format((float)($old_users_total/$total_users*100), 2, '.', '');
     
     // BAR GRAPH FOR ISP SEARCHES WITHIN DATE FILTER AND TOTAL VISITORS FOR 30 DAYS 
     $freq_index = 0;
@@ -228,16 +224,6 @@
             array_push($avg_duration_session, $mins);
             array_push($pages_per_session, $entry[3]);
         }   
-    }
-
-    function console_log($output, $with_script_tags=true) { 
-        $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
-
-        if ($with_script_tags) {
-            $js_code = '<script>' . $js_code . '</script>';
-        }
-
-        echo $js_code;
     }
 
     $query_for_merge ='(SELECT artifactaanr_id, industry_id FROM artifactaanr_isp UNION ALL SELECT artifactaanr_id, industry_id FROM artifactaanr_commodity GROUP BY artifactaanr_id, industry_id) as artifact_industries';
@@ -540,34 +526,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><b>Publications</b></td>
-                                    <td><b>86</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Technologies</b></td>
-                                    <td><b>57</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Products</b></td>
-                                    <td><b>42</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Webinars</b></td>
-                                    <td><b>40</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Events</b></td>
-                                    <td><b>15</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Media</b></td>
-                                    <td><b>11</b></td>
-                                </tr>    
-                                <tr>
-                                    <td><b>Policies</b></td>
-                                    <td><b>6</b></td>
-                                </tr>    
                                 @foreach($isp_content_type_array as $key => $value)
                                     <tr>
                                         <td><b>{{$key}}</b></td>
@@ -695,7 +653,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(58,136,235)">
                             <span style="font-size:4.5rem;color:white; line-height:1.25">
-                                <b>{{$merged_artifact_industry[0]->total}}</b>
+                                <b>{{$merged_artifact_industry[]->total}}</b>
                             </span>
                             <h4 class="text-white">
                                 Aquatic Resources
@@ -714,7 +672,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(60,193,114)">
                             <span style="font-size:4.5rem; color:white; line-height:1.25">
-                                <b>{{$merged_artifact_industry[0]->total}}</b>
+                                <b>{{$merged_artifact_industry[2]->total}}</b>
                             </span>
                             <h4 class="text-white">
                                 Natural Resources
