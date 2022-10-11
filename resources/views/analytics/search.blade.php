@@ -134,20 +134,33 @@
     }
 
     //  AANR CONTENT WITH THE MOST VIEWS
-    $isp_content = App\ArtifactAANR::get();
-    $total_content = App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
+    $isp_content = DB::table('artifactaanr')
+                    ->join('artifactaanr_isp', 'artifactaanr.id', "=", 'artifactaanr_isp.artifactaanr_id')
+                    ->join('isp', 'artifactaanr_isp.isp_id', "=", 'isp.id')
+                    ->join('content', 'content.id', "=", 'artifactaanr.content_id')
+                    ->select('artifactaanr.id','title', 'content_id', 'date_published', 'author', 'content.type')
+                    ->where('isp.name', '=', request()->withISP)->get();
+
+    $total_content = App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)->count();
     $content_most_views = App\ArtifactAANRViews::select('title', DB::raw('count(*) as total'))
                                             ->groupBy('title')
                                             ->orderByDesc('total')
-                                            ->get()
-                                            ->take(6);
+                                            ->take(6)
+                                            ->get();
+
+       console_log($isp_content);                                     
+
+    function console_log($output, $with_script_tags=true) { 
+        $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+        if ($with_script_tags) {
+            $js_code = '<script>' . $js_code . '</script>';
+        }
+        echo $js_code;
+    }
 
     if(request()->withISP != null) {    
-        $total_content = DB::table('artifactaanr')
-                        ->join('artifactaanr_isp', 'artifactaanr.id', "=", 'artifactaanr_isp.artifactaanr_id')
-                        ->join('isp', 'artifactaanr_isp.isp_id', "=", 'isp.id')
-                        ->select(DB::raw('count(*)'))
-                        ->where('isp.name', '=', request()->withISP);
+        $total_content = $isp_content->count();
+
         $content_most_views = DB::table('artifactaanr_views')
                             ->join('artifactaanr_isp', 'artifactaanr_views.id_artifact', "=", 'artifactaanr_isp.artifactaanr_id')
                             ->join('isp', 'artifactaanr_isp.isp_id', "=", 'isp.id')
@@ -155,24 +168,19 @@
                             ->where('isp.name', '=', request()->withISP)
                             ->groupBy('title')
                             ->orderByDesc('total')
-                            ->get()
-                            ->take(6);
+                            ->take(6)
+                            ->get();
     }
+
 
     // TABLE FOR CONTENT TYPE AND COUNT
     $isp_content_type_array = array();
     if($isp_content != null) {
         foreach($isp_content as $content) {
-            if($content->isp->get('0')){
-                if($content->isp->get('0')->name == request()->withISP){
-                    if($content->content) {
-                        if(array_key_exists($content->content->type, $isp_content_type_array)) {
-                            $isp_content_type_array[$content->content->type] += 1;
-                        } else {
-                            $isp_content_type_array[$content->content->type] = 1;
-                        }
-                    }
-                }
+            if(array_key_exists($content->type, $isp_content_type_array)) {
+                $isp_content_type_array[$content->type] += 1;
+            } else {
+                $isp_content_type_array[$content->type] = 1;
             }
         }
     }
@@ -182,7 +190,7 @@
     $commodity_views_freq_array = array();
     $commodity_views_freq_array[0] = array();
     $commodity_views_freq_array[1] = array();
-    foreach(App\CommodityViews::select('id_commodity', DB::raw('count(*) as total'))->groupBy('id_commodity')->orderByDesc('total')->get()->take(5) as $item){
+    foreach(App\CommodityViews::select('id_commodity', DB::raw('count(*) as total'))->groupBy('id_commodity')->orderByDesc('total')->take(5)->get() as $item){
         array_push($commodity_views_freq_array[0], App\Commodity::find($item->id_commodity)->name);
         array_push($commodity_views_freq_array[1], $item->total);
     }
@@ -192,7 +200,7 @@
     $isp_views_freq_array = array();
     $isp_views_freq_array[0] = array();
     $isp_views_freq_array[1] = array();
-    foreach(App\ISPViews::select('id_isp', DB::raw('count(*) as total'))->groupBy('id_isp')->orderByDesc('total')->get()->take(5) as $item){
+    foreach(App\ISPViews::select('id_isp', DB::raw('count(*) as total'))->groupBy('id_isp')->orderByDesc('total')->take(5)->get() as $item){
         array_push($isp_views_freq_array[0], App\ISP::find($item->id_isp)->name);
         array_push($isp_views_freq_array[1], $item->total);
     }
@@ -511,7 +519,7 @@
                 <div class="card-body p0" style="padding: 0; height:150px; background-color:rgb(40,109,158); overflow:hidden">
                     <span style="font-size:2.5rem; color:white; line-height:1.25">
                         <b>
-                            {{$total_content->count()}}
+                            {{$total_content}}
                         </b>
                     </span>
                     <h4 class="text-white" style="">
@@ -615,7 +623,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(40,109,158)">
                             <span style="font-size:4.5rem; color:white; line-height:1.25">
-                                <b>{{$total_content->count()}}</b>
+                                <b>{{$total_content}}</b>
                             </span>
                             <h4 class="text-white" style="">
                                 AANR Content
@@ -728,18 +736,14 @@
                         </thead>
                         <tbody>
                             @if($isp_content != null)
-                                @foreach($isp_content as $artifact)
-                                    @if($artifact->isp->get('0'))
-                                        @if($artifact->isp->get('0')->name == request()->withISP) 
-                                            <tr>
-                                                <td>{{$artifact->id}}</td>
-                                                <td>{{$artifact->title}}</td>
-                                                <td>{{$artifact->content ? $artifact->content->type : ''}}</td>
-                                                <td>{{$artifact->date_published}}</td>
-                                                <td>{{$artifact->author}}</td>
-                                            </tr>            
-                                        @endif
-                                    @endif
+                                @forelse($isp_content as $artifact)
+                                    <tr>
+                                        <td>{{$artifact->id}}</td>
+                                        <td>{{$artifact->title}}</td>
+                                        <td>{{$artifact->type ? $artifact->type : ''}}</td>
+                                        <td>{{$artifact->date_published}}</td>
+                                        <td>{{$artifact->author}}</td>
+                                    </tr>            
                                 @endforeach
                             @endif
                         </tbody>
