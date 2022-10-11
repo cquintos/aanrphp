@@ -69,23 +69,17 @@ class PagesController extends Controller
     }
 
     public function searchAnalytics(){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
-        if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','Admin users only.');
-        }
+        // if(Auth::user()->role != 5){
+        //     return Redirect::route('userDashboard')->with('error','Admin users only.');
+        // }
 
         return view('analytics.search');
     }
 
     public function searchAnalyticsWithFilter(Request $request){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
-        if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','Admin users only.');
-        }
+        // if(Auth::user()->role != 5){
+        //     return Redirect::route('userDashboard')->with('error','Admin users only.');
+        // }
         if($request->year_from_filter > $request->year_to_filter) {
             return Redirect::route('searchAnalytics')->with('error','Start date cannot be after end date.');
         }
@@ -96,11 +90,8 @@ class PagesController extends Controller
     }
 
     public function saveAnalytics(){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
         if(Auth::user()->role != 5){
-            return Redirect::route('userDashboard')->with('error','Admin users only.');
+            return Redirect::route('searchAnalytics')->with('error','Admin users only.');
         }
         $now = Carbon::now();
         $file_name = 'aanr_analytics'. $now->format('dmy').'.pdf';
