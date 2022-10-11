@@ -26,6 +26,9 @@ Route::get('community', 'PagesController@communityPage')->name('goToCommunity');
 // Route::get('/test', function(){
 //     event(new Registered(auth()->user()));
 // });
+Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
+Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
+Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
 
 Route::group(['middleware' => ['auth']], function() {
     //only verified account can access with this group
@@ -38,13 +41,10 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('agrisyunaryo', 'PagesController@agrisyunaryo')->name('agrisyunaryo');
         Route::get('pcaarrd/about', 'PagesController@PCAARRDAboutPage')->name('PCAARRDAboutPage');
         Route::get('consortia/about', 'PagesController@consortiaAboutPage')->name('consortiaAboutPage');
-        Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
         Route::get('consortia/landing', 'PagesController@consortiaLandingPage')->name('consortiaLandingPage');
-        Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
         Route::get('aanr-industry-profile', 'PagesController@industryProfileView')->name('industryProfileView');
         Route::get('dashboard/userDashboard', 'PagesController@userDashboard')->name('userDashboard');
         Route::post('headlines/{id}/editUser', 'UsersController@editUser')->name('editUser');
-        Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
 
 
         Route::post('manage/updateTopBanner', ['uses' => 'LandingPageElementsController@updateTopBanner', 'as' => 'landing.updateTopBanner']);
