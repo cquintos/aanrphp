@@ -653,7 +653,7 @@
                         </div>
                         <div class="card-body" style="height:150px; background-color:rgb(58,136,235)">
                             <span style="font-size:4.5rem;color:white; line-height:1.25">
-                                <b>{{$merged_artifact_industry[]->total}}</b>
+                                <b>{{$merged_artifact_industry[1]->total}}</b>
                             </span>
                             <h4 class="text-white">
                                 Aquatic Resources
