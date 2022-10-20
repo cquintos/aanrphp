@@ -29,7 +29,7 @@ class SubscriptionSuccessClass extends Mailable
     public function build()
     {
         return $this->from('donotreply.km4aanr@gmail.com')
-                    ->subject('KM4AANR Subscription Success')
+                    ->subject('KM4AANR Successful Subscription')
                     ->markdown('emails.subscriptionSuccessMail');
     }
 }
