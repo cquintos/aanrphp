@@ -105,6 +105,7 @@ class QuarterlyMailJob implements ShouldQueue
         $subscribers = DB::table('users')
                         ->select('*')
                         ->where('subscribed', '=', '1')
+                        ->where('email_verified_at',  '!=', NULL)
                         ->get();
         
         foreach($subscribers as $user) {
