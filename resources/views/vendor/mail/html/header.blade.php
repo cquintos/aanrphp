@@ -4,7 +4,7 @@
         <table class="header" align="center" width="650" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
                 <td class="align-center">
-                    <h2 class="align-center" style="display: inline-block;"> THIS IS AN AUTOMATED MESSAGE PLEASE DO NOT REPLY. </h2>
+                    <h2 class="align-center" style="display: inline-block;"> THIS IS AN AUTOMATED MESSAGE. PLEASE DO NOT REPLY. </h2>
                 </td>
             </tr>
             <tr>

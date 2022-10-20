@@ -185,6 +185,6 @@ class UsersController extends Controller
         $user->subscribed = 0;
         $user->save();
 
-        return redirect('/')->with('success','Unsubscription Success.');
+        return redirect('/')->with('success','You have been successfully unsubscribed to the KM4AANR Quarterly Digest.');
     }
 }
