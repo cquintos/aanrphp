@@ -29,7 +29,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('database:backup')->daily();
-        $schedule->job(new QuarterlyMailJob)->quarterly();
+        // $schedule->job(new QuarterlyMailJob)->quarterly();
+        $schedule->job(new QuarterlyMailJob)->everyThirtyMinutes();
     }
 
     /**

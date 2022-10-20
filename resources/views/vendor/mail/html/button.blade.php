@@ -1,19 +1,26 @@
-<table class="action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-<tr>
-<td align="center">
 <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+<thead>
 <tr>
-<td align="center">
-<table border="0" cellpadding="0" cellspacing="0" role="presentation">
+@isset($title)
+<th style="width:20%"></th>
+@endisset
+<th style="width:5%"></th>
+<th style="width:75%"></th>
+</tr>
+</thead>
 <tr>
-<td>
+<td max-width="100%" align="center">
 <a href="{{ $url }}" class="button button-{{ $color ?? 'primary' }}" target="_blank" rel="noopener">{{ $slot }}</a>
 </td>
-</tr>
-</table>
+<td>
+
 </td>
-</tr>
-</table>
+@isset($title)
+<td>
+<h3>
+{{$title ?? ''}}
+</h3>
 </td>
+@endisset
 </tr>
 </table>

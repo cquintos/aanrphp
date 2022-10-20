@@ -477,211 +477,89 @@
 </div>
 
 <?php
-    if($user != null){
-        $compiled_featured_artifacts = collect();
-        if($user->organization != null && $user->is_organization_other != 1){
+    $compiled_artifacts = getInterests($user);
+
+    function getInterests($user) {
+        $compiled_artifacts = collect();
+
+        if(!$user) {
+            return App\ArtifactAANR::inRandomOrder()->limit(3)->get();
+        }
+
+        if($user->is_organization_other != 1){
             $user_consortia_id = App\Consortia::where('short_name', '=', $user->organization)->first()->id;
-            $organization_artifacts = App\ArtifactAANR::where('consortia_id', '=', $user_consortia_id)->get();
-            foreach($organization_artifacts as $organization_artifact){
-                $compiled_featured_artifacts->push($organization_artifact);
-            }
-        }
-        if(!empty($user->interest) && $user->interest != "null" && $user->interest != "NULL"){
-            //get all relevant consortia from the user's interest
-            $all_consortia_interest = App\Consortia::whereIn('short_name', json_decode($user->interest))->get();
-            $consortia_interest_array = array();
-            foreach($all_consortia_interest as $consortium_interest){
-                array_push($consortia_interest_array, $consortium_interest->id);
-            }
-            $consortia_interest_artifacts = App\ArtifactAANR::whereIn('consortia_id',$consortia_interest_array)->get();
-            foreach($consortia_interest_artifacts as $consortia_interest_artifact){
-                $compiled_featured_artifacts->push($consortia_interest_artifact);
-            }
-
-            //get all relevant commodities from the user's interest
-            $all_commodities_interest = App\Commodity::whereIn('name', json_decode($user->interest))->get();
-            $commodity_interest_array = array();
-            foreach($all_commodities_interest as $commodity_interest){
-                array_push($commodity_interest_array, $commodity_interest->id);
-            }
-            $all_artifactaanr_commodity_query = DB::table('artifactaanr_commodity')->whereIn('commodity_id', $commodity_interest_array)->get();
-            $all_artifactaanr_commodity_idarray = array();
-            foreach($all_artifactaanr_commodity_query as $artifactaanr_commodity_query){
-                array_push($all_artifactaanr_commodity_idarray, $artifactaanr_commodity_query->artifactaanr_id);
-            }
-            $commodity_interest_artifacts = App\ArtifactAANR::whereIn('id',$all_artifactaanr_commodity_idarray)->get();
-            foreach($commodity_interest_artifacts as $commodity_interest_artifact){
-                $compiled_featured_artifacts->push($commodity_interest_artifact);
-            }
-
-            //get all relevant ISP from the user's interest
-            $all_isps_interest = App\ISP::whereIn('name', json_decode($user->interest))->get();
-            $isp_interest_array = array();
-            foreach($all_isps_interest as $isp_interest){
-                array_push($isp_interest_array, $isp_interest->id);
-            }
-            $all_artifactaanr_isp_query = DB::table('artifactaanr_isp')->whereIn('isp_id', $isp_interest_array)->get();
-            $all_artifactaanr_isp_idarray = array();
-            foreach($all_artifactaanr_isp_query as $artifactaanr_isp_query){
-                array_push($all_artifactaanr_isp_idarray, $artifactaanr_isp_query->artifactaanr_id);
-            }
-            $isp_interest_artifacts = App\ArtifactAANR::whereIn('id',$all_artifactaanr_isp_idarray)->get();
-            foreach($isp_interest_artifacts as $isp_interest_artifact){
-                $compiled_featured_artifacts->push($isp_interest_artifact);
-            }
+            $compiled_artifacts = App\ArtifactAANR::where('consortia_id', '=', $user_consortia_id)->get();
         }
 
-        // $id_array = collect();
-        // $result = collect();
-        
-        // foreach($compiled_featured_artifacts as $artifacts) {
-        //     $id_array->push($artifacts->id);
-        // }
-
-        // $from = now()->addDays(4)->subMonths(1)->subYear()->firstOfQuarter();
-        // $to = now()->addDays(4)->subMonths(1)->subYear()->endOfQuarter();
-        
-
-        // //content with most hits as priority
-        // $content_most_views = DB::table('artifactaanr_views')
-        //                 ->select('*',  DB::raw('count(*) as total'))
-        //                 ->whereIn('id_artifact', $id_array)
-        //                 ->whereBetween('date_published', [$to, $from])
-        //                 ->groupBy('title')
-        //                 ->orderByDesc('total')
-        //                 ->take(5)
-        //                 ->get();
-
-        //newest related content as priority
-        // $content_latest = DB::table('artifactaanr')
-        //                 ->select('id')
-        //                 ->whereIn('id', $id_array)
-        //                 ->whereBetween('date_published', [$from, $to])
-        //                 ->orderByDesc('date_published')
-        //                 ->take(5)
-        //                 ->get();
-
-        //newest unrelated content as fall back if both above are null
-        // $content_latest_unrelated = DB::table('artifactaanr')
-        //                 ->select('*')
-        //                 // ->whereBetween('date_published', [$date->subYear()->firstOfQuarter(), $to])
-        //                 ->whereBetween('date_published', [$from, $to])
-        //                 ->orderByDesc('date_published')
-        //                 ->take(5)
-        //                 ->get();
-
-        // function console_log($output, $with_script_tags=true) { 
-        //     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
-        //         if ($with_script_tags) {
-        //             $js_code = '<script>' . $js_code . '</script>';
-        //         }
-        //         echo $js_code;
-        // }
-        // console_log($from);
-        // console_log($to);
-
-        // $subscriber_list = DB::table('users')
-        //                 ->select('email','first_name')
-        //                 ->where('subscribed', '=' ,'1')
-        //                 ->get();
-        // foreach ($subscriber_list as $a) {
-        //     console_log($a->email);
-            
-        // }
-        
-
-        // console_log( $date->subYear()->firstOfQuarter());
-        // console_log( $date->endOfQuarter());
-        
-        // $result = $content_most_views->merge($content_latest)->unique('id');
-        // $result = $result->merge($content_latest_unrelated)->unique('id');
-
-        // $result = $content_latest->merge($content_latest_unrelated)->unique('id');
-
-
-        // $result_ids = collect();
-        // foreach ($result as $content) {
-        //     $result_ids->push($content->id);
-        // }
-        // console_log($content_latest->toArray());
-
-        
-
-        $compiled_featured_artifacts = $compiled_featured_artifacts->shuffle()->take(3)->all();
-        if($compiled_featured_artifacts == null){
-            $compiled_featured_artifacts = App\ArtifactAANR::inRandomOrder()->limit(3)->get();
+        if($user->interest == null){
+            return $compiled_artifacts;
         }
-    } else {
-        $recommended_artifacts_not_logged_in = App\ArtifactAANR::inRandomOrder()->limit(3)->get();
+
+        //get all relevant consortia from the user's interest
+        $consortia_ids = App\Consortia::select('id')->whereIn('short_name', json_decode($user->interest))->get();
+        $compiled_artifacts = $compiled_artifacts->merge(App\ArtifactAANR::whereIn('consortia_id',$consortia_ids->pluck('id'))->get());
+        
+        //get all relevant commodities from the user's interest
+        $commodities_ids = App\Commodity::select('id')->whereIn('name', json_decode($user->interest))->get();
+        $artifact_ids = DB::table('artifactaanr_commodity')->select('artifactaanr_id')->whereIn('commodity_id', $commodities_ids->pluck('id'))->get();
+        
+        //get all relevant ISP from the user's interest
+        $isp_ids = App\ISP::select('id')->whereIn('name', json_decode($user->interest))->get();
+        $artifact_ids = $artifact_ids->merge(DB::table('artifactaanr_isp')->select('artifactaanr_id')->whereIn('isp_id', $isp_ids->pluck('id'))->get());
+        
+        $compiled_artifacts = $compiled_artifacts->merge(App\ArtifactAANR::whereIn('id',$artifact_ids->pluck('artifactaanr_id'))->get());
+        
+        if($compiled_artifacts == null){
+            return App\ArtifactAANR::inRandomOrder()->limit(3)->get();
+        }
+
+        return $compiled_artifacts->shuffle()->take(3)->all();
     }
-
-    
-
-
-
 ?>
 
 <!-- RECOMMENDED SECTION -->
 @if($landing_page->recommended_for_you_bg_type == 1)
-<div class="recommended-section {{request()->edit != '1' && $landing_page->recommended_for_you_visibility == 0 ? 'section-none' : ''}} {{request()->edit == '1' && $user != null ? 'overlay-container' : ''}}" style="background: {{$landing_page->recommended_for_you_bg}};">
+<div class="recommended-section {{request()->edit != '1' && $landing_page->recommended_for_you_visibility == 0 
+    ? 'section-none' 
+    : ''}} {{request()->edit == '1' && $user != null 
+    ? 'overlay-container' 
+    : ''}}" style="background: {{$landing_page->recommended_for_you_bg}};">
 @else
-<div class="recommended-section {{request()->edit != '1' && $landing_page->recommended_for_you_visibility == 0 ? 'section-none' : ''}} parallax-section {{request()->edit == '1' && $user != null ? 'overlay-container' : ''}}" style="background-image: url('/storage/page_images/{{$landing_page->recommended_for_you_bg}}');">
+<div class="recommended-section {{request()->edit != '1' && $landing_page->recommended_for_you_visibility == 0 
+    ? 'section-none' 
+    : ''}} parallax-section {{request()->edit == '1' && $user != null 
+    ? 'overlay-container' 
+    : ''}}" style="background-image: url('/storage/page_images/{{$landing_page->recommended_for_you_bg}}');">
 @endif
     <div class="container section-margin">
         <h2 class="mb-2 font-weight-bold" style="color:white">{{$landing_page->recommended_for_you_header}}</h2>
         <h5 class="mb-0" style="color:rgb(48, 152, 197)">{{$landing_page->recommended_for_you_subheader}}</h5>
         <div id="techCards" class="row">
-            @if($user!=null)
-                @foreach($compiled_featured_artifacts as $compiled_featured_artifact)
-                    <div class="col-sm-4 tech-card-container">
-                        <div class="card front-card h-auto shadow rounded">
-                            @if($compiled_featured_artifact->imglink == null)
-                            <div class="card-img-top center-vertically px-3 tech-card-color" style="height:200px">
-                                <span class="font-weight-bold" style="font-size: 17px;line-height: 1.5em;color: #2b2b2b;">
-                                    {{$compiled_featured_artifact->title}}
-                                </span>
-                            </div>
-                            @else
-                            <img src="{{$compiled_featured_artifact->imglink}}" class="card-img-top" height="175" style="object-fit: cover;">
-                            @endif
-                            <div class="card-body">
-                                <h4 class="card-title trail-end">{{$compiled_featured_artifact->title}}</h4>
-                                <div class="card-text trail-end" style="line-height: 120%;">
-                                    <p class="mb-2"><b>{{$compiled_featured_artifact->author}}</b></p>
-                                    <small>{{isset($compiled_featured_artifact->consortia->short_name) ? $compiled_featured_artifact->consortia->short_name : '--'}}<br>           
-                                                {{$compiled_featured_artifact->content->type}} <br> </small>
-                                </div>
-                            </div>
-                            <a href="{{$compiled_featured_artifact->link != null ? $compiled_featured_artifact->link : '/search?search='.$compiled_featured_artifact->title.'#search-anchor'}}" target="_blank" class="stretched-link"></a>
+            @foreach($compiled_artifacts as $artifact)
+                <div class="col-sm-4 tech-card-container">
+                    <div class="card front-card h-auto shadow rounded">
+                        @if($artifact->imglink == null)
+                        <div class="card-img-top center-vertically px-3 tech-card-color" style="height:200px">
+                            <span class="font-weight-bold" style="font-size: 17px;line-height: 1.5em;color: #2b2b2b;">
+                                {{$artifact->title}}
+                            </span>
                         </div>
-                    </div>
-                @endforeach
-            @else
-                @foreach($recommended_artifacts_not_logged_in as $recommended_artifact_not_logged_in)
-                    <div class="col-sm-4 tech-card-container">
-                        <div class="card front-card h-auto shadow rounded">
-                            @if($recommended_artifact_not_logged_in->imglink == null)
-                            <div class="card-img-top center-vertically px-3 tech-card-color" style="height:200px">
-                                <span class="font-weight-bold" style="font-size: 17px;line-height: 1.5em;color: #2b2b2b;">
-                                    {{$recommended_artifact_not_logged_in->title}}
-                                </span>
+                        @else
+                        <img src="{{$artifact->imglink}}" class="card-img-top" height="175" style="object-fit: cover;">
+                        @endif
+                        <div class="card-body">
+                            <h4 class="card-title trail-end">{{$artifact->title}}</h4>
+                            <div class="card-text trail-end" style="line-height: 120%;">
+                                <p class="mb-2"><b>{{$artifact->author}}</b></p>
+                                <small>{{isset($artifact->consortia->short_name) ? $artifact->consortia->short_name : '--'}}<br>           
+                                            {{$artifact->content->type}} <br> 
+                                        </small>
                             </div>
-                            @else
-                            <img src="{{$recommended_artifact_not_logged_in->imglink}}" class="card-img-top" height="200" style="object-fit: cover;">
-                            @endif
-                            <div class="card-body">
-                                <h4 class="card-title trail-end">{{$recommended_artifact_not_logged_in->title}}</h4>
-                                <div class="card-text trail-end" style="line-height: 120%;">
-                                    <p class="mb-2"><b>{{$recommended_artifact_not_logged_in->author}}</b></p>
-                                    <small>{{isset($recommended_artifact_not_logged_in->consortia->short_name) ? $recommended_artifact_not_logged_in->consortia->short_name : '--'}}<br>           
-                                                {{isset($recommended_artifact_not_logged_in->content->type) ? $recommended_artifact_not_logged_in->content->type : '--'}} <br> </small>
-                                </div>
-                            </div>
-                            <a href="{{$recommended_artifact_not_logged_in->link != null ? $recommended_artifact_not_logged_in->link : '/search?search='.$recommended_artifact_not_logged_in->title.'#search-anchor'}}" target="_blank" class="stretched-link"></a>
                         </div>
+                        <a href="{{$artifact->link != null ? $artifact->link : '/search?search='.$artifact->title.'#search-anchor'}}" target="_blank" class="stretched-link"></a>
                     </div>
-                @endforeach
-            @endif
+                </div>
+            @endforeach
         </div>
         @if(request()->edit == 1)
             <div class="hover-overlay" style="width:100%">    
