@@ -1,17 +1,31 @@
 @component('mail::message')
-# Initial set of Newsletter for new subsciber.
+# EMAIL VERIFICATION SUCCESSFUL!
 
-Here are some of our latest publication that are inline with your interests: <br>
+@component('mail::panel')
+You can now check the latest updates about AANR-related S&T outputs from different Philippine research institutions, agencies, and state colleges within this knowledge management portal. 
+@component('mail::button2', ['url' => config('app.url').'/about'])
+About Us
+@endcomponent
+<br><br>
+<p>You are now also registered in our community portal.</p>
+<br>
+@component('mail::button2', ['url' => 'http://community.aanr.ph/moLogin']) 
+Community
+@endcomponent
+@endcomponent
+
+# ALSO, THANK YOU FOR SUBSCRIBING!
+
+### Here are some of our latest publication that are inline with your interests: 
 
 @component('mail::panel')
 @foreach($details as $key=>$value)
-## {{$value}} 
-@component('mail::button', ['url' => config('app.url').'/dashboard/manage/content/'.$key.'/view']) 
-Check this article
+@component('mail::button', ['url' => config('app.url').'/dashboard/manage/content/'.$key.'/view', 'title' => $value]) 
+view
 @endcomponent
 
 @endforeach
 @endcomponent
-Thanks,<br>
-{{ config('app.name') }}
+{{-- Thanks,<br>
+{{ config('app.name') }} --}}
 @endcomponent

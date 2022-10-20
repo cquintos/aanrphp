@@ -179,4 +179,12 @@ class UsersController extends Controller
 
         return redirect()->back()->with('success','User Account Deleted.');
     }
+
+    public function unsubscribeUser() {
+        $user = auth()->user();
+        $user->subscribed = 0;
+        $user->save();
+
+        return redirect('/')->with('success','Unsubscription Success.');
+    }
 }

@@ -2,13 +2,17 @@
 # Email confirmation successful!
 
 @component('mail::panel')
-You can now check the latest updates about AANR-related S&T outputs from different Philipine research institutions, agencies, and state colleges within this knowledge management portal. 
-@endcomponent
-
-@component('mail::button', ['url' => config('app.url').'/about'])
+You can now check the latest updates about AANR-related S&T outputs from different Philippine research institutions, agencies, and state colleges within this knowledge management portal. 
+@component('mail::button2', ['url' => config('app.url').'/about'])
 About Us
 @endcomponent
-
-Thanks,<br>
-{{ config('app.name') }}
+<br><br>
+<p>You are now also registered in our community portal.</p>
+<br>
+@component('mail::button2', ['url' => 'http://community.aanr.ph/moLogin']) 
+Community
+@endcomponent
+@endcomponent
+{{-- Thanks,<br>
+{{ config('app.name') }} --}}
 @endcomponent

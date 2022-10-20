@@ -2,6 +2,8 @@
 use Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
+use App\Jobs\QuarterlyMailJob;
+use Illuminate\Auth\Events\Verified;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +26,11 @@ Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
 Route::get('community', 'PagesController@communityPage')->name('goToCommunity');
 
 // Route::get('/test', function(){
-//     event(new Registered(auth()->user()));
+//     event(new Verified(auth()->user()));
+//     // new QuarterlyMailJob();
+
 // });
+
 Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
 Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
 Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
@@ -33,7 +38,11 @@ Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFil
 Route::group(['middleware' => ['auth']], function() {
     //only verified account can access with this group
     Route::group(['middleware' => ['verified']], function() {
+        Route::get('/unsubscribe', 'UsersController@unsubscribeUser')->name('unsubUser');
+        
         //LandingPageController
+
+
 
         Route::get('search', 'PagesController@search')->name('search');
         Route::get('unit/about', 'PagesController@unitAboutPage')->name('unitAboutPage');
