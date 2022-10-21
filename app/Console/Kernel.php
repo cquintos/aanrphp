@@ -5,6 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\QuarterlyMailJob;
+use App\Jobs\UnverifiedUserDeleteJob;
 use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
@@ -32,7 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new QuarterlyMailJob)->quarterly();
         // $schedule->job(new QuarterlyMailJob)->everyThirtyMinutes();
         // $schedule->job(new QuarterlyMailJob)->everyMinute();
-
+        $schedule->job(new UnverifiedUserDeleteJob)->daily();
     }
 
     /**
