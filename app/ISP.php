@@ -13,12 +13,7 @@ class ISP extends Model
     {
         return $this->belongsTo('App\Sector');
     }
-
-    public function commodities()
-    {
-        return $this->hasMany('App\Commodity', 'isp_id');
-    }
-
+    
     public function artifacts()
     {
         return $this->belongsToMany('App\ArtifactAANR', 'artifactaanr_isp', 'artifactaanr_id', 'isp_id');

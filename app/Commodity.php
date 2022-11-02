@@ -9,13 +9,13 @@ class Commodity extends Model
 {
     use HasFactory;
 
-    public function isp()
-    {
-        return $this->belongsTo('App\ISP', 'isp_id');
-    }
-
     public function artifacts()
     {
         return $this->belongsToMany('App\ArtifactAANR', 'artifactaanr_commodity');
+    }
+
+    public function subtypes()
+    {
+        return $this->hasMany(CommoditySubtype::class);
     }
 }

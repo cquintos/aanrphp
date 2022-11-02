@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Commodity;
 use App\Log;
+use App\CommoditySubtype;
 
 // This file contains request handling logic for Commodities.
 // functions included are:
@@ -19,103 +20,167 @@ use App\Log;
 //
 // all changes are logged in a new Log object
 
+
 class CommoditiesController extends Controller
 {
-    public function addCommodity(Request $request)
+    public function log($details) 
+    {
+        $log = new log ();
+        $log->user_id = $details[0];
+        $log->user_email = $details[1];
+        $log->changes = $details[2];
+        $log->action = $details[3];
+        $log->IP_address = $details[4];
+        $log->resource = $details[5];
+        $log->save();
+    }
+
+    public function add(Request $request)
     {
         $this->validate($request, array(
             'name' => 'required|max:100',
         ));
 
-
-        $user = auth()->user();
-        $temp_changes = '';
-        $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $commodity = new Commodity();
-            $commodity->name = $request->name;
-            $commodity->isp_id = $request->isp;
-            $commodity->description = $request->description;
-            $commodity->save();
-
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = '<strong>Added </strong>\''. $commodity->name.'\' <strong>to commodities</strong>';
-            $log->action = 'Added \''. $commodity->name.'\' to commodities';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Commodities';
-            $log->save();
-
-            return redirect()->back()->with('success', 'Commodity Added.');
+        if(Commodity::where('name', $request->name)->first() != null) {
+            return redirect()->back()->with('error', 'Commodity name already taken.');
         }
+        
+        if($request->subtypes != null) {
+            foreach($request->subtypes as $var){
+                if( CommoditySubtype::where('name', $var)->first() != null ) {
+                    return redirect()->back()->with('error', 'Subcommodity already under a commodity.');
+                }
+            }
+        }
+
+        $commodity = new Commodity();
+        $commodity->name = ucwords($request->name);
+        $temp_changes = '<strong>Added </strong>\''. $commodity->name.'\' <strong>to commodities</strong><br>';
+        $user = auth()->user();
+        $commodity->description = $request->description;
+        $commodity->save();
+        $id = Commodity::where('name', $request->name)->first()->id;
+
+        foreach($request->subtypes as $var){
+            $temp_changes = $temp_changes.'<strong>Added Subtype:</strong> '.$var.'<br>';
+            $subtype = new CommoditySubtype();
+            $subtype->name = $var;
+            $subtype->commodity_id = $id;
+            $subtype->save();
+        }
+
+        $this->log([
+            $user->id, 
+            $user->email, 
+            $temp_changes,
+            'Added \''. $commodity->name.'\' to commodities',
+            $request->ip(), 
+            'Commodities'
+        ]);
+
+        return redirect()->back()->with('success', 'Commodity Added.');
     }
 
-    public function editCommodity(Request $request, $commodity_id)
+    public function edit(Request $request, $commodity_id)
     {
         $this->validate($request, array(
             'name' => 'required|max:100',
         ));
 
+        if(Commodity::where('name', $request->name)->where('id', '!=', $commodity_id)->first() != null) {
+            return redirect()->back()->with('error', 'Commodity name already taken.');
+        }
+
         $user = auth()->user();
         $temp_changes = '';
-        $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $commodity = Commodity::find($commodity_id);
-
-            if ($commodity->name != $request->name) {
-                $temp_changes = $temp_changes.'<strong>Name:</strong> '.$commodity->name.' <strong>-></strong> '.$request->name.'<br>';
-            }
-            if ($commodity->isp_id != $request->isp_id) {
-                $temp_changes = $temp_changes.'<strong>ISP ID:</strong> '.$commodity->isp_id.' <strong>-></strong> '.$request->isp.'<br>';
-            }
-            if ($commodity->description != $request->description) {
-                $temp_changes = $temp_changes.'<strong>Description:</strong> '.$commodity->description.' <strong>-></strong> '.$request->description.'<br>';
-            }
-
-            $commodity->name = $request->name;
-            $commodity->isp_id = $request->isp;
-            $commodity->description = $request->description;
-            $commodity->save();
-
-
-
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = $temp_changes;
-            $log->action = 'Edited \''. $commodity->name.'\' details';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Commodities';
-            $log->save();
-
-            return redirect()->back()->with('success', 'Commodity Updated.');
+        $commodity = Commodity::findOrFail($commodity_id);
+        
+        if ($commodity->name != $request->name) {
+            $temp_changes = $temp_changes.'<strong>Name:</strong> '.$commodity->name.' <strong>-></strong> '.$request->name.'<br>';
+            $commodity->name = ucwords($request->name);
         }
+
+        if ($commodity->isp_id != $request->isp_id) {
+            $commodity->isp_id = $request->isp;
+            $temp_changes = $temp_changes.'<strong>ISP ID:</strong> '.$commodity->isp_id.' <strong>-></strong> '.$request->isp.'<br>';
+        }
+
+        if ($commodity->description != $request->description) {
+            $commodity->description = $request->description;
+            $temp_changes = $temp_changes.'<strong>Description:</strong> '.$commodity->description.' <strong>-></strong> '.$request->description.'<br>';
+        }
+
+        if($request->subtypes == null) {
+            foreach($commodity->subtypes->all() as $var) {
+                CommoditySubtype::find($var->id)->delete();
+                $temp_changes = $temp_changes.'<strong>Deleted Subtype:</strong> '.$var->name.'<br>';
+            }
+        }
+
+        if($request->subtypes != null) {
+            foreach($request->subtypes as $var){
+                if( CommoditySubtype::where('name', $var)->where('commodity_id', '!=', $commodity_id)->first() != null ) {
+                    return redirect()->back()->with('error', 'Subcommodity already under a commodity.');
+                }
+            }
+
+            foreach($request->subtypes as $var) {
+                if( CommoditySubtype::where('name', $var)->first() == null ) {
+                    CommoditySubtype::create([
+                        'commodity_id' => $commodity_id,
+                        'name' => $var,
+                    ]);
+                    $temp_changes = $temp_changes.'<strong>Added Subtype:</strong> '.$var.'<br>';
+                }
+            }
+            
+            foreach($commodity->subtypes->all() as $var) {
+                if(!in_array($var->name, $request->subtypes)) {
+                    CommoditySubtype::find($var->id)->delete();
+                    $temp_changes = $temp_changes.'<strong>Deleted Subtype:</strong> '.$var->name.'<br>';
+                }
+            }
+        }
+            
+        $commodity->save();
+
+        $this->log([
+            $user->id,
+            $user->email,
+            $temp_changes,
+            'Edited \''. $commodity->name.'\' details',
+            $request->ip(),
+            'Commodities'
+        ]);
+        
+        return redirect()->back()->with('success', 'Commodity Updated.');
     }
 
-    public function deleteCommodity($commodity_id, Request $request)
+    public function delete($commodity_id, Request $request)
     {
         $user = auth()->user();
-        $temp_changes = '';
-        $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $commodity = Commodity::find($commodity_id);
-            $deletedName = $commodity->name;
-            $commodity->delete();
+        $commodity = Commodity::findOrFail($commodity_id);
+        $commodity->delete();
 
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = '<strong>Deleted </strong>\''. $deletedName;
-            $log->action = 'Deleted \''. $deletedName.'\'';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Commodities';
-            $log->save();
+        $this->log([
+            $user->id,
+            $user->email,
+            '<strong>Deleted </strong>\''. $commodity->name,
+            'Deleted \''. $commodity->name.'\'',
+            $request->ip(),
+            'Commodities'
+        ]);
+        
+        return redirect()->back()->with('success', 'Commodity Deleted.');
+    }
 
-            return redirect()->back()->with('success', 'Commodity Deleted.');
-        }
+    public function editPage()
+    {
+        return view('pages.commodityEdit');
+    }
+
+    public function addPage()
+    {
+        return view('pages.commodityAdd');
     }
 }
