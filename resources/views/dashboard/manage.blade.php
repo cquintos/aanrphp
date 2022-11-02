@@ -517,7 +517,7 @@
                                     <h2 class="text-primary" >
                                         Commodities
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createCommodityModal"><i class="fas fa-plus"></i> Add Commoddity</button>
+                                        <a class="btn btn-default" class="btn btn-default" href="/dashboard/manage/commodity/add" role="button"><i class="fas fa-plus"></i> Add Commodity</a>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -526,7 +526,7 @@
                                                 <tr>
                                                     <th width="5%">ID</th>
                                                     <th width="60%">Name</th>
-                                                    <th width="25%">ISP</th>
+                                                    <th width="25%">Sub-commodity</th>
                                                     <th width="10%">Action</th>
                                                 </tr>
                                             </thead>
@@ -535,10 +535,18 @@
                                                     <tr>
                                                         <td>{{$commodity->id}}</td>
                                                         <td>{{$commodity->name}}</td>
-                                                        <td>{{$commodity->isp_id != null ? $commodity->isp->name : '-'}}</td>
                                                         <td>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCommodityModal-{{$commodity->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteCommodityModal-{{$commodity->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                            <ul>
+                                                                @forelse($commodity->subtypes->all() as $entry)
+                                                                    <li> {{ucwords($entry->name)}} </li>
+                                                                @empty
+                                                                    -
+                                                                @endforelse
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-default" href="/dashboard/manage/commodity/{{$commodity->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteCommodityModal-{{$commodity->id}}"><i class="fas fa-trash"></i> Delete Commodity</button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -764,7 +772,7 @@
                                                     <td>{{$artifact->date_published}}</td>
                                                     <td>{{$artifact->author}}</td>
                                                     <td>
-                                                        <a class="btn btn-default" href="/dashboard/manage/content/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                        <a class="btn btn-default" href="dashboard/manage/commodity/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -866,6 +874,7 @@
                                                     <th width="40%">Content</th>
                                                     <th width="10%">Action</th>
                                                 </tr>
+                                                
                                             </thead>
                                             <tbody>
                                                 @foreach(App\ContentSubtype::all() as $content_subtype)
@@ -1864,5 +1873,9 @@
                 }
             });
         });
+
     </script>
+
+   
+
 @endsection

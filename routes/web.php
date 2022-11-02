@@ -30,20 +30,18 @@ Route::get('community', 'PagesController@communityPage')->name('goToCommunity');
 //     // new QuarterlyMailJob();
 
 // });
-
+// Route::get('admin/create', 'UsersController@createAdmin')->name('createAdmin');
 Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchAnalytics');
 Route::get('analytics/search/save', 'PagesController@saveAnalytics')->name('saveAnalytics');
 Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
 
 Route::group(['middleware' => ['auth']], function() {
-    //only verified account can access with this group
     Route::group(['middleware' => ['verified']], function() {
         Route::get('/unsubscribe', 'UsersController@unsubscribeUser')->name('unsubUser');
         
+
+
         //LandingPageController
-
-
-
         Route::get('search', 'PagesController@search')->name('search');
         Route::get('unit/about', 'PagesController@unitAboutPage')->name('unitAboutPage');
         Route::get('usefulLinks', 'PagesController@usefulLinks')->name('usefulLinks');
@@ -209,9 +207,11 @@ Route::group(['middleware' => ['auth']], function() {
         Route::delete('headlines/{id}/deleteSector', 'SectorsController@deleteSector')->name('deleteSector');
 
         //Commodity
-        Route::post('headlines/addCommodity', 'CommoditiesController@addCommodity')->name('addCommodity');
-        Route::post('headlines/{id}/editCommodity', 'CommoditiesController@editCommodity')->name('editCommodity');
-        Route::delete('headlines/{id}/deleteCommodity', 'CommoditiesController@deleteCommodity')->name('deleteCommodity');
+        Route::get('dashboard/manage/commodity/{id}/edit', 'CommoditiesController@editPage')->name('editCommodityPage');
+        Route::get('dashboard/manage/commodity/add', 'CommoditiesController@addPage')->name('addCommodityPage');
+        Route::post('headlines/addCommodity', 'CommoditiesController@add')->name('addCommodity');
+        Route::post('headlines/{id}/editCommodity', 'CommoditiesController@edit')->name('editCommodity');
+        Route::delete('headlines/{id}/deleteCommodity', 'CommoditiesController@delete')->name('deleteCommodity');
 
         //Subscriber
         Route::post('headlines/addSubscriber', 'SubscribersController@addSubscriber')->name('addSubscriber');
