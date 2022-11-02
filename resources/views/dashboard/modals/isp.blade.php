@@ -85,25 +85,12 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $ISP_comms = App\ISP::with('commodities')->find($isp->id); ?>
-                            @if($ISP_comms->commodities->count() > 0)
-                                You cannot delete: <b>{{$isp->name}}</b></br></br>
-                                The following commodities need to be deleted before deleting this isp:
-                                <ul>
-                                    @foreach($ISP_comms->commodities as $commodity)
-                                        <li>{{$commodity->name}}</li>
-                                    @endforeach
-                                </ul>
-                            @else
                                 Are you sure you want to delete: <b>{{$isp->name}}</b>?</br></br>
-                            @endif
                         </span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                        @if($ISP_comms->commodities->count() == 0)
                         <input class="btn btn-danger" type="submit" value="Yes, Delete">
-                        @endif
                     </div>
                     </form>
                 </div>
