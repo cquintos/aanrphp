@@ -12,7 +12,7 @@
     <div class="container-fluid">
         <div id="main" class="row" style="max-height:inherit; min-height:52.5rem">
 
-            <div class="col-xl-2 col-md-4 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
+            <div class="col-xl-2 col-lg-3 col-md-4 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
                 <div class="nav nav-tabs" style="border-bottom-width: 0px;">
                     <a class="list-group-item active" data-toggle="tab" href="#edit" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-database" style="margin-right:0.8rem"></i> Add Commodity</span>
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-md-8 pl-0 pr-0">
+            <div class="col-xl-7 col-lg-9 col-md-10 pl-0 pr-0">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="edit">
                         <div class="card shadow" style="margin-top:0px !important">
@@ -46,14 +46,14 @@
                                
                                 <div class="form-group row">
                                     
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-6">
                                         <h3>
                                         {{Form::label('name', 'Commodity Name', ['class' => 'col-form-label required'])}}
                                         </h3>
                                         {{Form::text('name', '', ['class' => 'form-control', 'placeholder' => 'Add a name'])}}
                                     </div>
                                     
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-6">
                                         <h3>
                                             {{Form::label('subcommodities', 'Sub-commodities', ['class' => 'col-form-label'])}}
                                         </h3>
@@ -72,7 +72,7 @@
                                
                                 <div class="form-group row">
 
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-6">
                                         <h3> {{Form::label('name', 'Add sub-commodity', ['class' => 'col-form-label'])}} </h3>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Sub-commodity name" name="new-commodity" id="new-commodity">
@@ -86,7 +86,7 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <div class="col-xl-5 col-md-10">
+                                    <div class="col-xl-6 col-md-12">
                                         <h3> {{ Form::label('description', 'Description', ['class' => 'col-form-label']) }} </h3>
                                         {{ Form::textarea('description', '', ['class' => 'form-control', 'placeholder' => 'Add a description']) }}
                                 </div>
@@ -116,18 +116,18 @@
         }
 
         .btn.active{
-            background-color: #52e991;
+            background-color: #7dc045;
         }
 
         .btn-outline-danger {
             color: rgb(20, 20, 90);
-            background-color: #52e991;
-            border-color: #52e991;
-            box-shadow: #52e991;
+            background-color: #7dc045;
+            border-color: #7dc045;
+            box-shadow: #7dc045;
         }
 
         .btn-success{
-            background-color: #52e991;
+            background-color: #7dc045;
             color: rgb(20, 20, 90);
         }
 
@@ -136,7 +136,7 @@
         }
 
         .card-header{
-            background-color: #52e991;
+            background-color: #7dc045;
             color: rgb(20, 20, 90);
         }
 
