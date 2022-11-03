@@ -51,6 +51,7 @@
     $metric_user = 'ga:users, ga:newUsers';
     $metric_session = 'ga:bounceRate, ga:avgSessionDuration, ga:pageviewsPerSession';
     $metric_search = 'ga:searchUniques';
+    $metric_visit = 'ga:sessions';
     $filters_search ='ga:searchUniques!=0';
 
     if(request()->withISP != null) {
@@ -74,6 +75,7 @@
     $prev_analytics_query_search_results = Analytics::performQuery($prevMonthPeriod, $metric_search, $dimensions_search);
     $analytics_query_user_results = Analytics::performQuery($period, $metric_user, $dimensions_date);
     $analytics_query_search_results = Analytics::performQuery($period, $metric_search, $dimensions_search);
+    $analytics_query_visits = Analytics::performQuery($period, $metric_visit, []);
 
     // TOTAL SEARCH USING GOOGLE ANALYTICS
     $prev_total_search = $prev_analytics_query_search_results->totalsForAllResults['ga:searchUniques'];
@@ -148,16 +150,6 @@
                                             ->take(6)
                                             ->get();
 
-       console_log($isp_content);                                     
-
-    function console_log($output, $with_script_tags=true) { 
-        $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
-        if ($with_script_tags) {
-            $js_code = '<script>' . $js_code . '</script>';
-        }
-        echo $js_code;
-    }
-
     if(request()->withISP != null) {    
         $total_content = $isp_content->count();
 
@@ -171,7 +163,6 @@
                             ->take(6)
                             ->get();
     }
-
 
     // TABLE FOR CONTENT TYPE AND COUNT
     $isp_content_type_array = array();
@@ -240,6 +231,9 @@
         ->groupBy('industry_id')
         ->orderBy('industry_id')
         ->get();
+
+    // VISITS
+    $period_visits = $analytics_query_visits['totalsForAllResults']['ga:sessions'];
 ?>
 
 <div class="container-fluid mb-5 px-5">
@@ -248,22 +242,27 @@
 
     <div class="row">
 
-        {{-- CALENDAR BOX --}}
+        {{-- NUMBER OF VISITS BOX --}}
+
         <div class="col-md-3 col-sm-12 d-flex align-items-stretch">
             <div class="card text-center" style="width:100%">
                 <div class="card-header" style="text-align:left; background-color:lightgray">
-                    <i class="fas fa-calendar-alt" aria-hidden="true" style="color: "></i> <b>DATE TODAY</b></h1>
+                    <i class="fas fa-users" aria-hidden="true" style="color: "></i> <b>NUMBER OF SITE VISITS</b></h1>
                 </div>
-                <div class="card-body" style="background-color: brown">
-                    <span style="font-size:4.5rem; color:white; line-height:1.25">
-                        <b>{{date('j')}} </b>
+                <div class="card-body" style="background-color: #7dc045">
+                    <span style="font-size:4.5rem; color:black; line-height:1.25">
+                        <b>{{$period_visits}} </b>
                     </span>
-                    <h3 class="text-white" style="">
-                        {{strtoupper(date('M'))}}
+                    <h3 class="text-black" style="font-size:20">
+                        @if(request()->from == null)
+                            <b>{{strtoupper(Carbon::parse($begin)->format('M d').' - '.Carbon::parse($end)->format('M d, Y'))}}</b>
+                        @else 
+                            <b>{{strtoupper(Carbon::parse(request()->from)->format('M d').' - '.Carbon::parse(request()->to)->format('M d, Y'))}}</b>
+                       @endif 
                     </h3>
                 </div>
                 <div class="card-footer" style="background-color: ">
-                    <b>{{strtoupper(date('l'))}}</b>
+                    <b>TODAY IS: {{strtoupper(date('M d Y'))}}</b>
 
                 </div>
             </div>
