@@ -61,14 +61,16 @@ class CommoditiesController extends Controller
         $commodity->save();
         $id = Commodity::where('name', $request->name)->first()->id;
 
-        foreach($request->subtypes as $var){
-            $temp_changes = $temp_changes.'<strong>Added Subtype:</strong> '.$var.'<br>';
-            $subtype = new CommoditySubtype();
-            $subtype->name = $var;
-            $subtype->commodity_id = $id;
-            $subtype->save();
+        if($request->subtypes != null) {
+            foreach($request->subtypes as $var){
+                $temp_changes = $temp_changes.'<strong>Added Subtype:</strong> '.$var.'<br>';
+                $subtype = new CommoditySubtype();
+                $subtype->name = $var;
+                $subtype->commodity_id = $id;
+                $subtype->save();
+            }
         }
-
+        
         $this->log([
             $user->id, 
             $user->email, 
