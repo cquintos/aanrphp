@@ -175,6 +175,13 @@
             }
         }
     }
+    function clog($output, $with_script_tags=true) { 
+    $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+        if ($with_script_tags) {
+            $js_code = '<script>' . $js_code . '</script>';
+        }
+        echo $js_code;
+}
 
     // *NOT SHOWN IF WITH ISP FILTER*
     //  COMMODITIES WITH THE MOST VIEWS
@@ -182,6 +189,9 @@
     $commodity_views_freq_array[0] = array();
     $commodity_views_freq_array[1] = array();
     foreach(App\CommodityViews::select('id_commodity', DB::raw('count(*) as total'))->groupBy('id_commodity')->orderByDesc('total')->take(5)->get() as $item){
+        if(App\Commodity::find($item->id_commodity) == null) {
+            continue;
+        }
         array_push($commodity_views_freq_array[0], App\Commodity::find($item->id_commodity)->name);
         array_push($commodity_views_freq_array[1], $item->total);
     }
@@ -192,6 +202,9 @@
     $isp_views_freq_array[0] = array();
     $isp_views_freq_array[1] = array();
     foreach(App\ISPViews::select('id_isp', DB::raw('count(*) as total'))->groupBy('id_isp')->orderByDesc('total')->take(5)->get() as $item){
+        if(App\ISPViews::find($item->id_isp) == null) {
+            continue;
+        }
         array_push($isp_views_freq_array[0], App\ISP::find($item->id_isp)->name);
         array_push($isp_views_freq_array[1], $item->total);
     }
