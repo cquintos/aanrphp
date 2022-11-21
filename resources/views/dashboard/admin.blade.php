@@ -742,8 +742,7 @@
                                     <h2 class="text-primary" >
                                         AANR Artifacts
                                     <span class="float-right">
-                                        {{-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createArtifactModal"><i class="fas fa-plus"></i> Add Artifacts</button> --}}
-                                        <button type="button" class="btn btn-success" href="{{ route('artifactUpload') }}"><i class="fas fa-plus"></i> <b>Upload Artifact</b></button>
+                                        <a class="btn btn-success" href="{{ route('artifactUpload') }}" role="button"><i class="fas fa-plus"></i> Upload Artifact</a>
                                         <input type="submit" class="btn btn-danger" value="Delete Checked">
                                     </span>
                                     </h2>
