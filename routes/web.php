@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('headlines/{id}/editPCAARRDPageDetails', 'PCAARRDPageController@editPCAARRDPageDetails')->name('editPCAARRDPageDetails');
 
         //Dashboard
-        Route::get('dashboard/manage', 'PagesController@dashboardManage')->name('dashboardManage');
+        Route::get('dashboard/admin', 'PagesController@dashboardAdmin')->name('dashboardAdmin');
 
         //Headlines
         Route::post('headlines/addHeadline', 'HeadlinesController@addHeadline')->name('addHeadline');
@@ -166,16 +166,22 @@ Route::group(['middleware' => ['auth']], function() {
 
         //ArtifactAANR
         Route::post('headlines/addArtifact', 'ArtifactAANRController@addArtifact')->name('addArtifact');
+        Route::post('headlines/uploadArtifact', 'ArtifactAANRController@uploadArtifact')->name('uploadArtifact');
+
         Route::post('headlines/addView', 'ArtifactAANRController@addView')->name('addView');
         Route::post('headlines/{id}/editArtifact', 'ArtifactAANRController@editArtifact')->name('editArtifact');
         Route::delete('headlines/deleteArtifact', 'ArtifactAANRController@deleteArtifact')->name('deleteArtifact');
         Route::delete('headlines/{id}/deleteSingleArtifact', 'ArtifactAANRController@deleteSingleArtifact')->name('deleteSingleArtifact');
         Route::post('headlines/uploadPDFArtifact', 'ArtifactAANRController@uploadPDFArtifact')->name('uploadPDFArtifact');
-        Route::post('dashboard/manage/fetchConsortiaMemberDependent', 'ArtifactAANRController@fetchConsortiaMemberDependent')->name('fetchConsortiaMemberDependent');
-        Route::post('dashboard/manage/fetchContentSubtypeDependent', 'ArtifactAANRController@fetchContentSubtypeDependent')->name('fetchContentSubtypeDependent');
-        Route::post('dashboard/manage/fetchCommodityDependent', 'ArtifactAANRController@fetchCommodityDependent')->name('fetchCommodityDependent');
-        Route::get('dashboard/manage/content/{id}/edit', 'PagesController@contentEdit')->name('contentEdit');
-        Route::get('dashboard/manage/content/{id}/view', 'PagesController@contentView')->name('contentView');
+        Route::post('dashboard/admin/fetchConsortiaMemberDependent', 'ArtifactAANRController@fetchConsortiaMemberDependent')->name('fetchConsortiaMemberDependent');
+        Route::post('dashboard/admin/fetchContentSubtypeDependent', 'ArtifactAANRController@fetchContentSubtypeDependent')->name('fetchContentSubtypeDependent');
+        Route::post('dashboard/admin/fetchCommodityDependent', 'ArtifactAANRController@fetchCommodityDependent')->name('fetchCommodityDependent');
+        Route::get('dashboard/admin/fetchCommoditySubtypeDependent', 'ArtifactAANRController@fetchCommoditySubtypeDependent')->name('fetchCommoditySubtypeDependent');
+        
+        Route::get('dashboard/admin/artifact/{id}/edit', 'PagesController@artifactEdit')->name('artifactEdit');
+        Route::get('dashboard/admin/artifact/{id}/view', 'PagesController@artifactView')->name('artifactView');
+        Route::get('dashboard/admin/artifact/upload', 'PagesController@artifactUpload')->name('artifactUpload');
+        
         Route::post('headlines/createArtifactViewLog', 'ArtifactAANRViewsController@createArtifactViewLog')->name('createArtifactViewLog');
         Route::post('headlines/createISPViewLog', 'ISPViewsController@createISPViewLog')->name('createISPViewLog');
         Route::post('headlines/createCommodityViewLog', 'CommodityViewsController@createCommodityViewLog')->name('createCommodityViewLog');
@@ -207,8 +213,8 @@ Route::group(['middleware' => ['auth']], function() {
         Route::delete('headlines/{id}/deleteSector', 'SectorsController@deleteSector')->name('deleteSector');
 
         //Commodity
-        Route::get('dashboard/manage/commodity/{id}/edit', 'CommoditiesController@editPage')->name('editCommodityPage');
-        Route::get('dashboard/manage/commodity/add', 'CommoditiesController@addPage')->name('addCommodityPage');
+        Route::get('dashboard/admin/commodity/{id}/edit', 'CommoditiesController@editPage')->name('editCommodityPage');
+        Route::get('dashboard/admin/commodity/add', 'CommoditiesController@addPage')->name('addCommodityPage');
         Route::post('headlines/addCommodity', 'CommoditiesController@add')->name('addCommodity');
         Route::post('headlines/{id}/editCommodity', 'CommoditiesController@edit')->name('editCommodity');
         Route::delete('headlines/{id}/deleteCommodity', 'CommoditiesController@delete')->name('deleteCommodity');

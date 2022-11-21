@@ -1,25 +1,13 @@
 @extends('layouts.app')
-@section('title', 'Edit Artifact')
+@section('title', 'Upload Artifact')
 @section('breadcrumb')
     <ol class="breadcrumb pb-0" style="background-color:transparent">
         <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">KM4AANR</a></li>
         <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}">Admin Dashboard</a></li>
         <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}?asset=Artifacts">Artifact</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        <li class="breadcrumb-item active" aria-current="page">Upload</li>
     </ol>
 @endsection
-
-<?php
-    use Illuminate\Support\Collection;
-
-    $commodity_subtypes = new Collection();
-
-    foreach($artifact->commodities as $entry) {
-        $commodity_subtypes = $commodity_subtypes->mergeRecursive($entry->subtypes->pluck('id', 'name'));
-    }
-
-    $commodity_subtypes = array_combine($commodity_subtypes->values()->toArray(), $commodity_subtypes->keys()->toArray());
-?>
 
 @section('content')
     <!-- Modal Includes -->
@@ -41,10 +29,10 @@
                     <div class="tab-pane fade show active">
                         <div class="card shadow-lg my-4">
                             <div class="card-header px-5 pt-2">
-                                <span class="title">EDIT ARTIFACT</span>
+                                <span class="title">UPLOAD ARTIFACT</span>
                             </div>
                             <div class="card-body">
-                                {{ Form::open(['action' => ['ArtifactAANRController@editArtifact', $artifact->id], 'id' => 'info_table', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
+                                {{ Form::open(['action' => ['ArtifactAANRController@uploadArtifact'], 'id' => 'info_table', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
                                 <div class="form-group row d-flex justify-content-around">
                                     <div class="col-sm-12">
                                         <h3 class="mt-3 mb-2 font-weight-bold">Basic Information</h3>
@@ -52,27 +40,27 @@
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('consortia', 'Consortia', ['class' => 'col-form-label required'])}}</h5>
-                                            {{Form::select('consortia', $artifact->consortia->pluck('short_name', 'id'), $artifact->consortia_id,['id' => 'consortia', 'class' => 'dynamic_consortia_member form-control', 'placeholder' => 'Select Consortia']) }}
+                                            {{Form::select('consortia', $consortia, null,['id' => 'consortia', 'class' => 'dynamic_consortia_member form-control', 'placeholder' => 'Select Consortia']) }}
                                         </select> 
                                         <h5>{{Form::label('consortia_member', 'SUC/Unit/Institution', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::select('consortia_member', $artifact->consortia->consortia_members->pluck('name', 'id'), $artifact->consortia_member_id,['id' => 'consortia-member-edit', 'class' => 'form-control', 'placeholder' => 'Select Consortia Member']) }}
+                                            {{Form::select('consortia_member', [], null,['id' => 'consortia-member-edit', 'class' => 'form-control', 'placeholder' => 'Select Consortia Member']) }}
                                         <br><br>
                                             <div class="dropdown-divider mb-3"></div>
                                         <br>
                                         <h5>{{Form::label('title', 'Content Title', ['class' => 'col-form-label required'])}}</h5>
-                                            {{Form::text('title', $artifact->title, ['class' => 'form-control', 'placeholder' => 'Add a title', 'maxlength' => 200])}}
+                                            {{Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'Add a title', 'maxlength' => 200])}}
                                         <h5>{{Form::label('author', 'Author', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('author', $artifact->author, ['class' => 'form-control', 'placeholder' => 'e.g. Mae Santos', 'maxlength' => 200])}}
+                                            {{Form::text('author', null, ['class' => 'form-control', 'placeholder' => 'e.g. Mae Santos', 'maxlength' => 200])}}
                                         <h5>{{Form::label('author_affiliation', 'Author Affilitation', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('author_affiliation', $artifact->author_affiliation, ['class' => 'form-control', 'placeholder' => 'e.g. DOST-PCAARRD S&T Media Service', 'maxlength' => 200])}}
+                                            {{Form::text('author_affiliation', null, ['class' => 'form-control', 'placeholder' => 'e.g. DOST-PCAARRD S&T Media Service', 'maxlength' => 200])}}
                                         <h5>{{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::date('date_published', $artifact->date_published,['class' => 'form-control']) }}
+                                            {{Form::date('date_published', null,['class' => 'form-control']) }}
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}</h5>
-                                            {{Form::select('content', $content, $artifact->content_id,['class' => 'dynamic_content_subtype form-control', 'placeholder' => 'Select Content Type']) }}
+                                            {{Form::select('content', $content, null,['class' => 'dynamic_content_subtype form-control', 'placeholder' => 'Select Content Type']) }}
                                         <h5>{{Form::label('content_subtype', 'Subcontent Type', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::select('content_subtype', $artifact->content->content_subtypes->pluck('name', 'id'), $artifact->contentsubtype_id,['id' => 'content-subtype-edit', 'class' => 'form-control', 'placeholder' => 'Select Content Subtype']) }}
+                                            {{Form::select('content_subtype', [], null,['id' => 'content-subtype-edit', 'class' => 'form-control', 'placeholder' => 'Select Content Subtype']) }}
                                         <br><br>
                                             <div class="dropdown-divider mb-3"></div>
                                         <br>
@@ -81,17 +69,17 @@
                                         <h5>{{Form::label('commodity', 'Commodities', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::select('commodities[]', $commodities, null, ['class' => 'form-control multi-commodity-edit w-100', 'multiple' => 'multiple'])}}
                                         <h5>{{Form::label('commodity_subtype', 'Commodity Subtype', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::select('commodity_subtypes[]', $commodity_subtypes, null, ['class' => 'form-control multi-subcommodity-edit w-100', 'multiple' => 'multiple'])}}
+                                            {{Form::select('commodity_subtypes[]', [], null, ['class' => 'form-control multi-subcommodity-edit w-100', 'multiple' => 'multiple'])}}
                                         <h5>{{Form::label('is_gad', 'GAD Focus?', ['class' => 'col-form-label mb-1'])}}</h5>
-                                        <label class="mr-2 radio-inline"><input type="radio" name="is_gad" value="1" {{$artifact->is_gad == 1 ? 'checked': ''}}> Yes</label>
-                                        <label class="mx-2 radio-inline"><input type="radio" name="is_gad" value="0" {{$artifact->is_gad == 0 ? 'checked': ''}}> No</label>
+                                        <label class="mr-2 radio-inline"><input type="radio" name="is_gad" value="1"> Yes</label>
+                                        <label class="mx-2 radio-inline"><input type="radio" name="is_gad" value="0"> No</label>
                                     </div>
                                     <div class="col-sm-11">
                                         <br>
                                         <div class="dropdown-divider col-sm-12 mt-3" id="file_and_links"></div>
                                         <br>
                                         <h5>{{Form::label('description', 'Description', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::textarea('description', $artifact->description, ['id'=>'description_box', 'class' => 'form-control', 'placeholder' => 'Add a description', 'maxlength' => 2000])}}
+                                            {{Form::textarea('description', null, ['id'=>'description_box', 'class' => 'form-control', 'placeholder' => 'Add a description', 'maxlength' => 2000])}}
                                     </div>
                                 </div>
                                 <div class="form-group row d-flex justify-content-aroundd-flex justify-content-around">
@@ -100,21 +88,21 @@
                                         <div class="dropdown-divider mb-3"></div>
                                     </div>
                                     <div class="col-sm-5">
-                                        @if($artifact->file)
+                                        {{-- @if($artifact->file)
                                             <h5>PDF Preview</h5>
                                             <iframe src="{{$artifact->file_type == 'pdf_link' ? $artifact->file : asset('/storage/files/' . $artifact->file)}}"></iframe>
-                                        @endif
+                                        @endif --}}
                                         <h5>{{Form::label('file', 'File Upload (PDF, JPEG, PNG)', ['class' => 'col-form-label'])}}</h5>
                                             {{ Form::file('file', ['class' => 'form-control mb-3 pt-1'])}}
                                     </div>
                                     <div class="col-sm-5">
-                                        @if($artifact->embed_link)
+                                        {{-- @if($artifact->embed_link)
                                             <h5>Embed Link Preview</h5><iframe src="{{$artifact->embed_link}}"></iframe>
-                                        @endif
+                                        @endif --}}
                                         <h5>{{Form::label('link', 'Redirect Link', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('link', $artifact->link, ['class' => 'form-control mb-3 pt-1', 'placeholder' => 'Add an external link to redirect to'])}}
+                                            {{Form::text('link', null, ['class' => 'form-control mb-3 pt-1', 'placeholder' => 'Add an external link to redirect to'])}}
                                         <h5>{{Form::label('embed_link', 'Embed Link', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('embed_link', $artifact->embed_link, ['class' => 'form-control', 'placeholder' => 'Add a link to embed to the content modal'])}}
+                                            {{Form::text('embed_link', null, ['class' => 'form-control', 'placeholder' => 'Add a link to embed to the content modal'])}}
                                     </div>
                                 </div>
                                 <div class="form-group row d-flex justify-content-around" id="keywords">
@@ -124,7 +112,7 @@
                                     </div>
                                     <div class="col-sm-11">
                                         <h5>{{Form::label('keywords', 'Search keywords', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('keywords', $artifact->keywords, ['class' => 'form-control', 'placeholder' => 'Separate keywords with commas (,)'])}}
+                                            {{Form::text('keywords', null, ['class' => 'form-control', 'placeholder' => 'Separate keywords with commas (,)'])}}
                                     </div>
                                 </div>
                                 <div class="col-sm-12 card-footer row d-flex justify-content-around px-0">
@@ -384,15 +372,15 @@
         
         $('.multi-commodity-edit').select2({
             placeholder: " Select commodity"
-        }).val({!! json_encode($artifact->commodities()->allRelatedIds()) !!}).trigger('change');
+        })
 
         $('.multi-isp-edit').select2({
             placeholder: " Select ISP"
-        }).val({!! json_encode($artifact->isp()->allRelatedIds()) !!}).trigger('change');
+        })
 
         $('.multi-subcommodity-edit').select2({
             placeholder: " Select sub commodities"
-        }).val({!! json_encode($artifact->commodity_subtypes()->allRelatedIds()) !!}).trigger('change')
+        })
 
         $('.multi-commodity-edit').change(function(){
             $ids = $('.multi-commodity-edit').val();

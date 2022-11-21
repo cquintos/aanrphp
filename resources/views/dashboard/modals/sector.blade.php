@@ -30,7 +30,7 @@
     </div>
 <!-- end of modal for create sector -->
 
-@foreach(App\Sector::all() as $sector)
+@foreach($sectors as $sector)
     <!-- edit sector -->
         <div class="modal fade" id="editSectorModal-{{$sector->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -77,12 +77,12 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $sectors = App\Sector::with('isps')->find($sector->id); ?>
-                            @if($sectors->isps->count() > 0)
+                            <?php $sector_with_isp = App\Sector::with('isps')->find($sector->id); ?>
+                            @if($sector_with_isp->isps->count() > 0)
                                 You cannot delete: <b>{{$sector->name}}</b></br></br>
                                 The following commodities needs to be deleted before deleting this sector:
                                 <ul>
-                                    @foreach($sectors->isps as $isp)
+                                    @foreach($sector_with_isp->isps as $isp)
                                         <li>{{$isp->name}}</li>
                                     @endforeach
                                 </ul>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                        @if($sectors->isps->count() == 0)
+                        @if($sector_with_isp->isps->count() == 0)
                         <input class="btn btn-danger" type="submit" value="Yes, Delete">
                         @endif
                     </div>

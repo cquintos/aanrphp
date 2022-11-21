@@ -14,10 +14,8 @@ class AddCommodityIdForeignToCommoditySubtypes extends Migration
     public function up()
     {
         Schema::table('commodity_subtypes', function (Blueprint $table) {
-            $table->foreignId('commodity_id')
-                    ->constrained('commodities')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
+            $table->unsignedBigInteger('commodity_id')->index()->nullable();
+            $table->foreign('commodity_id')->references('id')->on('commodities')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

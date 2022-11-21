@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}
-                        {{Form::select('content', $content, '',['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
+                        {{Form::select('content', $contents, '',['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
                     </div>
                     <div class="form-group">
                         {{Form::label('name', 'Content Subtype Name', ['class' => 'col-form-label'])}}
@@ -30,7 +30,7 @@
     </div>
 <!-- end of modal for create content -->
 
-@foreach(App\ContentSubtype::all() as $content_subtype)
+@foreach($content_subtypes as $content_subtype)
     <!-- edit content -->
         <div class="modal fade" id="editContentSubtypeModal-{{$content_subtype->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -45,7 +45,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             {{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}
-                            {{Form::select('content', $content, $content_subtype->content_id,['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
+                            {{Form::select('content', $contents, $content_subtype->content_id,['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
                         </div>
                         <div class="form-group">
                             {{Form::label('name', 'Content Subtype Name', ['class' => 'col-form-label'])}}

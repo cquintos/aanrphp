@@ -10,7 +10,7 @@
 @component('mail::panel')
 @foreach($details['contents'][$interest]->pluck('title', 'id') as $key => $value)
 
-@component('mail::button', ['url' => config('app.url').'/dashboard/manage/content/'.$key.'/view', 'title' => $value]) 
+@component('mail::button', ['url' => config('app.url').'/dashboard/admin/content/'.$key.'/view', 'title' => $value]) 
 view
 @endcomponent
 

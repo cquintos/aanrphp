@@ -262,11 +262,11 @@
                 <div class="card-header" style="text-align:left; background-color:lightgray">
                     <i class="fas fa-users" aria-hidden="true" style="color: "></i> <b>NUMBER OF SITE VISITS</b></h1>
                 </div>
-                <div class="card-body" style="background-color: #7dc045">
-                    <span style="font-size:4.5rem; color:black; line-height:1.25">
+                <div class="card-body" style="background-color: #30A662">
+                    <span style="font-size:4.5rem; color:white; line-height:1.25">
                         <b>{{$period_visits}} </b>
                     </span>
-                    <h3 class="text-black" style="font-size:20">
+                    <h3 class="text-white" style="font-size:20">
                         @if(request()->from == null)
                             <b>{{strtoupper(Carbon::parse($begin)->format('M d').' - '.Carbon::parse($end)->format('M d, Y'))}}</b>
                         @else 
@@ -274,7 +274,7 @@
                        @endif 
                     </h3>
                 </div>
-                <div class="card-footer" style="background-color: ">
+                <div class="card-footer">
                     <b>TODAY IS: {{strtoupper(date('M d Y'))}}</b>
 
                 </div>

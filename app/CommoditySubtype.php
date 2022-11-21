@@ -14,4 +14,9 @@ class CommoditySubtype extends Model
     {
         return $this->belongsTo(Commodity::class);
     }
+
+    public function artifacts()
+    {
+        return $this->belongsToMany(ArtifactAANR::class, 'artifactaanr_commodity_subtype', 'commodity_subtype_id', 'artifactaanr_id');
+    }
 }

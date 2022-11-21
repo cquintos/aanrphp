@@ -2,57 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Industry;
-use App\Advertisement;
-use App\Agenda;
-use App\Announcement;
-use App\ArtifactAANR;
-use App\Content;
-use App\ContentSubtype;
-use App\Contributor;
-use App\ConsortiaMember;
-use App\ISP;
-use App\Sector;
-use App\Commodity;
-use App\Consortia;
-use App\Subscriber;
-use App\Agrisyunaryo;
-use App\SearchQuery;
-use App\PageViews;
 use Auth;
 use DB;
 use Redirect;
+use App\Advertisement;
+use App\Agenda;
+use App\APIEntries;
+use App\AANRPage;
+use App\Agrisyunaryo;
+use App\Announcement;
+use App\ArtifactAANR;
+use App\Commodity;
+use App\CommoditySubtype;
+use App\Consortia;
+use App\ConsortiaMember;
+use App\Content;
+use App\ContentSubtype;
+use App\Contributor;
+use App\Country;
+use App\FooterLink;
+use App\Headline;
+use App\HeaderLink;
+use App\Industry;
+use App\ISP;
+use App\LandingPageElement;
+use App\LandingPageSlider;
+use App\Log;
+use App\PageViews;
+use App\PCAARRDPage;
+use App\SearchQuery;
+use App\Sector;
+use App\SocialMediaSticky;
+use App\Subscriber;
+use App\User;
 use Carbon\Carbon;
-use Stevebauman\Location\Facades\Location;
+use Illuminate\Http\Request;
 use Spatie\Browsershot\Browsershot;
 use Elastic\Elasticsearch\ClientBuilder;
-
-// This file contains application logic on how to view each page.
-// functions included are:
-//     industryProfileView()
-//     aboutUs()
-//     usefulLinks()
-//     searchAnalytics()
-//     searchAnalyticsWithFilter(Request $request)
-//     saveAnalytics()
-//     testElastic($age, $name)
-//     getLandingPage()
-//     contentEdit($content_id)
-//     search(Request $request)
-//     advancedSearch(Request $request)
-//     agrisyunaryo(Request $request)
-//     agrisyunaryoSearch(Request $request)
-//     consortiaAboutPage()
-//     consortiaLandingPage()
-//     AANRAboutPage()
-//     PCAARRDAboutPage()
-//     unitAboutPage()
-//     dashboardManage()
-//     getManagePage()
-//     userDashboard()
-//  if(!Auth::check()) checks for registered user
-//  if(Auth::user()-role != 5) means the page is restricted to a SUPER ADMIN only
+use Stevebauman\Location\Facades\Location;
 
 class PagesController extends Controller
 {
@@ -68,48 +55,35 @@ class PagesController extends Controller
         return view('pages.usefulLinks');
     }
 
+    // if(Auth::user()->role != 5){
+    //     return Redirect::route('userDashboard')->with('error','Admin users only.');
+    // }
     public function searchAnalytics(){
-        // if(Auth::user()->role != 5){
-        //     return Redirect::route('userDashboard')->with('error','Admin users only.');
-        // }
-
         return view('analytics.search');
     }
 
     public function searchAnalyticsWithFilter(Request $request){
-        // if(Auth::user()->role != 5){
-        //     return Redirect::route('userDashboard')->with('error','Admin users only.');
-        // }
         if($request->year_from_filter > $request->year_to_filter) {
             return Redirect::route('searchAnalytics')->with('error','Start date cannot be after end date.');
         }
+
         if($request->isp_filter == 'selected') {
             return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&filter=yes');
         }
+
         return redirect('/analytics/search?from='.$request->year_from_filter.'&to='.$request->year_to_filter.'&withISP='.$request->isp_filter.'&filter=yes');
     }
 
     public function saveAnalytics(){
-        if(Auth::user()->role != 5){
-            return Redirect::route('searchAnalytics')->with('error','Admin users only.');
-        }
-        $now = Carbon::now();
-        $file_name = 'aanr_analytics'. $now->format('dmy').'.pdf';
         $file = Browsershot::url('http://aanr.ph/analytics/search')
-            ->noSandbox()
-            ->landscape()
-            ->showBrowserHeaderAndFooter()
-            ->windowSize(1920, 1080)
-            ->scale(0.75)
-            ->pdf();
-        $headers = [
-            'Content-Type' => 'pdf',
-            'Content-Disposition' => 'attachment; filename='.$file_name,
-        ];
+            ->noSandbox()->landscape()->showBrowserHeaderAndFooter()
+            ->windowSize(1920, 1080)->scale(0.75)->pdf();
         
-        return response()->stream(function() use ($file) {
-            echo $file;
-        }, 200, $headers); 
+        return response()->stream(function() use ($file) { echo $file; }, 
+                200, [
+                    'Content-Type' => 'pdf',
+                    'Content-Disposition' => 'attachment; filename=aanr_analytics'.Carbon::now()->format('dmy').'.pdf',
+                ]); 
     }
 
     public function testElastic($age, $name){
@@ -131,262 +105,220 @@ class PagesController extends Controller
     public function getLandingPage(){
         $pageView = new PageViews;
         $pageView->session_id = \Request::getSession()->getId();
+        $pageView->user_id = 0;
+
         if(Auth::user()){
             $pageView->user_id = \Auth::user()->id;
-        } else {
-            $pageView->user_id = 0;
         }
+        
         $pageView->ip = \Request::getClientIp();
         $pageView->agent = \Request::header('User-Agent');
         $pageView->save();
+
         return view('pages.index');
     }
 
-    public function contentEdit($content_id){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
+    public function artifactEdit($content_id){
         if(Auth::user()->role != 5){
             return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
 
-        $advertisements = Advertisement::all();
-        $content = Content::pluck('type', 'id')->all();
-        $content_subtype = ContentSubtype::all();
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $isp = ISP::pluck('name', 'id')->all();
-        $commodities = Commodity::pluck('name', 'id')->all();
-        $artifact = ArtifactAANR::find($content_id);
-        return view('pages.artifactEdit')
-            ->withArtifact($artifact)
-            ->withConsortia($consortia)
-            ->withContent($content)
-            ->withContentSubtypes($content_subtype)
-            ->withISP($isp)
-            ->withCommodities($commodities);
+        return view('pages.artifactEdit', [
+            'artifact' => ArtifactAANR::find($content_id),
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::pluck('name', 'id')->all(),
+            'isp' => ISP::pluck('name', 'id')->all(),
+            'commodities' => Commodity::pluck('name', 'id')->all(),
+            'subcommodities' => CommoditySubtype::pluck('name', 'id')->all(),
+        ]);
     }
 
-    public function contentView($content_id){
-        $content = Content::pluck('type', 'id')->all();
-        $content_subtype = ContentSubtype::all();
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $isp = ISP::pluck('name', 'id')->all();
-        $commodities = Commodity::pluck('name', 'id')->all();
-        $artifact = ArtifactAANR::find($content_id);
-        return view('pages.artifactView')
-            ->withArtifact($artifact)
-            ->withConsortia($consortia)
-            ->withContent($content)
-            ->withContentSubtypes($content_subtype)
-            ->withISP($isp)
-            ->withCommodities($commodities);
+    public function artifactView($content_id){
+        return view('pages.artifactView', [
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::all(),
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'isp' => ISP::pluck('name', 'id')->all(),
+            'commodities' => Commodity::pluck('name', 'id')->all(),
+            'artifact' => ArtifactAANR::find($content_id),
+        ]);
+    }
+
+    public function artifactUpload() {
+        return view('pages.artifactUpload', [
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::all(),
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'isp' => ISP::pluck('name', 'id')->all(),
+            'commodities' => Commodity::pluck('name', 'id')->all(),
+            'consortia_members' => ConsortiaMember::pluck('name', 'id')->all(),
+            'commodity_subtypes' => CommoditySubtype::pluck('name', 'id')->all(),
+        ]);
     }
 
     public function search(Request $request){
+        $results = ArtifactAANR::query();
         $query = $request->search;
+
         if($query != null){
             $search_query = new SearchQuery;
             $search_query->query = $request->search;
-            $userIp = $request->ip();
-            $locationData = \Location::get($userIp);
-            if($locationData){
-                if($locationData->countryCode == 'PH'){
-                    $search_query->location = $locationData->regionName;
-                } else {
-                    $search_query->location = null;
-                }
+            $locationData = \Location::get($request->ip());
+            $search_query->location = null;
+            
+            if($location != null && $locationData->countryCode == 'PH'){
+                $search_query->location = $locationData->regionName;
             }
+
             $search_query->save();
         }
-        $content_type = $request->content_type;
-        $consortia = $request->consortia;
-        $start = $request->start;
-        $end = $request->end;
-        $is_gad = $request->is_gad;
-        $results = ArtifactAANR::query();
-        if($content_type && $content_type != 'all'){
-            $results = $results->where('content_id', $content_type);
+
+        if($request->content_type && $request->content_type != 'all'){
+            $results = $results->where('content_id', $request->content_type);
         }
 
-        if($consortia){
-            $results = $results->where('consortia_id', $consortia);
+        if($request->consortia){
+            $results = $results->where('consortia_id', $request->consortia);
         }
 
-        if($start && $end){
+        if($request->start && $request->end){
             $startDate = Carbon::createFromFormat('d/m/Y', '01/01/'.$request->start);
             $endDate = Carbon::createFromFormat('d/m/Y', '01/01/'.$request->end);
             $results = $results->whereBetween('date_published', array($startDate, $endDate));
         }
 
-        if($is_gad){
+        if($request->is_gad){
             $results->where('is_gad', '=', 1);
         }
-        $results = $results->search($query)->paginate(10);
-        return view('pages.search')
-            ->withQuery($query)
-            ->withResults($results);
+
+        return view('pages.search', [
+            'query' => $query,
+            'results' => $results->search($query)->paginate(10),
+        ]);
     }
 
     public function advancedSearch(Request $request){
-        $query = $request->search;
-        $results = ArtifactAANR::all()->get();
-
-        $results = $results->whereHas('consortia', function($q) {
+        $results = ArtifactAANR::all()->get()->whereHas('consortia', function($q) {
             $q->where('short_name', 'like', '%' . 'STAARRDEC' . '%');
-        })->search($query)->paginate(10);
+        })->search($request->search)->paginate(10);
     }
 
     public function agrisyunaryo(Request $request){
         if($request->letter){
-            $agrisyunaryos = Agrisyunaryo::where('title','LIKE',$request->letter.'%')->paginate(10);
-        } else {
-            $agrisyunaryos = Agrisyunaryo::paginate(10);
+            return view('pages.agrisyunaryo', ['agrisyunaryos' => Agrisyunaryo::where('title','LIKE',$request->letter.'%')->paginate(10)]);
         }
-        return view('pages.agrisyunaryo')
-            ->withAgrisyunaryos($agrisyunaryos);
+
+        return view('pages.agrisyunaryo', ['agrisyunaryos' => Agrisyunaryo::paginate(10)]);
     }
 
     public function agrisyunaryoSearch(Request $request){
-        $query = $request->search;
-        $results = Agrisyunaryo::where('title','LIKE','%'.$query.'%')->paginate(10);
-        return view('pages.agrisyunaryoSearch')
-            ->withQuery($query)
-            ->withResults($results);
+        return view('pages.agrisyunaryoSearch', [
+            'query' => $request->search,
+            'results' => Agrisyunaryo::where('title','LIKE','%'.$request->search.'%')->paginate(10),
+        ]);
     }
 
     public function consortiaAboutPage(){
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $industries = Industry::pluck('name', 'id')->all();
-        $artifactAANR = ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $content = Content::pluck('type', 'id')->all();
-        $content_subtype = ContentSubtype::all();
-        return view('pages.consortiaAboutPage')
-            ->withConsortia($consortia)
-            ->withContent($content)
-            ->withContentSubtypes($content_subtype)
-            ->withIndustries($industries)
-            ->withArtifactAANR($artifactAANR);
+        return view('pages.consortiaAboutPage', [
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::all(),
+            'industries' => Industry::pluck('name', 'id')->all(),
+            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
+        ]);
     }
 
     public function consortiaLandingPage(){
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $industries = Industry::pluck('name', 'id')->all();
-        $artifactAANR = ArtifactAANR::all();
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $content = Content::pluck('type', 'id')->all();
-        $content_subtype = ContentSubtype::all();
-        return view('pages.consortiaLandingPage')
-            ->withContent($content)
-            ->withContentSubtypes($content_subtype)
-            ->withConsortia($consortia)
-            ->withIndustries($industries)
-            ->withArtifactAANR($artifactAANR);
+        return view('pages.consortiaLandingPage', [
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::all(),
+            'industries' => Industry::pluck('name', 'id')->all(),
+            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
+        ]);
     }
 
     public function AANRAboutPage(){
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        return view('pages.AANRAboutPage')
-            ->withConsortia($consortia);
+        return view('pages.AANRAboutPage', ['consortia' => Consortia::pluck('short_name', 'id')->all()]);
     }
 
     public function PCAARRDAboutPage(){
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        return view('pages.PCAARRDAboutPage')
-            ->withConsortia($consortia);
+        return view('pages.PCAARRDAboutPage', ['consortia' => Consortia::pluck('short_name', 'id')->all()]);
     }
 
     public function unitAboutPage(){
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        return view('pages.unitAboutPage')
-            ->withConsortia($consortia);
+        return view('pages.unitAboutPage', ['consortia' => Consortia::pluck('short_name', 'id')->all()]);
     }
 
-    public function dashboardManage(){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
+    public function dashboardAdmin(){
         if(Auth::user()->role != 5){
             return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
-        $advertisements = Advertisement::all();
-        $agendas = Agenda::all();
-        $announcements = Announcement::all();
-        $artifactAANR = ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
-        $content = Content::pluck('type', 'id')->all();
-        $content_subtype = ContentSubtype::all();
-        $contributors = Contributor::all();
-        $consortia = Consortia::pluck('short_name', 'id')->all();
-        $isp = ISP::pluck('name', 'id')->all();
-        $sectors = Sector::pluck('name', 'id')->all();
-        $industries = Industry::pluck('name', 'id')->all();
-        $commodities = Commodity::pluck('name', 'id')->all();
-        $subscribers = Subscriber::all();
-        return view('dashboard.manage')
-            ->withAdvertisements($advertisements)
-            ->withAgendas($agendas)
-            ->withAnnouncements($announcements)
-            ->withArtifactAANR($artifactAANR)
-            ->withConsortia($consortia)
-            ->withContent($content)
-            ->withContentSubtypes($content_subtype)
-            ->withContributors($contributors)
-            ->withISP($isp)
-            ->withSectors($sectors)
-            ->withIndustries($industries)
-            ->withCommodities($commodities)
-            ->withSubscribers($subscribers);
+
+        return view('dashboard.admin', [
+            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
+            'consortia' => Consortia::all(),
+            'contents' => Content::all(),
+            'content_subtypes' => ContentSubtype::all(),
+            'isps' => ISP::all(),
+            'isp_name_id' => ISP::pluck('name', 'id')->all(),
+            'sectors' => Sector::all(),
+            'industries' => Industry::pluck('name', 'id')->all(),
+            'commodities' => Commodity::all(),
+            'consortia_members' => ConsortiaMember::all(),
+            'aanrPage' => AANRPage::first(),
+            'pcaarrdPage' => PCAARRDPage::first(),
+            'headlines' => Headline::all(),
+            'social_media' => SocialMediaSticky::all(),
+            'landing_page' => LandingPageElement::find(1),
+            'countries' => Country::all(),
+            'agendas' => Agenda::all(),
+            'api_entries' =>  APIEntries::all(),
+            'agrisyunaryos' => Agrisyunaryo::all(),
+            'header_links' => HeaderLink::all(),
+            'footer_links' => FooterLink::all(),
+            'landing_page_sliders' => LandingPageSlider::all()->sortBy('id'),
+            'users_all' => User::all(),
+            'users_from_auth_org' => User::where('organization', '=', auth()->user()->organization)->get(),
+            'consortiaAdminRequests' => User::where('consortia_admin_request', '=', 1)->count(),
+            'consorita_admin_requester' => User::where('consortia_admin_request', '=', 1)->get(),
+            'logs' => Log::orderBy('id', 'desc')->get(),
+            'content_with_subtype' => Content::with('content_subtypes'),
+        ]);
     }
 
     public function getManagePage(){
-        if(!Auth::check()){
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
         if(Auth::user()->role != 5){
             return Redirect::route('userDashboard')->with('error','Admin users only.');
         }
-        
+
         return view('pages.manage');
     }
 
     public function userDashboard(){
-        if(Auth::check()){
-            $advertisements = Advertisement::all();
-            $agendas = Agenda::all();
-            $announcements = Announcement::all();
-            $artifactAANR = ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get();
-            $content = Content::pluck('type', 'id')->all();
-            $content_subtype = ContentSubtype::all();
-            $contributors = Contributor::all();
-            $consortia = Consortia::pluck('short_name', 'id')->all();
-            $isp = ISP::pluck('name', 'id')->all();
-            $sectors = Sector::pluck('name', 'id')->all();
-            $industries = Industry::pluck('name', 'id')->all();
-            $commodities = Commodity::all();
-            $subscribers = Subscriber::all();
-            return view('dashboard.userDashboard')
-                ->withAdvertisements($advertisements)
-                ->withAgendas($agendas)
-                ->withAnnouncements($announcements)
-                ->withArtifactAANR($artifactAANR)
-                ->withConsortia($consortia)
-                ->withContent($content)
-                ->withContentSubtypes($content_subtype)
-                ->withContributors($contributors)
-                ->withISP($isp)
-                ->withSectors($sectors)
-                ->withIndustries($industries)
-                ->withCommodities($commodities)
-                ->withSubscribers($subscribers);
-        } else {
-            return Redirect::route('login')->with('error','Login to access this page.');
-        }
+        return view('dashboard.userDashboard', [
+            'advertisements' => Advertisement::all(),
+            'agendas' => Agenda::all(),
+            'announcements' => Announcement::all(),
+            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
+            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'content' => Content::pluck('type', 'id')->all(),
+            'content_subtype' => ContentSubtype::all(),
+            'contributors' => Contributor::all(),
+            'isp' => ISP::pluck('name', 'id')->all(),
+            'sectors' => Sector::pluck('name', 'id')->all(),
+            'industries' => Industry::pluck('name', 'id')->all(),
+            'commodities' => Commodity::all(),
+            'subscribers' => Subscriber::all(),
+        ]);
     }
 
     public function communityPage() {
-        if(Auth::check() && Auth::user()->hasVerifiedEmail()) {
+        if(Auth::user()->hasVerifiedEmail()) {
             return Redirect::away('http://community.aanr.ph/moLogin');
         } 
+
         return Redirect::away('http://community.aanr.ph');
     }
 }

@@ -34,7 +34,7 @@
     </div>
 <!-- end of modal for create isp -->
 
-@foreach(App\ISP::all() as $isp)
+@foreach($isps as $isp)
     <!-- edit isp -->
         <div class="modal fade" id="editISPModal-{{$isp->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

@@ -10,11 +10,16 @@ class Sector extends Model
     use HasFactory;
     public function industry()
     {
-        return $this->belongsTo('App\Industry');
+        return $this->belongsTo(Industry::class);
     }
 
     public function isps()
     {
-        return $this->hasMany('App\ISP');
+        return $this->hasMany(ISP::class);
+    }
+
+    public function commodities()
+    {
+        return $this->hasMany(Commodity::class);
     }
 }
