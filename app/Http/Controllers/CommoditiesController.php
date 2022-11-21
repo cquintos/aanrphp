@@ -38,7 +38,7 @@ class CommoditiesController extends Controller
     public function add(Request $request)
     {
         $this->validate($request, array(
-            'name' => 'required|max:100',
+            'name' => 'required|max:40',
         ));
 
         if(Commodity::where('name', $request->name)->first() != null) {
@@ -87,6 +87,8 @@ class CommoditiesController extends Controller
     {
         $this->validate($request, array(
             'name' => 'required|max:100',
+            'industry' => 'required',
+            'description' => 'max:2000',
         ));
 
         if(Commodity::where('name', $request->name)->where('id', '!=', $commodity_id)->first() != null) {
@@ -117,6 +119,11 @@ class CommoditiesController extends Controller
                 CommoditySubtype::find($var->id)->delete();
                 $temp_changes = $temp_changes.'<strong>Deleted Subtype:</strong> '.$var->name.'<br>';
             }
+        }
+
+        if($commodity->industry_id != $request->industry) {
+            $commodity->industry_id = $request->industry;
+            $temp_changes = $temp_changes.'<strong>Industry ID:</strong> '.$commodity->industry_id.' <strong>-></strong> '.$request->industry.'<br>';
         }
 
         if($request->subtypes != null) {

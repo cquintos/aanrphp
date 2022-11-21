@@ -2,23 +2,10 @@
 @section('title', 'Admin Dashboard')
 @section('breadcrumb')
     <ol class="breadcrumb pb-0" style="background-color:transparent">
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">km4aanr</a></li>
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/analytics/search">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Manage</li>
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">KM4AANR</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
     </ol>
 @endsection
-
-<?php
-    $consortiaAdminRequests = App\User::where('consortia_admin_request', '=', 1)->count();
-    $aanrPage = App\AANRPage::first();
-    $pcaarrdPage = App\PCAARRDPage::first();
-    $headlines = App\Headline::all(); 
-    $landing_page = App\LandingPageElement::find(1);
-    $sliders = App\LandingPageSlider::all(); 
-    $social_media = App\SocialMediaSticky::all();
-    $header_links = App\HeaderLink::all(); 
-    $footer_links = App\FooterLink::all();
-?>
 
 <style>
     .center-td{
@@ -143,9 +130,7 @@
     @include('dashboard.modals.contenttype')
     @include('dashboard.modals.contentSubtype')
     @include('dashboard.modals.advertisement')
-    @include('dashboard.modals.agendas')
     @include('dashboard.modals.apientries')
-    @include('dashboard.modals.announcements')
     @include('dashboard.modals.users')
     <div class="container-fluid">
         <div class="row" style="max-height:inherit; min-height:52.5rem">
@@ -279,7 +264,7 @@
                                         
                                         <select class="form-control" data-live-search="true" name="select_org" id="select_org">
                                             <option disabled selected>Select Organization</option>
-                                            @foreach(App\Consortia::all() as $consortium_account_details)
+                                            @foreach($consortia as $consortium_account_details)
                                                 <option value="{{$consortium_account_details->short_name}}" {{auth()->user()->organization == $consortium_account_details->short_name  ? 'selected' : ''}}>{{$consortium_account_details->short_name}}</option>
                                             @endforeach
                                             <option value="PCAARRD" {{auth()->user()->organization == 'PCAARRD'  ? 'selected' : ''}}>PCAARRD</option>
@@ -325,7 +310,7 @@
                                                 $def_country = App\Country::find(auth()->user()->country_id);
                                             @endphp
                                             <option value="{{$def_country->id}}" selected>{{$def_country->name}} - {{$def_country->code}}</option>
-                                            @foreach (App\Country::all() as $country)
+                                            @foreach ($countries as $country)
                                                 <option value="{{$country->id}}">{{$country->name}} - {{$country->code}}</option>
                                             @endforeach
                                         </select>
@@ -341,21 +326,21 @@
                                         ?>
                                         {{Form::label('interests', 'Topics of Interest', ['class' => 'col-form-label font-weight-bold'])}}
                                         <div class="btn-group-toggle" data-toggle="buttons">
-                                            @foreach(App\Consortia::all() as $consortium)
+                                            @foreach($consortia as $consortium)
                                             <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                 <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'checked' : ''  }}  value="{{$consortium->short_name}}"> {{$consortium->short_name}}
                                             </label>
                                             @endforeach
                                         </div>
                                         <div class="btn-group-toggle mt-3" data-toggle="buttons">
-                                            @foreach(App\ISP::groupBy('name')->get() as $isp)
+                                            @foreach($isps as $isp)
                                                 <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                     <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true ? 'checked' : ''  }}  value="{{$isp->name}}"> {{$isp->name}}
                                                 </label>
                                             @endforeach
                                         </div>
                                         <div class="btn-group-toggle mt-3" data-toggle="buttons">
-                                            @foreach(App\Commodity::groupBy('name')->get() as $commodity)
+                                            @foreach($commodities as $commodity)
                                                     <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                         <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true ? 'checked' : ''  }} value="{{$commodity->name}}"> {{$commodity->name}}
                                                     </label>
@@ -382,27 +367,27 @@
                                 <div class="dropdown-menu">
                                     <h6 class="dropdown-header">ISPs</h6>
                                     @if(auth()->user()->role == 5)
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Industries'])}}">Industries</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Sectors'])}}">Sectors</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'ISP'])}}">ISP</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Industries'])}}">Industries</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Sectors'])}}">Sectors</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'ISP'])}}">ISP</a>
                                     @endif
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Commodities'])}}">Commodities</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Commodities'])}}">Commodities</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Consortia</h6>
                                     @if(auth()->user()->role == 5)
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Consortia'])}}">Consortia</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Consortia'])}}">Consortia</a>
                                     @endif
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Consortia_Members'])}}">Consortia Members</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Consortia_Members'])}}">Consortia Members</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Artifact</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Artifacts'])}}">AANR Content</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Artifacts'])}}">AANR Content</a>
                                     @if(auth()->user()->role == 5)
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'API'])}}">API Upload</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Content'])}}">Content Type</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Content_Subtype'])}}">Content Subtype</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'API'])}}">API Upload</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Content'])}}">Content Type</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Content_Subtype'])}}">Content Subtype</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Others</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['asset' => 'Agrisyunaryo'])}}">Agrisyunaryo</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['asset' => 'Agrisyunaryo'])}}">Agrisyunaryo</a>
                                     @endif
                                 </div>
                             </div>
@@ -427,13 +412,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach(App\Industry::all() as $industry)
+                                            @foreach($industries as $key => $industry)
                                                 <tr>
-                                                    <td>{{$industry->id}}</td>
-                                                    <td>{{$industry->name}}</td>
+                                                    <td>{{$key}}</td>
+                                                    <td>{{$industry}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editIndustryModal-{{$industry->id}}"><i class="fas fa-edit"></i>  Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteIndustryModal-{{$industry->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editIndustryModal-{{$key}}"><i class="fas fa-edit"></i>  Edit Details</button>
+                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteIndustryModal-{{$key}}"><i class="fas fa-trash"></i> Delete Entry</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -461,11 +446,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\Sector::all() as $sector)
+                                                @foreach($sectors as $sector)
                                                 <tr>
                                                     <td>{{$sector->id}}</td>
                                                     <td>{{$sector->name}}</td>
-                                                    <td>{{$sector->industry->name}}</td>
+                                                    <td>{{$industries[$sector->industry_id]}}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editSectorModal-{{$sector->id}}"><i class="fas fa-edit"></i> Edit Details</button>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteSectorModal-{{$sector->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
@@ -496,11 +481,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\ISP::all() as $isp_each)
+                                                @foreach($isps as $isp_each)
                                                 <tr>
                                                     <td>{{$isp_each->id}}</td>
                                                     <td>{{$isp_each->name}}</td>
-                                                    <td>{{$isp_each->sector->name}}</td>
+                                                    <td>{{$sectors->pluck('name', 'id')[$isp_each->sector_id]}}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editISPModal-{{$isp_each->id}}"><i class="fas fa-edit"></i> Edit Details</button>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteISPModal-{{$isp_each->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
@@ -517,40 +502,52 @@
                                     <h2 class="text-primary" >
                                         Commodities
                                     <span class="float-right">
-                                        <a class="btn btn-default" class="btn btn-default" href="/dashboard/manage/commodity/add" role="button"><i class="fas fa-plus"></i> Add Commodity</a>
+                                        <a class="btn btn-success" class="btn btn-default" href="{{ route('addCommodityPage')}}" role="button"><i class="fas fa-plus"></i> Commodity</a>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
                                     <table class="table data-table tech-table table-hover" style="width:100%">
-                                            <thead>
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">ID</th>
+                                                <th width="25%">Name</th>
+                                                <th width="20%">Sub-commodity</th>
+                                                <th width="25%">Industry</th>
+                                                <th width="15%">Description</th>
+                                                <th width="10%">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($commodities as $commodity)
                                                 <tr>
-                                                    <th width="5%">ID</th>
-                                                    <th width="60%">Name</th>
-                                                    <th width="25%">Sub-commodity</th>
-                                                    <th width="10%">Action</th>
+                                                    <td>{{$commodity->id}}</td>
+                                                    <td>{{$commodity->name}}</td>
+                                                    <td>
+                                                        <ul>
+                                                            @forelse($commodity->subtypes->all() as $entry)
+                                                                <li> {{ucwords($entry->name)}} </li>
+                                                            @empty
+                                                                -
+                                                            @endforelse
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        @empty($commodity->industry)
+                                                            -
+                                                        @else
+                                                            {{$commodity->industry->name}}
+                                                        @endempty
+                                                    </td>
+                                                    <td>
+                                                        {{$commodity->description}}
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-primary" href="{{ route('editCommodityPage', [$commodity->id])}}" role="button"><i class="fas fa-edit"></i></a>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCommodityModal-{{$commodity->id}}"><i class="fas fa-trash"></i></button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach(App\Commodity::all() as $commodity)
-                                                    <tr>
-                                                        <td>{{$commodity->id}}</td>
-                                                        <td>{{$commodity->name}}</td>
-                                                        <td>
-                                                            <ul>
-                                                                @forelse($commodity->subtypes->all() as $entry)
-                                                                    <li> {{ucwords($entry->name)}} </li>
-                                                                @empty
-                                                                    -
-                                                                @endforelse
-                                                            </ul>
-                                                        </td>
-                                                        <td>
-                                                            <a class="btn btn-default" href="/dashboard/manage/commodity/{{$commodity->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteCommodityModal-{{$commodity->id}}"><i class="fas fa-trash"></i> Delete Commodity</button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -584,7 +581,7 @@
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAANRPageModal"><i class="fas fa-edit"></i> Edit Details</button>
                                                     </td>
                                                 </tr>
-                                            @foreach(App\Consortia::all() as $consortium)
+                                            @foreach($consortia as $consortium)
                                                 <tr>
                                                     <td>{{$consortium->id}}</td>
                                                     <td>{{$consortium->short_name}}</td>
@@ -630,7 +627,7 @@
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editPCAARRDPageModal"><i class="fas fa-edit"></i> Edit Details</button>
                                                     </td>
                                                 </tr>
-                                            @foreach(App\ConsortiaMember::all() as $consortia_member)
+                                            @foreach($consortia_members as $consortia_member)
                                                 <tr>
                                                     <td>{{$consortia_member->id}}</td>
                                                     <td>{{$consortia_member->acronym}}</td>
@@ -693,7 +690,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach(App\Agenda::all() as $agenda)
+                                            @foreach($agendas as $agenda)
                                                 <tr>
                                                     <td style="text-align:center"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
                                                     <td>{{$agenda->id}}</td>
@@ -743,11 +740,13 @@
                                 <input type="hidden" name="_method" value="delete">
                                 <div class="card-header px-5 pt-4">
                                     <h2 class="text-primary" >
-                                        AANR Content
+                                        AANR Artifacts
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createArtifactModal"><i class="fas fa-plus"></i> Add Content</button>
-                                        <input type="submit" class="btn btn-default" value="Delete Checked">
-                                    </span></h2>
+                                        {{-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createArtifactModal"><i class="fas fa-plus"></i> Add Artifacts</button> --}}
+                                        <button type="button" class="btn btn-success" href="{{ route('artifactUpload') }}"><i class="fas fa-plus"></i> <b>Upload Artifact</b></button>
+                                        <input type="submit" class="btn btn-danger" value="Delete Checked">
+                                    </span>
+                                    </h2>
                                 </div>
                                 <div class="card-body px-5">
                                     <table class="table data-table-options tech-table table-hover" style="width:100%">
@@ -763,24 +762,25 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get() as $artifact)
+                                                @foreach( $artifactAANR as $artifact)
                                                 <tr>
                                                     <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
                                                     <td>{{$artifact->id}}</td>
                                                     <td>{{$artifact->title}}</td>
-                                                    <td>{{$artifact->content ? $artifact->content->type : ''}}</td>
+                                                    <td>{{$contents->pluck('type', 'id')[$artifact->content_id]}}</td>
                                                     <td>{{$artifact->date_published}}</td>
                                                     <td>{{$artifact->author}}</td>
                                                     <td>
-                                                        <a class="btn btn-default" href="dashboard/manage/commodity/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                        <a class="btn btn-primary" href="{{ route('artifactEdit', ['id' => $artifact->id]) }}" role="button"><i class="fas fa-edit"></i> Edit Details</a>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                                @endforeach
                                             </tbody>
-                                    </table>
-                                </div>
+                                        </table>
+                                    </div>
                                 </form>
                             </div>
+                            @endphp
                             @elseif(request()->asset == 'API')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <input type="hidden" name="_method" value="delete">
@@ -805,7 +805,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\APIEntries::all() as $api_entry)
+                                                @foreach($api_entries as $api_entry)
                                                     <tr>
                                                         <td>{{$api_entry->id}}</td>
                                                         <td>{{$api_entry->description}}</td>
@@ -826,6 +826,11 @@
                             @elseif(request()->asset == 'Content')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
+                                    {{-- 
+                                        TODO: fix delete content cascade on delete 
+                                        
+                                    --}}
+                                        
                                     <h2 class="text-primary" >
                                         Content Type
                                     <span class="float-right">
@@ -842,13 +847,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\Content::all() as $content)
+                                                @foreach($contents->pluck('type', 'id') as $key => $content)
                                                     <tr>
-                                                        <td>{{$content->id}}</td>
-                                                        <td>{{$content->type}}</td>
+                                                        <td>{{$key}}</td>
+                                                        <td>{{$content}}</td>
                                                         <td>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContentTypeModal-{{$content->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteContentTypeModal-{{$content->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContentTypeModal-{{$key}}"><i class="fas fa-edit"></i> Edit Details</button>
+                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteContentTypeModal-{{$key}}"><i class="fas fa-trash"></i> Delete Entry</button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -877,7 +882,7 @@
                                                 
                                             </thead>
                                             <tbody>
-                                                @foreach(App\ContentSubtype::all() as $content_subtype)
+                                                @foreach($content_subtypes as $content_subtype)
                                                     <tr>
                                                         <td>{{$content_subtype->id}}</td>
                                                         <td>{{$content_subtype->name}}</td>
@@ -970,7 +975,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach(App\Agrisyunaryo::all() as $agrisyunaryo)
+                                            @foreach($agrisyunaryos as $agrisyunaryo)
                                                 <tr>
                                                     <td style="text-align:center"><input class="form-check-input" type="checkbox" name="agrisyunaryo_check[]" value="{{$agrisyunaryo->id}}" id="flexCheckDefault"></td>
                                                     <td>{{$agrisyunaryo->id}}</td>
@@ -1002,25 +1007,25 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <h6 class="dropdown-header">Header</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Header_Logo'])}}">Header Logo</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Header_Links'])}}">Header Links</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Header_Logo'])}}">Header Logo</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Header_Links'])}}">Header Links</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Footer</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Footer_Links'])}}">Footer Links</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Footer_Links'])}}">Footer Links</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Others</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Search'])}}">Search Banner</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Headlines'])}}">Headlines</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Social_Media_Icons'])}}">Social Media Icons</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Search'])}}">Search Banner</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Headlines'])}}">Headlines</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Social_Media_Icons'])}}">Social Media Icons</a>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Landing Page</h6>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Sliders'])}}">Sliders</a>
-                                   <!-- <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Featured_Videos'])}}">Featured Videos</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Featured_Publications'])}}">Featured Publications</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Industry_Profile'])}}">Industry Profile</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'AANR_Latest'])}}">AANR Latest</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'User_Type_Recommendation'])}}">User Type Recommendation</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['landing_page' => 'Recommended_For_You'])}}">Recommended For You</a> -->
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Sliders'])}}">Sliders</a>
+                                   <!-- <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Featured_Videos'])}}">Featured Videos</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Featured_Publications'])}}">Featured Publications</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Industry_Profile'])}}">Industry Profile</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'AANR_Latest'])}}">AANR Latest</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'User_Type_Recommendation'])}}">User Type Recommendation</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['landing_page' => 'Recommended_For_You'])}}">Recommended For You</a> -->
                                 </div>
                             </div>
                         </div>
@@ -1082,7 +1087,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach(App\HeaderLink::all() as $header_link)
+                                            @foreach($header_links as $header_link)
                                             <tr>
                                                 <td><span class="text-muted">{{$header_link->name}}</span></td>
                                                 <td><span class="text-muted">{{$header_link->position}}</span></td>
@@ -1120,7 +1125,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach(App\FooterLink::all() as $footer_link)
+                                            @foreach($footer_links as $footer_link)
                                             <tr>
                                                 <td><span class="text-muted">{{$footer_link->name}}</span></td>
                                                 <td><span class="text-muted">{{$footer_link->position}}</span></td>
@@ -1203,7 +1208,7 @@
                                             <?php 
                                                 $count = 1;
                                             ?>
-                                            @foreach(App\LandingPageSlider::all()->sortBy('id') as $slider)
+                                            @foreach($landing_page_sliders as $slider)
                                                 <tr>
                                                     <td>{{$count++}}</td>
                                                     <td>{{$slider->title}}</td>
@@ -1623,8 +1628,8 @@
                                     <b style="text-transform: capitalize">{!!request()->user ? str_replace('_',' ',request()->user) : 'All'!!}</b>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['user' => 'all'])}}">All Users</a>
-                                    <a class="dropdown-item" href="{{route('dashboardManage', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$consortiaAdminRequests != 0 ? '' : 'display:none'}}">!</span></a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'all'])}}">All Users</a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$consortiaAdminRequests != 0 ? '' : 'display:none'}}">!</span></a>
                                 </div>
                             </div>
                         </div>
@@ -1649,12 +1654,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <?php
-                                                $users_all = App\User::all();
-                                                $users_from_auth_org = App\User::where('organization', '=', auth()->user()->organization)->get();
-                                            ?>
                                             @foreach(auth()->user()->role == 5 ? $users_all : $users_from_auth_org as $user)
-                                            
                                                 <tr>
                                                     <td style="width:5%">{{$user->id}}</td>
                                                     <td style="width:15%">{{$user->email}}</td>
@@ -1708,7 +1708,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach(App\User::where('consortia_admin_request', '=', 1)->get() as $user)
+                                        @foreach($consorita_admin_requester as $user)
                                             <tr>
                                                 <td style="text-align:center"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
                                                 <td>{{$user->id}}</td>
@@ -1719,7 +1719,7 @@
                                                     @if($user->role == 5)
                                                         Administrator
                                                     @elseif($user->role == 1 && $user->consortia_admin_id != null)
-                                                        {{App\Consortia::find($user->consortia_admin_id)->short_name}} Manager
+                                                        {{$consortia->find($user->consortia_admin_id)->short_name}} Manager
                                                     @else
                                                         Standard User
                                                     @endif
@@ -1764,7 +1764,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                            @foreach(App\Log::orderBy('id', 'desc')->get(); as $log)
+                                            @foreach($logs as $log)
                                                 <tr data-child-value="{{$log->changes}}">
                                                     <td width="5%" class="details-control"></td>
                                                     <td width="5%">{{$log->id}}</td>

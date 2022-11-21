@@ -22,7 +22,7 @@
                         <select name="consortia" class="form-control" id="consortia">
                             <option value="" disabled> Select Consortia </option>
                             <option value="0">AANR</option>
-                            @foreach(App\Consortia::all() as $consortium_add)
+                            @foreach($consortia as $consortium_add)
                                 <option value="{{$consortium_add->id}}">{{$consortium_add->short_name}}</option>
                             @endforeach
                         </select> 
@@ -86,7 +86,7 @@
         </div>
     </div>
     <!-- END modal for ADD Slider -->
-    @foreach($sliders as $slider)
+    @foreach($landing_page_sliders as $slider)
         <!-- Modal for EDIT Slider -->
             <div class="modal fade" id="editSliderModal-{{$slider->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-l" role="document">
@@ -110,7 +110,7 @@
                                 <select name="consortia" class="form-control" id="consortia">
                                     <option value="" disabled> Select Consortia </option>
                                     <option value="0" {{$slider->consortia_id == null || $slider->consortia_id == 0 ? 'selected' : ''}}>AANR</option>
-                                    @foreach(App\Consortia::all() as $consortium_edit)
+                                    @foreach($consortia as $consortium_edit)
                                         <option value="{{$consortium_edit->id}}" {{$slider->consortia_id == $consortium_edit->id ? 'selected' : ''}}>{{$consortium_edit->short_name}}</option>
                                     @endforeach
                                 </select> 

@@ -28,7 +28,7 @@ class DropIspIdForeignKeyFromCommodities extends Migration
     {
         Schema::table('commodities', function (Blueprint $table) {
             $table->unsignedBigInteger('isp_id')->index()->nullable();
-            $table->foreign('isp_id')->references('id')->on('isp')->onDelete('cascade');;
+            $table->foreign('isp_id')->references('id')->on('isp')->onDelete('cascade');
         });
     }
 }

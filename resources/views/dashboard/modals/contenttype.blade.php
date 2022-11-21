@@ -26,7 +26,7 @@
     </div>
 <!-- end of modal for create content -->
 
-@foreach(App\Content::all() as $content)
+@foreach($contents as $content)
     <!-- edit content -->
         <div class="modal fade" id="editContentTypeModal-{{$content->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

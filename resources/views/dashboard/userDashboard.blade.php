@@ -4,9 +4,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb pb-0" style="background-color:transparent">
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">km4aanr</a></li>
-        <!-- <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">Dashboard</a></li> -->
-        <li class="breadcrumb-item active" aria-current="page">Manage</li>
+        <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">KM4AANR</a></li>
+        <li class="breadcrumb-item active" aria-current="page">User Dashboard</li>
     </ol>
 @endsection
 
@@ -454,7 +453,7 @@
                                                         <td>{{$artifact->date_published}}</td>
                                                         <td>{{$artifact->author}}</td>
                                                         <td>
-                                                            <a class="btn btn-default" href="/dashboard/manage/content/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                            <a class="btn btn-default" href="/dashboard/admin/content/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -518,86 +517,6 @@
         </div>
     </div>
 
-<!--
-<div class="modal fade" id="createArtifactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            {{ Form::open(['action' => ['ArtifactAANRController@addArtifact'], 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
-            <div class="modal-header">
-                <h6 class="modal-title" id="exampleModalLabel">Upload AANR Content</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs mb-4" id="addArtifactTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="file-upload" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Manual Upload</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" id="api-link" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">API</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" id="csv-upload" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">CSV</a>
-                    </li>
-                </ul>
-                <div class="tab-content mb-3" id="addArtifactTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="file-upload">
-                        <div class="form-group">
-                            {{Form::label('consortia', 'Consortia', ['class' => 'col-form-label required'])}}
-                            {{Form::select('consortia_placeholder', $consortia, auth()->user()->consortia_admin_id,['class' => 'form-control', 'placeholder' => 'Select Consortia', 'disabled']) }}
-                            <input type="hidden" id="consortia" name="consortia" value="{{auth()->user()->consortia_admin_id}}">
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('title', 'Content Title', ['class' => 'col-form-label required'])}}
-                            {{Form::text('title', '', ['class' => 'form-control', 'placeholder' => 'Add a title'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}
-                            {{Form::select('content', $content, '',['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('industry', 'Industry', ['class' => 'col-form-label required'])}}
-                            {{Form::select('industry', $industries, null,['class' => 'form-control', 'placeholder' => 'Select Industry']) }}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}
-                            {{ Form::date('date_published','',['class' => 'form-control']) }}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('author', 'Author', ['class' => 'col-form-label'])}}
-                            {{Form::text('author', '', ['class' => 'form-control', 'placeholder' => 'Add an author'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('description', 'Description', ['class' => 'col-form-label'])}}
-                            {{Form::textarea('description', '', ['class' => 'form-control', 'placeholder' => 'Add a description', 'rows' => 4])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('file', 'PDF Upload', ['class' => 'col-form-label'])}}
-                            {{ Form::file('file', ['class' => 'form-control mb-3 pt-1'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('link', 'Link', ['class' => 'col-form-label'])}}
-                            {{Form::text('link', '', ['class' => 'form-control', 'placeholder' => 'Add a link'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('keywords', 'Search keywords', ['class' => 'col-form-label'])}}
-                            {{Form::text('keywords', '', ['class' => 'form-control', 'placeholder' => 'Separate keywords with commas (,)'])}}
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="direct-link">...</div>
-                </div>
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                {{Form::submit('Create Artifact', ['class' => 'btn btn-success'])}}
-            </div>
-            {{Form::close()}}
-        </div>
-    </div>
-</div>
--->
 
 <div class="modal fade" id="consortiaRequestModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

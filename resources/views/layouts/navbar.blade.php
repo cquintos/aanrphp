@@ -99,7 +99,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             @if(auth()->user()->role == 5)
-                                <a href="/dashboard/manage" class="dropdown-item">Manage Dashboard</a>
+                                <a href="{{ route('dashboardAdmin') }}" class="dropdown-item">Manage Dashboard</a>
                                 <a href="/analytics/search" class="dropdown-item">Analytics Dashboard</a>
                                 <!-- <a href="/manage" class= "dropdown-item">Configuration</a> -->
                             @else

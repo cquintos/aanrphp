@@ -1,5 +1,5 @@
 
-@foreach(App\User::all() as $user)
+@foreach($users_all as $user)
     <div class="modal fade" id="setConsortiaAdminModal-{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

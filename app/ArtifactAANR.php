@@ -26,26 +26,31 @@ class ArtifactAANR extends Model
 
     public function industry()
     {
-        return $this->belongsTo('App\Industry');
+        return $this->belongsTo(Industry::class);
     }
 
     public function consortia()
     {
-        return $this->belongsTo('App\Consortia');
+        return $this->belongsTo(Consortia::class);
     }
 
     public function content()
     {
-        return $this->belongsTo('App\Content');
+        return $this->belongsTo(Content::class);
     }
 
     public function isp()
     {
-        return $this->belongsToMany('App\ISP', 'artifactaanr_isp', 'artifactaanr_id', 'isp_id');
+        return $this->belongsToMany(ISP::class, 'artifactaanr_isp', 'artifactaanr_id', 'isp_id')->withPivot('industry_id');
     }
 
     public function commodities()
     {
-        return $this->belongsToMany('App\Commodity', 'artifactaanr_commodity', 'artifactaanr_id', 'commodity_id');
+        return $this->belongsToMany(Commodity::class, 'artifactaanr_commodity', 'artifactaanr_id', 'commodity_id')->withPivot('industry_id');
+    }
+
+    public function commodity_subtypes()
+    {
+        return $this->belongsToMany(CommoditySubtype::class, 'artifactaanr_commodity_subtype', 'artifactaanr_id', 'commodity_subtype_id');
     }
 }

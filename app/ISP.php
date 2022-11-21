@@ -11,11 +11,11 @@ class ISP extends Model
     protected $table = 'isp';
     public function sector()
     {
-        return $this->belongsTo('App\Sector');
+        return $this->belongsTo(Sector::class);
     }
     
     public function artifacts()
     {
-        return $this->belongsToMany('App\ArtifactAANR', 'artifactaanr_isp', 'artifactaanr_id', 'isp_id');
+        return $this->belongsToMany(ArtifactAANR::class, 'artifactaanr_isp', 'artifactaanr_id', 'isp_id')->withPivot('industry_id');
     }
 }
