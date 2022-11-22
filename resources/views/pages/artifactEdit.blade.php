@@ -13,9 +13,8 @@
     use Illuminate\Support\Collection;
 
     $commodity_subtypes = new Collection();
-
     foreach($artifact->commodities as $entry) {
-        $commodity_subtypes = $commodity_subtypes->mergeRecursive($entry->subtypes->pluck('id', 'name'));
+        $commodity_subtypes = $commodity_subtypes->mergeRecursive($entry->subtypes->sortBy('name')->pluck('id', 'name'));
     }
 
     $commodity_subtypes = array_combine($commodity_subtypes->values()->toArray(), $commodity_subtypes->keys()->toArray());

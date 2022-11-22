@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Commodity;
 use App\Log;
+use App\Commodity;
 use App\CommoditySubtype;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 // This file contains request handling logic for Commodities.
 // functions included are:
@@ -161,8 +162,8 @@ class CommoditiesController extends Controller
             $request->ip(),
             'Commodities'
         ]);
-        
-        return redirect()->back()->with('success', 'Commodity Updated.');
+
+        return Redirect::to(route('dashboardAdmin').'?asset=Commodities')->with('success', 'Commodity Updated.');        
     }
 
     public function delete($commodity_id, Request $request)

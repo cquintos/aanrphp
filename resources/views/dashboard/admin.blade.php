@@ -117,26 +117,31 @@
 </style>
 @section('content')
     <!-- Modal Includes -->
-    @include('dashboard.modals.artifact')
-    @include('dashboard.modals.aanrpage')
-    @include('dashboard.modals.agrisyunaryos')
-    @include('dashboard.modals.pcaarrdpage')
-    @include('dashboard.modals.industry')
-    @include('dashboard.modals.sector')
-    @include('dashboard.modals.isp')
-    @include('dashboard.modals.commodity')
-    @include('dashboard.modals.consortia')
-    @include('dashboard.modals.consortiaMembers')
-    @include('dashboard.modals.contenttype')
-    @include('dashboard.modals.contentSubtype')
-    @include('dashboard.modals.advertisement')
-    @include('dashboard.modals.apientries')
-    @include('dashboard.modals.users')
+    @includeWhen(request()->asset == 'Artifacts', 'dashboard.modals.artifact')
+    @includeWhen(request()->asset == 'Sectors', 'dashboard.modals.sector')
+    @includeWhen(request()->asset == 'Industries', 'dashboard.modals.industry')
+    @includeWhen(request()->asset == 'ISP', 'dashboard.modals.isp')
+    @includeWhen(request()->asset == 'Commodities', 'dashboard.modals.commodity')
+    @includeWhen(request()->asset == 'Consortia', 'dashboard.modals.consortia')
+    @includeWhen(request()->asset == 'Consortia_Members', 'dashboard.modals.consortiaMembers')
+    @includeWhen(request()->asset == 'Content', 'dashboard.modals.contenttype')
+    @includeWhen(request()->asset == 'Content_Subtype', 'dashboard.modals.contentSubtype')
+
+    @includeWhen(request()->asset == 'aanrpage', 'dashboard.modals.aanrpage')
+    @includeWhen(request()->asset == 'agrisyunaryos', 'dashboard.modals.agrisyunaryos')
+    @includeWhen(request()->asset == 'pcaarrdpage', 'dashboard.modals.pcaarrdpage')
+    @includeWhen(request()->asset == 'advertisement', 'dashboard.modals.advertisement')
+    @includeWhen(request()->asset == 'apientries', 'dashboard.modals.apientries')
+    @includeWhen(request()->user == 'all', 'dashboard.modals.users')
+    @includeWhen(request()->landing_page == 'Sliders', 'dashboard.modals.sliders')    
+    @includeWhen(request()->landing_page == 'Headlines', 'dashboard.modals.headerlinks')      
+    @includeWhen(request()->landing_page == 'Footer_Links', 'dashboard.modals.footerlinks')      
+
     <div class="container-fluid">
         <div class="row" style="max-height:inherit; min-height:52.5rem">
             <div class="col-xl-2 col-lg-3 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
                 <div class="nav nav-tabs" style="border-bottom-width: 0px;">
-                    <a class="list-group-item active" data-toggle="tab" href="#user_profile" style="padding-top:23px; padding-left:32px">
+                    <a class="list-group-item active" href="http://localhost/dashboard/admin?#user_profile" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
                     @if(auth()->user()->role == 5)
@@ -196,7 +201,7 @@
                             <span class="text-white mr-3">Manage Profile </span>
                         </div>
                         
-                        @include('layouts.messages')
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4" >
                                 <h2 class="text-primary" >
@@ -392,7 +397,7 @@
                                 </div>
                             </div>
                         </div>
-                        @include('layouts.messages')
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->asset == 'Industries' || !request()->asset && auth()->user()->role == 5)
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
@@ -748,7 +753,7 @@
                                     </h2>
                                 </div>
                                 <div class="card-body px-5">
-                                    <table class="table data-table-options tech-table table-hover" style="width:100%">
+                                    <table id="aanr_table" class="table data-table-options tech-table table-hover" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th style="width:5%"></th>
@@ -776,10 +781,12 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                        <script>
+                                            
+                                        </script>   
                                     </div>
                                 </form>
                             </div>
-                            @endphp
                             @elseif(request()->asset == 'API')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <input type="hidden" name="_method" value="delete">
@@ -1028,7 +1035,7 @@
                                 </div>
                             </div>
                         </div>
-                        @include('layouts.messages')
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->landing_page == 'Search')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
@@ -1347,9 +1354,6 @@
                             </div>       
                         @endif         
                         
-                        @include('dashboard.modals.footerlinks')      
-                        @include('dashboard.modals.headerlinks')      
-                        @include('dashboard.modals.sliders')         
                         <!-- Modal for updateTopBannerModal -->
                             <div class="modal fade" id="addTopBannerModal" tabindex="-1" role="dialog" aria-labelledby="imageLabel" aria-hidden="true" style="z-index:9999">
                                 <div class="modal-dialog" role="document">
@@ -1632,7 +1636,7 @@
                                 </div>
                             </div>
                         </div>
-                        @include('layouts.messages')
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->user == 'all' || !request()->user)
                         <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
