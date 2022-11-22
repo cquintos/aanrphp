@@ -129,7 +129,7 @@ class PagesController extends Controller
             'content' => Content::pluck('type', 'id')->all(),
             'content_subtype' => ContentSubtype::pluck('name', 'id')->all(),
             'isp' => ISP::pluck('name', 'id')->all(),
-            'commodities' => Commodity::pluck('name', 'id')->all(),
+            'commodities' => Commodity::orderBy('name')->pluck('name', 'id')->all(),
             'subcommodities' => CommoditySubtype::pluck('name', 'id')->all(),
         ]);
     }
