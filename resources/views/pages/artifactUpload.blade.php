@@ -224,6 +224,8 @@
     .title {
         font-weight: bold;
         font-size: 2.5rem;
+        word-break: keep-all;
+        white-space: nowrap;
     }
 
     .card-body {

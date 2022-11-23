@@ -46,7 +46,7 @@
                     @if($artifact->embed_link)
                     <div class="dropdown-divider mt-3"></div>
                     <b>Content Website</b><br>
-                    <iframe allowfullscreen src="{{$artifact->embed_link}}" width="100%" height="500"></iframe>
+                    <iframe allowfullscreen src="//{{$artifact->embed_link}}" width="100%" height="500"></iframe>
                     <button id="fullscreeniframe" title="view in full screen" class="button btn btn-light"><i class="fas fa-expand"></i> View in fullscreen</button>
                     @endif
                     
@@ -68,7 +68,7 @@
                 </div>
                 <div class="modal-footer">
                     @if($artifact->link != null)
-                    <a target="_blank" href="{{$artifact->link}}"><button type="button" class="btn btn-primary">Go to link</button></a>
+                    <a target="_blank" href="//{{$artifact->link}}"><button type="button" class="btn btn-primary">Go to link</button></a>
                     @endif
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                 </div>
