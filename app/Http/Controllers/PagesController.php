@@ -147,9 +147,9 @@ class PagesController extends Controller
 
     public function artifactUpload() {
         return view('pages.artifactUpload', [
-            'content' => Content::pluck('type', 'id')->all(),
+            'contents' => Content::pluck('type', 'id')->all(),
             'content_subtype' => ContentSubtype::all(),
-            'consortia' => Consortia::pluck('short_name', 'id')->all(),
+            'consortia' => Consortia::all(),
             'isp' => ISP::pluck('name', 'id')->all(),
             'commodities' => Commodity::pluck('name', 'id')->all(),
             'consortia_members' => ConsortiaMember::pluck('name', 'id')->all(),
@@ -257,10 +257,10 @@ class PagesController extends Controller
         }
 
         return view('dashboard.admin', [
-            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
+            'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->with('content', 'content_subtype', 'consortia')->get(),
             'consortia' => Consortia::all(),
             'contents' => Content::all(),
-            'content_subtypes' => ContentSubtype::all(),
+            'content_subtypes' => ContentSubtype::with('content')->get(),
             'isps' => ISP::all(),
             'isp_name_id' => ISP::pluck('name', 'id')->all(),
             'sectors' => Sector::all(),
@@ -281,7 +281,6 @@ class PagesController extends Controller
             'landing_page_sliders' => LandingPageSlider::all()->sortBy('id'),
             'users_all' => User::all(),
             'users_from_auth_org' => User::where('organization', '=', auth()->user()->organization)->get(),
-            'consortiaAdminRequests' => User::where('consortia_admin_request', '=', 1)->count(),
             'consorita_admin_requester' => User::where('consortia_admin_request', '=', 1)->get(),
             'logs' => Log::orderBy('id', 'desc')->get(),
             'content_with_subtype' => Content::with('content_subtypes'),

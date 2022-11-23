@@ -177,6 +177,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('dashboard/admin/fetchContentSubtypeDependent', 'ArtifactAANRController@fetchContentSubtypeDependent')->name('fetchContentSubtypeDependent');
         Route::post('dashboard/admin/fetchCommodityDependent', 'ArtifactAANRController@fetchCommodityDependent')->name('fetchCommodityDependent');
         Route::get('dashboard/admin/fetchCommoditySubtypeDependent', 'ArtifactAANRController@fetchCommoditySubtypeDependent')->name('fetchCommoditySubtypeDependent');
+        Route::get('dashboard/admin/artifactModalView', 'ArtifactAANRController@artifactModalView')->name('artifactModalView');
         
         Route::get('dashboard/admin/artifact/{id}/edit', 'PagesController@artifactEdit')->name('artifactEdit');
         Route::get('dashboard/admin/artifact/{id}/view', 'PagesController@artifactView')->name('artifactView');

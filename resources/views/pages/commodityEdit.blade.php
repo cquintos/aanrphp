@@ -20,7 +20,7 @@
         <div id="main_row" class="row">
             <div class="col-xl-2 col-lg-12 col-md-12 pl-0 pr-0" id="side_bar">
                 <div id="nav_items" class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#basic_info"><i class="fas fa-info-circle side_panel_icon"></i> Basic Information</a>
+                    <a class="list-group-item list-group-item-action" href="#basic_info"><i class="fas fa-info-circle side_panel_icon"></i> Basic Info</a>
                     <a class="list-group-item list-group-item-action" href="{{ route('dashboardAdmin') }}?asset=Commodities"><i class="fas fa-angle-left side_panel_icon "></i> Back</a>
                     @include('layouts.messages')
                 </div>
@@ -55,7 +55,7 @@
                                             <h5>{{Form::label('subcommodities', 'Sub-commodities:', ['class' => 'col-form-label'])}}</h5>
                                             @php $i=0 @endphp
                                             @forelse($commodity->subtypes->all() as $entry)
-                                                <label class="btn btn-outline-danger mt-1 ml-1">
+                                                <label class="btn btn-outline-danger mt-1 ml-1 text-break">
                                                     <input type="checkbox"  id="subtype-btn_{{$i}}" class="btn-check" name="subtypes[]" autocomplete="off" checked value="{{$entry->name}}"> 
                                                     <i class="fas fa-trash" id="subtype-icon{{$i}}"></i> {{$entry->name}} 
                                                 </label>
@@ -265,19 +265,12 @@
         font-weight: 500;
         height:4.5rem;
         background-color: inherit;
-        border-width: 2px 0px;
-        border-top-left-radius: 10px !important; 
-        border-bottom-left-radius: 10px !important; 
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         color:rgb(207, 207, 207);
         padding-top:23px; 
         padding-left:32px;
         padding-right: 0;
-    }
-
-    .list-group-item:last-child {
-
     }
 
 </style>                  
@@ -308,7 +301,7 @@
 
                 $(".btn-group-toggle").append(
                     $(document.createElement('label'))
-                        .addClass("btn btn-outline-danger active mt-1 ml-1")
+                        .addClass("btn btn-outline-danger active mt-1 ml-1 text-break")
                         .append(
                             $(document.createElement('input'))
                                 .attr({

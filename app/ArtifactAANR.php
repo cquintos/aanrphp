@@ -39,6 +39,11 @@ class ArtifactAANR extends Model
         return $this->belongsTo(Content::class);
     }
 
+    public function content_subtype()
+    {
+        return $this->belongsTo(ContentSubtype::class, 'contentsubtype_id');
+    }
+
     public function isp()
     {
         return $this->belongsToMany(ISP::class, 'artifactaanr_isp', 'artifactaanr_id', 'isp_id')->withPivot('industry_id');
