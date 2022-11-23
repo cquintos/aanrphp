@@ -117,7 +117,6 @@
 </style>
 @section('content')
     <!-- Modal Includes -->
-    @includeWhen(request()->asset == 'Artifacts', 'dashboard.modals.artifact')
     @includeWhen(request()->asset == 'Sectors', 'dashboard.modals.sector')
     @includeWhen(request()->asset == 'Industries', 'dashboard.modals.industry')
     @includeWhen(request()->asset == 'ISP', 'dashboard.modals.isp')
@@ -141,7 +140,7 @@
         <div class="row" style="max-height:inherit; min-height:52.5rem">
             <div class="col-xl-2 col-lg-3 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
                 <div class="nav nav-tabs" style="border-bottom-width: 0px;">
-                    <a class="list-group-item active" href="http://localhost/dashboard/admin?#user_profile" style="padding-top:23px; padding-left:32px">
+                    <a class="list-group-item active" data-toggle="tab" href="#user_profile" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
                     @if(auth()->user()->role == 5)
@@ -153,7 +152,7 @@
                         <span><i class="fas fa-database" style="margin-right:0.8rem"></i> Manage Resources</span>
                     </a>
                     <a class="list-group-item wrap-ellipsis" data-toggle="tab" href="#users" style="padding-top:23px; padding-left:32px">
-                        <span><i class="fas fa-user-friends" style="margin-right:0.8rem"></i> Manage Users <span class="badge badge-warning" style="{{$consortiaAdminRequests != 0 ? '' : 'display:none'}}">!</span></span>
+                        <span><i class="fas fa-user-friends" style="margin-right:0.8rem"></i> Manage Users <span class="badge badge-warning" style="{{$consorita_admin_requester->count() != 0 ? '' : 'display:none'}}">!</span></span>
                     </a>
                     <a class="list-group-item wrap-ellipsis" data-toggle="tab" href="#logs" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-clipboard-list" style="margin-right:0.8rem"></i> Activity Logs</span>
@@ -165,6 +164,7 @@
             </div>
 
             <div class="col-xl-10 col-lg-9 pl-0 pr-0">
+                @includeWhen(session('success') || session('error'), 'layouts.messages')
                 <div id="load" class="text-center">
                     <div class="spinner-border"  style="width: 3rem; height: 3rem;" role="status">
                         <span class="sr-only">Loading...</span>
@@ -178,22 +178,20 @@
                             var x = document.getElementById('load');
                             x.style.opacity = "0";
                             x.style.visibility = "hidden";
-                            
                         }
                     }
                 </script>
                 <style>
                     #load{
-                    width:100%;
-                    height:100%;
-                    padding-top:350px;
-                    position:absolute;
-                    z-index:2;
-                    background-color: rgba(255, 255, 255);
-                    opacity:1;
-                    transition:visibility 0.5s linear,opacity 0.5s linear;
-
-                }
+                        width:100%;
+                        height:100%;
+                        padding-top:350px;
+                        position:absolute;
+                        z-index:2;
+                        background-color: rgba(255, 255, 255);
+                        opacity:1;
+                        transition:visibility 0.5s linear,opacity 0.5s linear;
+                    }
                 </style>
                 <div class="tab-content">
                     <div class="tab-pane fade  active show" id="user_profile">
@@ -201,7 +199,6 @@
                             <span class="text-white mr-3">Manage Profile </span>
                         </div>
                         
-                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4" >
                                 <h2 class="text-primary" >
@@ -397,7 +394,6 @@
                                 </div>
                             </div>
                         </div>
-                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->asset == 'Industries' || !request()->asset && auth()->user()->role == 5)
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
@@ -739,6 +735,8 @@
                                 </div>
                             </div>
                         @elseif(request()->asset == 'Artifacts')
+                            <div class="placeholder modal fade" aria-hidden="true">
+                            </div>
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <form action="{{ route('deleteArtifact')}}" id="deleteForm" method="POST">
                                 {{ csrf_field() }}
@@ -771,18 +769,31 @@
                                                     <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
                                                     <td>{{$artifact->id}}</td>
                                                     <td>{{$artifact->title}}</td>
-                                                    <td>{{$contents->pluck('type', 'id')[$artifact->content_id]}}</td>
+                                                    <td>{{$artifact->content_subtype == null ? $artifact->content->type : $artifact->content_subtype->name}}</td>
                                                     <td>{{$artifact->date_published}}</td>
                                                     <td>{{$artifact->author}}</td>
                                                     <td>
-                                                        <a class="btn btn-primary" href="{{ route('artifactEdit', ['id' => $artifact->id]) }}" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                        <a class="btn btn-warning viewArtifactBtn" id="artifact-{{$artifact->id}}" data-toggle="modal" data-target="#artifact_modal_view{{$artifact->id}}" role="button"><i class="fas fa-eye"></i></a>
+                                                        <a class="btn btn-primary" href="{{ route('artifactEdit', ['id' => $artifact->id]) }}" role="button"><i class="fas fa-edit"></i></a>
                                                     </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                         <script>
-                                            
+                                            $(document).ready(function() {
+                                                $('.viewArtifactBtn').click(function() {
+                                                    var id = $(this).attr('id').split("-")[1];
+                                                    $.ajax({
+                                                        url:"{{ route('artifactModalView') }}",
+                                                        method:"GET",
+                                                        data:{id:id, _token: '{{csrf_token()}}'},
+                                                        success:function(result) {
+                                                            $('.placeholder').empty().append(result).modal('show');
+                                                        }
+                                                    }) 
+                                                });
+                                            });
                                         </script>   
                                     </div>
                                 </form>
@@ -1035,7 +1046,6 @@
                                 </div>
                             </div>
                         </div>
-                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->landing_page == 'Search')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">
@@ -1627,16 +1637,15 @@
                         <div class="section-header shadow px-5" style="padding-top:23px">
                             <span class="text-white mr-3">Manage Users: </span>
                             <div class="dropdown" style="display:initial;">
-                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="{{$consortiaAdminRequests != 0 ? 'background-color:rgb(255, 228, 156)' : ''}}">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="{{$consorita_admin_requester->count() != 0 ? 'background-color:rgb(255, 228, 156)' : ''}}">
                                     <b style="text-transform: capitalize">{!!request()->user ? str_replace('_',' ',request()->user) : 'All'!!}</b>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'all'])}}">All Users</a>
-                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$consortiaAdminRequests != 0 ? '' : 'display:none'}}">!</span></a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$consorita_admin_requester->count() != 0 ? '' : 'display:none'}}">!</span></a>
                                 </div>
                             </div>
                         </div>
-                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->user == 'all' || !request()->user)
                         <div class="card shadow mb-5 mt-0 ml-0">
                                 <div class="card-header px-5 pt-4">

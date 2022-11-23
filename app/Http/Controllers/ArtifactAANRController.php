@@ -497,4 +497,9 @@ class ArtifactAANRController extends Controller
             ? '<option value"">---------------------</option>'
             : $output;
     }
+
+    public function artifactModalView(Request $request)
+    {
+        return view('dashboard.modals.artifact_view_modal', ['artifact' => ArtifactAANR::find($request->get('id'))]);
+    }
 }

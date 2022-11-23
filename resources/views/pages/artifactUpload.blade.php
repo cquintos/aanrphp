@@ -8,7 +8,7 @@
         <li class="breadcrumb-item active" aria-current="page">Upload</li>
     </ol>
 @endsection
-
+@include('dashboard.modals.artifact')
 @section('content')
     <!-- Modal Includes -->
 <body data-spy="scroll" data-target="#nav_items" data-offset="550" style="position: relative">
@@ -29,7 +29,14 @@
                     <div class="tab-pane fade show active">
                         <div class="card shadow-lg my-4">
                             <div class="card-header px-5 pt-2">
-                                <span class="title">UPLOAD ARTIFACT</span>
+                                <div class="row justify-content-around">
+                                    <div class="col-sm-6"><span class="title">UPLOAD ARTIFACT</span></div>
+                                    <div class="col col-sm-4 align-self-center">
+                                        <a id="multiple_upload_btn" class="btn btn-warning float-right" data-toggle="modal" data-target="#multiple_artifact_modal" role="button">
+                                            <i class="fas fa-plus"></i><b> Upload Multiple Artifacts</b>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body">
                                 {{ Form::open(['action' => ['ArtifactAANRController@uploadArtifact'], 'id' => 'info_table', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
@@ -53,12 +60,12 @@
                                             {{Form::text('author', null, ['class' => 'form-control', 'placeholder' => 'e.g. Mae Santos', 'maxlength' => 200])}}
                                         <h5>{{Form::label('author_affiliation', 'Author Affilitation', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::text('author_affiliation', null, ['class' => 'form-control', 'placeholder' => 'e.g. DOST-PCAARRD S&T Media Service', 'maxlength' => 200])}}
-                                        <h5>{{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}</h5>
+                                        <h5>{{Form::label('date_published', 'Date Published', ['class' => 'col-form-label required'])}}</h5>
                                             {{Form::date('date_published', null,['class' => 'form-control']) }}
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}</h5>
-                                            {{Form::select('content', $content, null,['class' => 'dynamic_content_subtype form-control', 'placeholder' => 'Select Content Type']) }}
+                                            {{Form::select('content', $contents, null,['class' => 'dynamic_content_subtype form-control', 'placeholder' => 'Select Content Type']) }}
                                         <h5>{{Form::label('content_subtype', 'Subcontent Type', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::select('content_subtype', [], null,['id' => 'content-subtype-edit', 'class' => 'form-control', 'placeholder' => 'Select Content Subtype']) }}
                                         <br><br>
@@ -179,6 +186,10 @@
     #nav_items{
         position: sticky;
         top:10.4rem;
+    }
+
+    #multiple_upload_btn {
+        color:rgb(40, 40, 40);
     }
 
     .btn-success{

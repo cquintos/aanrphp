@@ -9,12 +9,14 @@ class Content extends Model
 {
     use HasFactory;
     protected $table = 'content';
+
     public function content_subtypes()
     {
-        return $this->hasMany('App\ContentSubtype');
+        return $this->hasMany(ContentSubtype::class);
     }
+    
     public function artifacts()
     {
-        return $this->hasMany('App\ArtifactAANR');
+        return $this->hasMany(ArtifactAANR::class);
     }
 }

@@ -336,13 +336,16 @@
         font-weight: 500;
         height:4.5rem;
         background-color: inherit;
-        border-top-left-radius: 10px !important; 
-        border-bottom-left-radius: 10px !important; 
         border-style: solid !important;
         border:0;
         color:rgb(207, 207, 207);
+        border: 0px;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        color:rgb(207, 207, 207);
         padding-top:23px; 
-        padding-left:32px
+        padding-left:32px;
+        padding-right: 0;
     }
 </style>                  
 @endsection
