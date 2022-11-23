@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="col-sm-12">
                                         @if($artifact->embed_link)
-                                            <h5>Embed Link Preview</h5><iframe src="{{$artifact->embed_link}}"></iframe>
+                                            <h5>Embed Link Preview</h5><iframe src="//{{$artifact->embed_link}}"></iframe>
                                         @endif
                                         <h5>{{Form::label('link', 'Redirect Link', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::text('link', $artifact->link, ['class' => 'form-control mb-3 pt-1', 'disabled'])}}
