@@ -21,12 +21,12 @@
                 <div id="nav_items" class="list-group">
                     <a class="list-group-item list-group-item-action" href="#basic_info"><i class="fas fa-info-circle side_panel_icon"></i> Basic Info</a>
                     <a class="list-group-item list-group-item-action" href="{{ route('dashboardAdmin') }}?asset=Commodities"><i class="fas fa-angle-left side_panel_icon "></i> Back</a>
-                    @include('layouts.messages')
                 </div>
             </div>
             <div class="col-sm-1">
             </div>
             <div class="col-xl-6 col-lg-12 col-md-12 pl-0 pr-0">
+                @include('layouts.messages')
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="edit">
                         <div class="card shadow-lg my-4">
@@ -288,7 +288,7 @@
 
                 $(".btn-group-toggle").append(
                     $(document.createElement('label'))
-                        .addClass("btn btn-outline-danger active mt-1 ml-1")
+                        .addClass("btn btn-outline-danger active mt-1 ml-1 text-break")
                         .append(
                             $(document.createElement('input'))
                                 .attr({

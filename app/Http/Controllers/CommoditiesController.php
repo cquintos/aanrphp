@@ -40,6 +40,8 @@ class CommoditiesController extends Controller
     {
         $this->validate($request, array(
             'name' => 'required|max:40',
+            'industry' => 'required',
+            'description' => 'max:2000',
         ));
 
         if(Commodity::where('name', $request->name)->first() != null) {
@@ -59,6 +61,7 @@ class CommoditiesController extends Controller
         $temp_changes = '<strong>Added </strong>\''. $commodity->name.'\' <strong>to commodities</strong><br>';
         $user = auth()->user();
         $commodity->description = $request->description;
+        $commodity->industry_id = $request->industry;
         $commodity->save();
         $id = Commodity::where('name', $request->name)->first()->id;
 
@@ -81,7 +84,7 @@ class CommoditiesController extends Controller
             'Commodities'
         ]);
 
-        return redirect()->back()->with('success', 'Commodity Added.');
+        return Redirect::to(route('dashboardAdmin').'?asset=Commodities')->with('success', 'Commodity Added.');        
     }
 
     public function edit(Request $request, $commodity_id)

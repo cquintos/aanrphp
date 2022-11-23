@@ -1,7 +1,7 @@
 <div class="modal fade" id="multiple_artifact_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            {{ Form::open(['action' => ['ArtifactAANRController@addArtifact'], 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
+            {{ Form::open(['action' => ['ArtifactAANRController@uploadArtifactCSV'], 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
             <div class="modal-header">
                 <h6 class="modal-title" style="color:black">Upload AANR Content</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
