@@ -50,143 +50,191 @@ class ArtifactAANRController extends Controller
         }
     }
 
-    public function addArtifact(Request $request)
+    public function uploadArtifactAPI(Request $request)
     {
-        if ($request->api_link != null) {
-            $data = @file_get_contents($request->api_link);
-            $publications = [];
+        if ($request->api_link == null) {
+            return redirect()->back()->with('error', 'Invalid link.');
+        }
+
+        $data = @file_get_contents($request->api_link);
+        $publications = [];
+        
+        if($data != false) {
+            $publications = json_decode($data);
+        }
+
+        foreach ($publications as $publication) {
+            $artifact->content_id = Content::where('type', '=', 'Publications')->first();
+            // TODO fix this. this is hard coded.
+            $artifact->consortia_id = Consortia::where('short_name', '=', 'STAARRDEC')->first()->id;
+            $artifact->contentsubtype_id = ContentSubtype::where('name', '=', $publication->materialtype)->first();
+            $artifact = ArtifactAANR::firstOrNew(['title' => $publication->title]);
+            $artifact->date_published = date("Y-m-d", strtotime($publication->publicationdate));
+            $artifact->description = $publication->summary;
+            $artifact->imglink = $publication->thumbnail;
+            $artifact->author = $publication->author;
+            $artifact->keywords = $publication->subjects;
+
+            if ($artifact->content_id) {
+                $artifact->content_id = $artifact->content_id->id;
+            }
             
-            if($data != false) {
-                $publications = json_decode($data);
+            if ($artifact->contentsubtype_id) {
+                $artifact->contentsubtype_id = $artifact->contentsubtype_id->id;
             }
-
-            foreach ($publications as $publication) {
-                $artifact->content_id = Content::where('type', '=', 'Publications')->first();
-                // TODO fix this. this is hard coded.
-                $artifact->consortia_id = Consortia::where('short_name', '=', 'STAARRDEC')->first()->id;
-                $artifact->contentsubtype_id = ContentSubtype::where('name', '=', $publication->materialtype)->first();
-                $artifact = ArtifactAANR::firstOrNew(['title' => $publication->title]);
-                $artifact->date_published = date("Y-m-d", strtotime($publication->publicationdate));
-                $artifact->description = $publication->summary;
-                $artifact->imglink = $publication->thumbnail;
-                $artifact->author = $publication->author;
-                $artifact->keywords = $publication->subjects;
-
-                if ($artifact->content_id) {
-                    $artifact->content_id = $artifact->content_id->id;
-                }
-                
-                if ($artifact->contentsubtype_id) {
-                    $artifact->contentsubtype_id = $artifact->contentsubtype_id->id;
-                }
-                
-                if ($publication->filelocation) {
-                    $artifact->file = $publication->filelocation;
-                    $artifact->file_type = 'pdf_link';
-                }
-                
-                $artifact->save();
+            
+            if ($publication->filelocation) {
+                $artifact->file = $publication->filelocation;
+                $artifact->file_type = 'pdf_link';
             }
-        } elseif ($request->file('csv_file')) {
-            $upload = $request->file('csv_file');
-            $filePath = $upload->getRealPath();
-            $file = fopen($filePath, 'r');
-            $header = fgetcsv($file);
-            $err_required = 0; 
-            $err_consortia = 0; 
-            $err_cType = 0; 
-            $err_subCType = 0; 
-            $err_CMI = 0; 
-            $count = 0; 
-            $err_duplicate = 0; 
- 
-            while ($columns = fgetcsv($file)) {
-                $count = $count + 1;
-                $data = array_combine($header, $columns);
-                $artifact = new ArtifactAANR();
-
-                foreach ($data as $key => &$value) {
-                    $key = strtolower($key);
-                    $value = ($key == "gad") ? (int)$value : (string)$value;
-                }
-                
-                if ($data['title']==null || $data['consortia'] ==null || $data['content_type'] ==null) { // DATA VALIDATION
-                    $err_required = $err_required + 1;   //checks if the required fields: title, consortia, and content type are included in the entry
-                    continue;
-                }
-                
-                $artifact->content_id = Content::where('type', '=', $data['content_type'])->first(); //checks if the content id is in the database to make sure it is a valid content type
-                if ($artifact->content_id==null) {
-                    $err_cType = $err_cType + 1;
-                    continue;
-                }
-                
-                $artifact->consortia_id = Consortia::where('short_name', '=', $data['consortia'])->first(); //checks if the content id is in the database to make sure it is a valid consortia
-                if ($artifact->consortia_id == null) {
-                    $err_consortia = $err_consortia + 1;
-                    continue;
-                }
-                
-                $contentsubtype_id = $data['subcontent_type']; //content subtype is nullable but user input still needs to be checked
-                $contentsubtype_id = null; //null from no input is acceptable
-
-                if ($contentsubtype_id != null) {
-                    $contentsubtype_id = ContentSubtype::where('name', '=', $data['subcontent_type'])->first(); //null result means user input is invalid
-                    if ($contentsubtype_id == null) {
-                        $err_subCType = $err_subCType+1;
-                        continue;
-                    }
-                    $contentsubtype_id = $contentsubtype_id->id;
-                }
-                
-                $consortia_member_id = $data['CMI']; //consortia id is nullable but user input still needs to be checked
-                if ($consortia_member_id != null) {
-                    $consortia_member_id = ConsortiaMember::where('name', '=', $data['CMI'])->first(); //null result means user input is invalid
-                    if ($consortia_member_id == null) {
-                        $err_CMI = $err_CMI + 1;
-                        continue;
-                    }
-                    $consortia_member_name = $data['CMI'];
-                    $consortia_member_id = $consortia_member_id->id;
-                } else {
-                    $consortia_member_id = null; //null means no input and is acceptable
-                    $consortia_member_name = null;
-                }
-
-                $artifact->title = $data['title'];
-                $artifact->date_published = date("Y-m-d", strtotime($data['date_published']));
-                $artifact->description = $data['abstract'];
-                $artifact->contentsubtype_id = $contentsubtype_id;
-                $artifact->link = $data['link'];;
-                $artifact->embed_link = $data['embed_link'];
-                $artifact->author = $data['author'];
-                $artifact->author_affiliation = $data['author_affiliation'];
-                $artifact->author_institution = $consortia_member_name;
-                $artifact->keywords = $data['keywords'];
-                $artifact->is_gad = $data['is_gad']==null ? 0 : $is_gad;
-
-                if (DB::table('artifactaanr') //  CHECK IF THIS ENTRY EXISTS
-                    ->where('title', $artifact->title)
-                    ->where('date_published', $artifact->date_published)
-                    ->where('author', $artifact->author)
-                    ->where('description', $artifact->description)
-                    ->where('consortia_id', $artifact->consortia_id)
-                    ->where('content_id', $artifact->content_id)
-                    ->where('is_gad', $artifact->is_gad)
-                    ->exists()) 
-                {
-                    $err_duplicate = $err_duplicate + 1;
-                    continue;
-                }
-
-                $artifact->save();
-            }
-        } 
+            
+            $artifact->save();
+        }
 
         return redirect()->back()->with('success', 'ArtifactAANR Added.');
     }
+
+    public function uploadArtifactCSV(Request $request)
+    {
+        if ($request->file('csv_file') == null) {
+            return redirect()->back()->with('error', 'Invalid file.');
+        }
+
+        $upload = $request->file('csv_file');
+        $filePath = $upload->getRealPath();
+        $file = fopen($filePath, 'r');
+        $header = fgetcsv($file);
+        $count = 0; 
+        $err_required = 0; 
+        $err_consortia = 0; 
+        $err_cType = 0; 
+        $err_subCType = 0; 
+        $err_CMI = 0; 
+        $err_duplicate = 0; 
+        $output = '';
+
+        function clog($output, $with_script_tags=true) { 
+            $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+                if ($with_script_tags) {
+                    $js_code = '<script>' . $js_code . '</script>';
+                }
+                echo $js_code;
+        }
+        
+
+        while ($columns = fgetcsv($file)) {
+            $count = $count + 1;
+            $data = array_combine($header, $columns);
+            $artifact = new ArtifactAANR();
+
+            foreach ($data as $key => &$value) {
+                $key = strtolower($key);
+                $value = ($key == "gad") ? (int)$value : (string)$value;
+            }
+            
+            if ($data['title']==null || $data['consortia'] ==null || $data['content_type'] ==null) { // DATA VALIDATION
+                $err_required = $err_required + 1;   //checks if the required fields: title, consortia, and content type are included in the entry
+                continue;
+            }
+            
+            $artifact->content_id = Content::where('type', '=', $data['content_type'])->first(); //checks if the content id is in the database to make sure it is a valid content type
+            if ($artifact->content_id==null) {
+                $err_cType = $err_cType + 1;
+                continue;
+            }
+            
+            $artifact->consortia_id = Consortia::where('short_name', '=', $data['consortia'])->first(); //checks if the content id is in the database to make sure it is a valid consortia
+            if ($artifact->consortia_id == null) {
+                $err_consortia = $err_consortia + 1;
+                continue;
+            }
+            
+            //content subtype is nullable but user input still needs to be checked
+            $contentsubtype_id = $data['subcontent_type'] == null ? null : $data['subcontent_type']; 
+            if ($contentsubtype_id != null) {
+                $contentsubtype_id = ContentSubtype::where('name', '=', $data['subcontent_type'])->first(); //null result means user input is invalid
+                if ($contentsubtype_id == null) {
+                    $err_subCType = $err_subCType+1;
+                    continue;
+                }
+                $contentsubtype_id = $contentsubtype_id->id;
+            }
+            clog($contentsubtype_id);
+            
+            $consortia_member_id = $data['CMI']; //consortia id is nullable but user input still needs to be checked
+            if ($consortia_member_id != null) {
+                $consortia_member_id = ConsortiaMember::where('name', '=', $data['CMI'])->first(); //null result means user input is invalid
+                if ($consortia_member_id == null) {
+                    $err_CMI = $err_CMI + 1;
+                    continue;
+                }
+                $artifact->author_institution = $consortia_member_id->name;
+                $artifact->consortia_member_id = $consortia_member_id->id;
+            } else {
+                $artifact->consortia_member_id = null; //null means no input and is acceptable
+                $artifact->author_institution = null;
+            }
+
+            $artifact->title = $data['title'];
+            $artifact->date_published = date("Y-m-d", strtotime($data['date_published']));
+            $artifact->content_id = $artifact->content_id->id;
+            $artifact->contentsubtype_id = $contentsubtype_id;
+            $artifact->consortia_id = $artifact->consortia_id->id;
+            $artifact->description = $data['abstract'];
+            $artifact->link = $data['link'];
+            $artifact->embed_link = $data['embed_link'];
+            $artifact->author = $data['author'];
+            $artifact->author_affiliation = $data['author_affiliation'];
+            $artifact->keywords = $data['keywords'];
+            $artifact->is_gad = $data['is_gad']==null ? 0 : $data['is_gad'];
+
+            if (DB::table('artifactaanr') //  CHECK IF THIS ENTRY EXISTS
+                ->where('title', $artifact->title)
+                ->where('date_published', $artifact->date_published)
+                ->where('author', $artifact->author)
+                ->where('description', $artifact->description)
+                ->where('consortia_id', $artifact->consortia_id)
+                ->where('content_id', $artifact->content_id)
+                ->where('is_gad', $artifact->is_gad)
+                ->exists()) 
+            {
+                $err_duplicate = $err_duplicate + 1;
+                continue;
+            }
+
+            $artifact->save();
+        }
+
+        $err_total = $err_required+$err_consortia+$err_cType+$err_subCType+$err_CMI+$err_duplicate;
+        $count = $count - $err_total;
+
+        if($err_required) {
+            $output .= $err_required.' entries with missing required fields. ';
+        }
+        if($err_consortia) {
+            $output .= $err_consortia.' entries with invalid consortia. ';
+        }
+        if($err_cType) {
+            $output .= $err_cType.' entries with missing content type field. ';
+        }
+        if($err_subCType) {
+            $output .= $err_subCType.' entries with invalid subcontent type. ';
+        }
+        if($err_CMI) {
+            $output .= $err_CMI.' entries with invalid consortia member. ';
+        }
+        if($err_duplicate) {
+            $output .= $err_duplicate.' duplicate entries. ';
+        }
+        if($err_total) {
+            return Redirect::to(route('dashboardAdmin').'?asset=Artifacts')->with('error',"Total of ".$count." artifacts uploaded. ".$output);        
+        }
+
+        return Redirect::to(route('dashboardAdmin').'?asset=Artifacts')->with('success', $count." artifacts uploaded successfully." );        
+    }
     
-    public function uploadArtifact(Request $request) {
+    public function uploadArtifactForm(Request $request) 
+    {
         $this->validate($request, [
             'author' => 'max:200',
             'author_affiliation' => 'max:200',
@@ -315,7 +363,6 @@ class ArtifactAANRController extends Controller
             $temp_changes = $temp_changes.'<strong>Is GAD?:</strong> '.$artifactaanr->is_gad.' <strong>-></strong> '.$request->is_gad.'<br>';
         }
 
-
         $artifactaanr->title = $request->title;
         $artifactaanr->date_published = $request->date_published;
         $artifactaanr->description = $request->description;
@@ -365,7 +412,7 @@ class ArtifactAANRController extends Controller
             $record->pivot->update(['industry_id' => Commodity::find($record->pivot->commodity_id)->industry_id]);
         }
 
-        return Redirect::to(route('dashboardAdmin').'?asset=Artifacts');        
+        return Redirect::to(route('dashboardAdmin').'?asset=Artifacts')->with('success', 'AANR Content Updated.');        
     }
 
     public function addISPIndustryID(Request $request)

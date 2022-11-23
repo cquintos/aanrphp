@@ -8,8 +8,8 @@
         <li class="breadcrumb-item active" aria-current="page">Upload</li>
     </ol>
 @endsection
-@include('dashboard.modals.artifact')
 @section('content')
+@include('dashboard.modals.artifact')
     <!-- Modal Includes -->
 <body data-spy="scroll" data-target="#nav_items" data-offset="550" style="position: relative">
     <div class="container-fluid">
@@ -20,11 +20,11 @@
                     <a class="list-group-item list-group-item-action" href="#file_and_links"><i class="fas fa-file-pdf side_panel_icon"></i> Files</a>
                     <a class="list-group-item list-group-item-action" href="#keywords"><i class="fas fa-search side_panel_icon"></i> Keywords</a>
                     <a class="list-group-item" href="{{ route('dashboardAdmin') }}?asset=Artifacts"><i class="fas fa-angle-left side_panel_icon"></i> Back</a>
-                    @include('layouts.messages')
                 </div>
             </div>
             <div class="col-sm-1"></div> 
             <div class="col-xl-8 col-md-9 col-sm-12 py-0">
+                @include('layouts.messages')
                 <div class="tab-content">
                     <div class="tab-pane fade show active">
                         <div class="card shadow-lg my-4">
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                {{ Form::open(['action' => ['ArtifactAANRController@uploadArtifact'], 'id' => 'info_table', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
+                                {{ Form::open(['action' => ['ArtifactAANRController@uploadArtifactForm'], 'id' => 'info_table', 'method' => 'POST', 'enctype' => 'multipart/form-data']) }}
                                 <div class="form-group row d-flex justify-content-around">
                                     <div class="col-sm-12">
                                         <h3 class="mt-3 mb-2 font-weight-bold">Basic Information</h3>
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('consortia', 'Consortia', ['class' => 'col-form-label required'])}}</h5>
-                                            {{Form::select('consortia', $consortia, null,['id' => 'consortia', 'class' => 'dynamic_consortia_member form-control', 'placeholder' => 'Select Consortia']) }}
+                                            {{Form::select('consortia', $consortia->pluck('short_name', 'id'), null,['id' => 'consortia', 'class' => 'dynamic_consortia_member form-control', 'placeholder' => 'Select Consortia']) }}
                                         </select> 
                                         <h5>{{Form::label('consortia_member', 'SUC/Unit/Institution', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::select('consortia_member', [], null,['id' => 'consortia-member-edit', 'class' => 'form-control', 'placeholder' => 'Select Consortia Member']) }}

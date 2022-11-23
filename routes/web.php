@@ -165,8 +165,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::delete('headlines/{id}/deleteAnnouncement', 'AnnouncementsController@deleteAnnouncement')->name('deleteAnnouncement');
 
         //ArtifactAANR
-        Route::post('headlines/addArtifact', 'ArtifactAANRController@addArtifact')->name('addArtifact');
-        Route::post('headlines/uploadArtifact', 'ArtifactAANRController@uploadArtifact')->name('uploadArtifact');
+        Route::post('headlines/uploadArtifactAPI', 'ArtifactAANRController@uploadArtifactAPI')->name('uploadArtifactAPI');
+        Route::post('headlines/uploadArtifactForm', 'ArtifactAANRController@uploadArtifactForm')->name('uploadArtifactForm');
+        Route::post('headlines/uploadArtifactCSV', 'ArtifactAANRController@uploadArtifactCSV')->name('uploadArtifactCSV');
 
         Route::post('headlines/addView', 'ArtifactAANRController@addView')->name('addView');
         Route::post('headlines/{id}/editArtifact', 'ArtifactAANRController@editArtifact')->name('editArtifact');
