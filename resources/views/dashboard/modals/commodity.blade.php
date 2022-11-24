@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {{Form::label('isp', 'ISP', ['class' => 'col-form-label'])}}
-                        {{Form::select('isp', App\ISP::pluck('name', 'id')->all(), null,['class' => 'form-control', 'placeholder' => 'Select ISP']) }}
+                        {{Form::select('isp', $isps->pluck('name', 'id'), null,['class' => 'form-control', 'placeholder' => 'Select ISP']) }}
                     </div>
                     <div class="form-group">
                         {{Form::label('name', 'Commodity Name', ['class' => 'col-form-label required'])}}
@@ -34,7 +34,7 @@
     </div>
 <!-- end of modal for create commodity -->
 
-@foreach(App\Commodity::all() as $commodity)
+@foreach($commodities as $commodity)
     <!-- confirm delete commodity -->
         <div class="modal fade" id="deleteCommodityModal-{{$commodity->id}}" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">

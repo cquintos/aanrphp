@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group consortia-user-choice" style="{{$user->role == 2 ? '' : 'display:none'}}">
                         {{Form::label('consortia_admin_id', 'Choose consortia', ['class' => 'col-form-label required'])}} 
-                        {{Form::select('consortia_admin_id', App\Consortia::where('short_name', '=', $user->organization)->pluck('short_name', 'id')->all(), $user->consortia_admin_id, ['class' => 'form-control', ])}}
+                        {{Form::select('consortia_admin_id', $consortia->where('short_name', '=', $user->organization)->pluck('short_name', 'id'), $user->consortia_admin_id, ['class' => 'form-control', ])}}
                     </div>
                 </div>
                 <div class="modal-footer">

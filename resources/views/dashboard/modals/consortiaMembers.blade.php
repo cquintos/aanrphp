@@ -53,7 +53,7 @@
         </div>
     </div>
     <!-- create consortia member end -->
-@foreach(App\ConsortiaMember::all() as $consortia_member)
+@foreach($consortia_members as $consortia_member)
     <!-- edit consortia member-->
         <div class="modal fade" id="editConsortiaMemberModal-{{$consortia_member->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

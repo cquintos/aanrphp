@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}
-                        {{Form::select('content', $contents, '',['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
+                        {{Form::select('content', $contents->pluck('type', 'id'), '',['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
                     </div>
                     <div class="form-group">
                         {{Form::label('name', 'Content Subtype Name', ['class' => 'col-form-label'])}}
@@ -45,7 +45,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             {{Form::label('content', 'Content Type', ['class' => 'col-form-label required'])}}
-                            {{Form::select('content', $contents, $content_subtype->content_id,['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
+                            {{Form::select('content', $contents->pluck('type', 'id'), $content_subtype->content_id,['class' => 'form-control', 'placeholder' => 'Select Content Type']) }}
                         </div>
                         <div class="form-group">
                             {{Form::label('name', 'Content Subtype Name', ['class' => 'col-form-label'])}}

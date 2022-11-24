@@ -77,7 +77,7 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $sector_with_isp = App\Sector::with('isps')->find($sector->id); ?>
+                            <?php $sector_with_isp = $sectors->find($sector->id); ?>
                             @if($sector_with_isp->isps->count() > 0)
                                 You cannot delete: <b>{{$sector->name}}</b></br></br>
                                 The following commodities needs to be deleted before deleting this sector:

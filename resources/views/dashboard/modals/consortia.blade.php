@@ -74,7 +74,7 @@
         </div>
     </div>
     <!-- create consortia end -->
-@foreach(App\Consortia::all() as $consortium)
+@foreach($consortia as $consortium)
     <!-- edit consortium -->
         <div class="modal fade" id="editConsortiaModal-{{$consortium->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -185,7 +185,7 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $consortia_with_member = App\Consortia::with('consortia_members')->find($consortium->id); ?>
+                            <?php $consortia_with_member = $consortia->find($consortium->id); ?>
                             @if($consortia_with_member->consortia_members->count() > 0)
                                 The following consortia members will also be deleted upon deletion of <b>{{$consortia_with_member->short_name}}</b>:
                                 <ul>

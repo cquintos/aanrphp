@@ -69,7 +69,7 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $content_with_subtype = App\Content::with('content_subtypes')->find($content->id); ?>
+                            <?php $content_with_subtype = $contents->find($content->id); ?>
                             @if($content_with_subtype->content_subtypes->count() > 0)
                                 You cannot delete: <b>{{$content->type}}</b></br></br>
                                 The following content subtypes needs to be deleted before deleting this content type:

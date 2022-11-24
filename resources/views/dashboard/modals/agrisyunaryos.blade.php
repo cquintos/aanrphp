@@ -43,7 +43,7 @@
         </div>
     </div>
     <!-- create agrisyunaryo end -->
-@foreach(App\Agrisyunaryo::all() as $agrisyunaryo)
+@foreach($agrisyunaryos as $agrisyunaryo)
     <!-- edit agrisyunaryo -->
         <div class="modal fade" id="editAgrisyunaryoModal-{{$agrisyunaryo->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

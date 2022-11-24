@@ -73,7 +73,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             {{Form::label('isp', 'ISP')}}
-                            {{Form::select('isp', App\ISP::pluck('name', 'id')->all(), $advertisement->isp_id,['class' => 'form-control', 'placeholder' => 'Select ISP']) }}
+                            {{Form::select('isp', $isps->pluck('name', 'id'), $advertisement->isp_id,['class' => 'form-control', 'placeholder' => 'Select ISP']) }}
                         </div>
                         <div class="form-group">
                             {{Form::label('name', 'Advertisement Name', ['class' => 'col-form-label'])}}
