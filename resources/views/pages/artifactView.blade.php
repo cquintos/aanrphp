@@ -44,19 +44,16 @@
                     <a class="list-group-item list-group-item-action" href="#file_and_links"><i class="fas fa-file-pdf side_panel_icon"></i> Files</a>
                     <a class="list-group-item list-group-item-action" href="#keywords"><i class="fas fa-search side_panel_icon"></i> Keywords</a>
                     <a class="list-group-item" href="{{ route('dashboardAdmin') }}?asset=Artifacts"><i class="fas fa-angle-left side_panel_icon"></i> Back</a>
-                    @if(Auth::user()->role == 5)
-                        <a class="list-group-item" href="{{ route('artifactEdit', [$artifact->id]) }}"><i class="fas fa-edit side_panel_icon"></i> Edit</a>
-                    @endif
-                    @include('layouts.messages')
                 </div>
             </div>
             <div class="col-sm-1"></div> 
             <div class="col-xl-8 col-md-9 col-sm-12 py-0">
+                @include('layouts.messages')
                 <div class="tab-content">
                     <div class="tab-pane fade show active">
                         <div class="card shadow-lg my-4">
                             <div class="card-header px-5 pt-2">
-                                <span class="title">ARTIFACT #{{$artifact->id}} DETAILS</span>
+                                <span class="title">YOU ARE VIEWING ARTIFACT #{{$artifact->id}} DETAILS</span>
                             </div>
                             <div class="card-body">
                                 <div class="form-group row d-flex justify-content-around">
@@ -66,25 +63,25 @@
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('consortia', 'Consortia', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('consortia', $artifact->consortia->short_name,['class' => 'form-control', 'disabled']) }}
+                                            {{Form::textarea('consortia', $artifact->consortia->short_name,['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"]) }}
                                         </select> 
                                         <h5>{{Form::label('consortia_member', 'SUC/Unit/Institution', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('consortia_member', $consortia_member_name, ['class' => 'form-control', 'disabled']) }}
+                                            {{Form::textarea('consortia_member', $consortia_member_name, ['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"]) }}
                                         <br><div class="dropdown-divider mb-3"></div>
                                         <h5>{{Form::label('title', 'Content Title', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('title', $artifact->title, ['class' => 'form-control', 'disabled'])}}
+                                            {{Form::textarea('title', $artifact->title, ['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"])}}
                                         <h5>{{Form::label('author', 'Author', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('author', $artifact->author, ['class' => 'form-control', 'disabled'])}}
+                                            {{Form::textarea('author', $artifact->author, ['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"])}}
                                         <h5>{{Form::label('author_affiliation', 'Author Affilitation', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('author_affiliation', $artifact->author_affiliation, ['class' => 'form-control', 'disabled'])}}
+                                            {{Form::textarea('author_affiliation', $artifact->author_affiliation, ['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"])}}
                                         <h5>{{Form::label('date_published', 'Date Published', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::date('date_published', $artifact->date_published,['class' => 'form-control', 'disabled']) }}
                                     </div>
                                     <div class="col-sm-5">
                                         <h5>{{Form::label('content', 'Content Type', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('content', $content_type,['class' => 'form-control', 'disabled']) }}
+                                            {{Form::textarea('content', $content_type,['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"]) }}
                                         <h5>{{Form::label('content_subtype', 'Subcontent Type', ['class' => 'col-form-label'])}}</h5>
-                                            {{Form::text('content_subtype', $content_sub_type,['class' => 'form-control', 'disabled']) }}
+                                            {{Form::textarea('content_subtype', $content_sub_type,['class' => 'form-control', 'disabled', 'rows'=>"1", 'wrap' => "soft"]) }}
                                         <br><div class="dropdown-divider mb-3"></div>
                                         <h5>{{Form::label('isp', 'ISPs', ['class' => 'col-form-label'])}}</h5>
                                             {{Form::select('isp[]', $isp, null, ['class' => 'form-control multi-isp-edit w-100', 'multiple' => 'multiple', 'disabled'])}}
@@ -137,6 +134,9 @@
                                     <div class='col-sm-4'></div>
                                     <div class='col-sm-2'><i class="fas fa-angle-down d-flex justify-content-center"></i></div>
                                     <div class="col-sm-4 d-flex justify-content-end">
+                                        @if(Auth::user()->role == 5)
+                                            <a class="btn btn-primary" href="{{ route('artifactEdit', [$artifact->id]) }}"><b>Edit artifact<b></a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -339,6 +339,11 @@
         margin-left:0px !important;
     }
 
+    .form-control {
+        white-space: wrap;
+    
+    }
+    
     .list-group-item{
         width:100%;
         font-size: 1.125rem;
@@ -391,15 +396,15 @@
         });
         
         $('.multi-commodity-edit').select2({
-            placeholder: " Select commodity"
+            placeholder: " N/A"
         }).val({!! json_encode($artifact->commodities()->allRelatedIds()) !!}).trigger('change');
 
         $('.multi-isp-edit').select2({
-            placeholder: " Select ISP"
+            placeholder: " N/A"
         }).val({!! json_encode($artifact->isp()->allRelatedIds()) !!}).trigger('change');
 
         $('.multi-subcommodity-edit').select2({
-            placeholder: " Select sub commodities"
+            placeholder: " N/A"
         }).val({!! json_encode($artifact->commodity_subtypes()->allRelatedIds()) !!}).trigger('change')
 
         $('.multi-commodity-edit').change(function(){
@@ -410,7 +415,7 @@
                 data:{ids:$ids, _token: '{{csrf_token()}}'},
                 success:function(result) {
                     $currentVal = $('.multi-subcommodity-edit').val();
-                    $('.multi-subcommodity-edit').select2({ placeholder: " Select sub commodity" }).html(result);
+                    $('.multi-subcommodity-edit').select2({ placeholder: " N/A" }).html(result);
                     $('.multi-subcommodity-edit').val($currentVal).trigger("change");
                 }
             }) 
