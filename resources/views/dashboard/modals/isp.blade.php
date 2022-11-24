@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {{Form::label('sector', 'Sector', ['class' => 'col-form-label required'])}}
-                        {{Form::select('sector', $sectors, null,['class' => 'form-control', 'placeholder' => 'Select Sector']) }}
+                        {{Form::select('sector', $sectors->pluck('name', 'id'), null,['class' => 'form-control', 'placeholder' => 'Select Sector']) }}
                     </div>
                     <div class="form-group">
                         {{Form::label('name', 'ISP Name', ['class' => 'col-form-label required'])}}
@@ -49,7 +49,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             {{Form::label('sector', 'Sector', ['class' => 'col-form-label required'])}}
-                            {{Form::select('sector', $sectors, $isp->sector_id,['class' => 'form-control', 'placeholder' => 'Select Sector']) }}
+                            {{Form::select('sector', $sectors->pluck('name', 'id'), $isp->sector_id,['class' => 'form-control', 'placeholder' => 'Select Sector']) }}
                         </div>
                         <div class="form-group">
                             {{Form::label('name', 'ISP Name', ['class' => 'col-form-label required'])}}

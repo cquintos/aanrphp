@@ -27,7 +27,7 @@
         </div>
     </div>
     <!-- create industry end -->
-@foreach($industries as $key => $industry)
+@foreach($industries->pluck('name', 'id') as $key => $industry)
     <!-- edit industry -->
         <div class="modal fade" id="editIndustryModal-{{$key}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -70,7 +70,7 @@
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <span>
-                            <?php $industry_with_sector = App\Industry::with('sectors')->find($key); ?>
+                            <?php $industry_with_sector = $industries->find($key); ?>
                             @if($industry_with_sector->sectors->count() > 0)
                                 You cannot delete: <b>{{$industry}}</b></br></br>
                                 The following sectors needs to be deleted before deleting this industry:

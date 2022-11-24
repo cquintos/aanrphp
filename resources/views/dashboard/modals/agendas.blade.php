@@ -44,7 +44,7 @@
     </div>
 <!-- end of modal for create agenda -->
 
-@foreach(App\Agenda::all() as $agenda)
+@foreach($agendas as $agenda)
     <!-- edit agenda -->
         <div class="modal fade" id="editAgendaModal-{{$agenda->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

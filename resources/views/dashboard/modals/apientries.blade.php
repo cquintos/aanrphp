@@ -69,7 +69,7 @@
     </div>
 <!-- end of modal for create api entry -->
 
-@foreach(App\APIEntries::all() as $api_entry)
+@foreach($api_entries as $api_entry)
     <!-- edit api entry -->
         <div class="modal fade" id="editAPIEntryModal-{{$api_entry->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

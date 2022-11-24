@@ -289,8 +289,8 @@ class ArtifactAANRController extends Controller
         foreach($artifactaanr->commodities as $record) {
             $record->pivot->update(['industry_id' => Commodity::find($record->pivot->commodity_id)->industry_id]);
         }
-
-        return redirect()->route('artifactView', [$artifactaanr->id])->with('success', 'Successfuly uploaded artifact.');
+        
+        return redirect()->route('dashboardAdmin', ['asset' => 'Artifacts'])->with('success', 'Successfuly uploaded artifact.');        
     }
 
     public function editArtifact(Request $request, $artifact_id)
@@ -412,7 +412,7 @@ class ArtifactAANRController extends Controller
             $record->pivot->update(['industry_id' => Commodity::find($record->pivot->commodity_id)->industry_id]);
         }
 
-        return Redirect::to(route('dashboardAdmin').'?asset=Artifacts')->with('success', 'AANR Content Updated.');        
+        return redirect()->route('artifactView', [$artifactaanr->id])->with('success', 'AANR Content Updated.');
     }
 
     public function addISPIndustryID(Request $request)

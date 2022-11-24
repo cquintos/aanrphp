@@ -127,13 +127,13 @@
     @includeWhen(request()->asset == 'Content_Subtype', 'dashboard.modals.contentSubtype')
 
     @includeWhen(request()->asset == 'aanrpage', 'dashboard.modals.aanrpage')
-    @includeWhen(request()->asset == 'agrisyunaryos', 'dashboard.modals.agrisyunaryos')
+    @includeWhen(request()->asset == 'Agrisyunaryo', 'dashboard.modals.agrisyunaryos')
     @includeWhen(request()->asset == 'pcaarrdpage', 'dashboard.modals.pcaarrdpage')
     @includeWhen(request()->asset == 'advertisement', 'dashboard.modals.advertisement')
-    @includeWhen(request()->asset == 'apientries', 'dashboard.modals.apientries')
+    @includeWhen(request()->asset == 'API', 'dashboard.modals.apientries')
     @includeWhen(request()->user == 'all', 'dashboard.modals.users')
     @includeWhen(request()->landing_page == 'Sliders', 'dashboard.modals.sliders')    
-    @includeWhen(request()->landing_page == 'Headlines', 'dashboard.modals.headerlinks')      
+    @includeWhen(request()->landing_page == 'Header_Links', 'dashboard.modals.headerlinks')      
     @includeWhen(request()->landing_page == 'Footer_Links', 'dashboard.modals.footerlinks')      
 
     <div class="container-fluid">
@@ -152,7 +152,7 @@
                         <span><i class="fas fa-database" style="margin-right:0.8rem"></i> Manage Resources</span>
                     </a>
                     <a class="list-group-item wrap-ellipsis" data-toggle="tab" href="#users" style="padding-top:23px; padding-left:32px">
-                        <span><i class="fas fa-user-friends" style="margin-right:0.8rem"></i> Manage Users <span class="badge badge-warning" style="{{$consorita_admin_requester->count() != 0 ? '' : 'display:none'}}">!</span></span>
+                        <span><i class="fas fa-user-friends" style="margin-right:0.8rem"></i> Manage Users <span class="badge badge-warning" style="{{$users_all->where('consortia_admin_request', '=', 1)->count() != 0 ? '' : 'display:none'}}">!</span></span>
                     </a>
                     <a class="list-group-item wrap-ellipsis" data-toggle="tab" href="#logs" style="padding-top:23px; padding-left:32px">
                         <span><i class="fas fa-clipboard-list" style="margin-right:0.8rem"></i> Activity Logs</span>
@@ -309,7 +309,7 @@
                                         {{Form::label('country', 'Country', ['class' => 'col-form-label font-weight-bold required'])}}
                                         <select class="form-control" data-live-search="true" name="select_country" id="select_country">
                                             @php 
-                                                $def_country = App\Country::find(auth()->user()->country_id);
+                                                $def_country = $countries->find(auth()->user()->country_id);
                                             @endphp
                                             <option value="{{$def_country->id}}" selected>{{$def_country->name}} - {{$def_country->code}}</option>
                                             @foreach ($countries as $country)
@@ -413,7 +413,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($industries as $key => $industry)
+                                            @foreach($industries->pluck('name', 'id') as $key => $industry)
                                                 <tr>
                                                     <td>{{$key}}</td>
                                                     <td>{{$industry}}</td>
@@ -451,7 +451,7 @@
                                                 <tr>
                                                     <td>{{$sector->id}}</td>
                                                     <td>{{$sector->name}}</td>
-                                                    <td>{{$industries[$sector->industry_id]}}</td>
+                                                    <td>{{$sector->industry->name}}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editSectorModal-{{$sector->id}}"><i class="fas fa-edit"></i> Edit Details</button>
                                                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteSectorModal-{{$sector->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
@@ -525,7 +525,7 @@
                                                     <td>{{$commodity->name}}</td>
                                                     <td>
                                                         <ul>
-                                                            @forelse($commodity->subtypes->all() as $entry)
+                                                            @forelse($commodity->subtypes as $entry)
                                                                 <li> {{ucwords($entry->name)}} </li>
                                                             @empty
                                                                 -
@@ -1637,12 +1637,12 @@
                         <div class="section-header shadow px-5" style="padding-top:23px">
                             <span class="text-white mr-3">Manage Users: </span>
                             <div class="dropdown" style="display:initial;">
-                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="{{$consorita_admin_requester->count() != 0 ? 'background-color:rgb(255, 228, 156)' : ''}}">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="{{$users_all->where('consortia_admin_request', '=', 1)->count() != 0 ? 'background-color:rgb(255, 228, 156)' : ''}}">
                                     <b style="text-transform: capitalize">{!!request()->user ? str_replace('_',' ',request()->user) : 'All'!!}</b>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'all'])}}">All Users</a>
-                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$consorita_admin_requester->count() != 0 ? '' : 'display:none'}}">!</span></a>
+                                    <a class="dropdown-item" href="{{route('dashboardAdmin', ['user' => 'requests'])}}">User Requests <span class="badge badge-warning" style="{{$users_all->where('consortia_admin_request', '=', 1)->count() ? '' : 'display:none'}}">!</span></a>
                                 </div>
                             </div>
                         </div>
@@ -1666,7 +1666,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach(auth()->user()->role == 5 ? $users_all : $users_from_auth_org as $user)
+                                            @foreach(auth()->user()->role == 5 ? $users_all : $users_all->where('organization', '=', auth()->user()->organization) as $user)
                                                 <tr>
                                                     <td style="width:5%">{{$user->id}}</td>
                                                     <td style="width:15%">{{$user->email}}</td>
@@ -1677,7 +1677,7 @@
                                                         @if($user->role == 5)
                                                             Superadmin
                                                         @elseif(($user->role == 1 || $user->role == 2) && $user->consortia_admin_id != null)
-                                                            {{App\Consortia::find($user->consortia_admin_id)->short_name}} Manager
+                                                            {{$consortia->find($user->consortia_admin_id)->short_name}} Manager
                                                         @else
                                                             Standard User
                                                         @endif
@@ -1720,7 +1720,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($consorita_admin_requester as $user)
+                                        @foreach($users_all->where('consortia_admin_request', '=', 1) as $user)
                                             <tr>
                                                 <td style="text-align:center"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
                                                 <td>{{$user->id}}</td>
