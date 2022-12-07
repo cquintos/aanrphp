@@ -310,10 +310,10 @@ class PagesController extends Controller
     }
 
     public function communityPage() {
-        if(Auth::user()->hasVerifiedEmail()) {
-            return Redirect::away('http://community.aanr.ph/moLogin');
+        if(Auth::user() && Auth::user()->hasVerifiedEmail()) {
+            return Redirect::away('http://km4aanr.pcaarrd.dost.gov.ph/community/moLogin');
         } 
 
-        return Redirect::away('http://community.aanr.ph');
+        return Redirect::away('http://km4aanr.pcaarrd.dost.gov.ph/community');
     }
 }
