@@ -34,7 +34,7 @@
                     <a class="nav-links" href="https://techdashboard.aanr.ph/">Technology</a>
                 </li>
                 <li class="nav-item">
-                        <a class="nav-links" href="/community" target=”_blank”>Community</a>
+                        <a class="nav-links" href="/redirect/community" target=”_blank”>Community</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-links" href="/agrisyunaryo">Agrisyunaryo</a>
