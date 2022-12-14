@@ -167,7 +167,7 @@ class PagesController extends Controller
             $locationData = \Location::get($request->ip());
             $search_query->location = null;
             
-            if($location != null && $locationData->countryCode == 'PH'){
+            if($locationData != null && $locationData->countryCode == 'PH'){
                 $search_query->location = $locationData->regionName;
             }
 
