@@ -74,7 +74,7 @@
         </div>
     </div>
     <!-- create consortia end -->
-@foreach($consortia as $consortium)
+@forelse($consortia as $consortium)
     <!-- edit consortium -->
         <div class="modal fade" id="editConsortiaModal-{{$consortium->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

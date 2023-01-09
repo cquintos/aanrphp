@@ -10,7 +10,7 @@
 @endsection
 
 <?php 
-    $consortium_chosen = App\Consortia::where('id', '=', auth()->user()->consortia_admin_id)->first();
+    $consortium_chosen = $consortia->where('id', '=', auth()->user()->consortia_admin_id)->first();
 ?>
 
 <style>
@@ -133,9 +133,6 @@
 </style>
 @section('content')
     <!-- Modal Includes -->
-    @include('dashboard.modals.consortia')
-    @include('dashboard.modals.users')
-    @include('dashboard.modals.consortiaMembers')
     <div class="container-fluid">
         <div class="row" style="max-height:inherit; min-height:52.5rem">
             <div class="col-xl-2 col-md-3 pl-0 pr-0" style="background-image: linear-gradient(to right, rgb(118,128,138) , rgb(79, 94, 109));">
@@ -144,12 +141,14 @@
                         <span><i class="fas fa-user" style="margin-right:0.8rem"></i> User Profile</span>
                     </a>
                     @if(auth()->user()->role == 2)
-                    <a class="list-group-item" data-toggle="tab" href="#manage_consortia" style="padding-top:23px; padding-left:32px">
-                        <span><i class="fas fa-home" style="margin-right:0.8rem"></i> Manage Consortia</span>
-                    </a>
-                    <a class="list-group-item" data-toggle="tab" href="#logs" style="padding-top:23px; padding-left:32px">
-                        <span><i class="fas fa-clipboard-list" style="margin-right:0.8rem"></i> Activity Logs</span>
-                    </a>
+                        @include('dashboard.modals.consortia')
+                        @include('dashboard.modals.consortiaMembers')
+                        <a class="list-group-item" data-toggle="tab" href="#manage_consortia" style="padding-top:23px; padding-left:32px">
+                            <span><i class="fas fa-home" style="margin-right:0.8rem"></i> Manage Consortia</span>
+                        </a>
+                        <a class="list-group-item" data-toggle="tab" href="#logs" style="padding-top:23px; padding-left:32px">
+                            <span><i class="fas fa-clipboard-list" style="margin-right:0.8rem"></i> Activity Logs</span>
+                        </a>
                     @endif
                 </div>
             </div>
@@ -159,7 +158,7 @@
                         <div class="section-header shadow px-5">
                             <span class="text-white mr-3">Manage Profile </span>
                         </div>
-                        @include('layouts.messages')
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4" >
                                 <h2 class="text-primary" >
@@ -203,7 +202,7 @@
                                         @enderror
                                         <label class="checkbox-inline mt-2">
                                             <input type="checkbox" name="subscribe" {{auth()->user()->subscribed == 1 ? 'checked' : ''}} value="1"> 
-                                            Subscribe to the latest updates and KM4AANR newsletter. (Once checked, please select at least one interest.)
+                                            Subscribe to the latest updates and KM4AANR newsletter. <br> (Once checked, please select at least one interest.)
                                         </label>
                                     </div>
                                     <div class="form-group">
@@ -229,7 +228,7 @@
                                         
                                         <select class="form-control" data-live-search="true" name="select_org" id="select_org">
                                             <option disabled selected>Select Organization</option>
-                                            @foreach(App\Consortia::all() as $consortium_account_details)
+                                            @foreach($consortia as $consortium_account_details)
                                                 <option value="{{$consortium_account_details->short_name}}" {{auth()->user()->organization == $consortium_account_details->short_name  ? 'selected' : ''}}>{{$consortium_account_details->short_name}}</option>
                                             @endforeach
                                             <option value="PCAARRD" {{auth()->user()->organization == 'PCAARRD'  ? 'selected' : ''}}>PCAARRD</option>
@@ -244,9 +243,7 @@
                                     <div class="form-group">
                                         {{Form::label('account_type', 'User Account Type', ['class' => 'col-form-label font-weight-bold'])}}
                                         <br>  
-                                        @if(auth()->user()->role == 5)
-                                            <span class="badge bg-success px-3 pt-2 "><h5 class="text-white">Superadmin</h5></span>
-                                        @elseif(auth()->user()->role == 2)
+                                        @if(auth()->user()->role == 2)
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Consortia Admin</h5></span>
                                         @else
                                             <span class="badge bg-success px-3 pt-2"><h5 class="text-white">Regular User</h5></span>
@@ -272,10 +269,10 @@
                                         {{Form::label('country', 'Country', ['class' => 'col-form-label font-weight-bold required'])}}
                                         <select class="form-control" data-live-search="true" name="select_country" id="select_country">
                                             @php 
-                                                $def_country = App\Country::find(auth()->user()->country_id);
+                                                $def_country = $countries->find(auth()->user()->country_id);
                                             @endphp
                                             <option value="{{$def_country->id}}" selected>{{$def_country->name}} - {{$def_country->code}}</option>
-                                            @foreach (App\Country::all() as $country)
+                                            @foreach ($countries as $country)
                                                 <option value="{{$country->id}}">{{$country->name}} - {{$country->code}}</option>
                                             @endforeach
                                         </select>
@@ -291,21 +288,21 @@
                                         ?>
                                         {{Form::label('interests', 'Topics of Interest', ['class' => 'col-form-label font-weight-bold'])}}
                                         <div class="btn-group-toggle" data-toggle="buttons">
-                                            @foreach(App\Consortia::all() as $consortium)
+                                            @foreach($consortia as $consortium)
                                                 <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                     <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($consortium->short_name, json_decode($user_interests)) == true  ? 'checked' : ''  }}  value="{{$consortium->short_name}}"> {{$consortium->short_name}}
                                                 </label>
                                             @endforeach
                                         </div>
                                         <div class="btn-group-toggle mt-3" data-toggle="buttons">
-                                            @foreach(App\ISP::groupBy('name')->get() as $isp)
+                                            @foreach($isps as $isp)
                                                 <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                     <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($isp->name, json_decode($user_interests)) == true ? 'checked' : ''  }}  value="{{$isp->name}}"> {{$isp->name}}
                                                 </label>
                                             @endforeach
                                         </div>
                                         <div class="btn-group-toggle mt-3" data-toggle="buttons">
-                                            @foreach(App\Commodity::groupBy('name')->get() as $commodity)
+                                            @foreach($commodities as $commodity)
                                                 <label class="btn btn-outline-primary {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true  ? 'active' : ''  }}">
                                                     <input type="checkbox" name="interest[]" autocomplete="off" {{is_array(json_decode($user_interests)) && in_array($commodity->name, json_decode($user_interests)) == true ? 'checked' : ''  }} value="{{$commodity->name}}"> {{$commodity->name}}
                                                 </label>
@@ -336,8 +333,7 @@
                                 </div>
                             </div>
                         </div>
-                        @include('layouts.messages')
-
+                        @includeWhen(session('success') || session('error'), 'layouts.messages')
                         @if(request()->asset == 'Consortia' || !request()->asset)
                         <div class="card shadow mb-5 mt-0 ml-0">
                             <div class="card-header px-5 pt-4">
@@ -365,7 +361,7 @@
                                                 <td>{{$consortium_chosen->region}}</td>
                                                 <td>
                                                     <a target="blank_" href="{{route('consortiaAboutPage', ['consortia' => $consortium_chosen->short_name])}}" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Live view of the consortium about page"><i class="far fa-eye"></i> View About Page</a>
-                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium_chosen->id}}"  data-placement="top" rel="tooltip" title="Edit information in the consortium about page" ><i class="fas fa-edit"></i> Edit Details</button>
+                                                    {{-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium_chosen->id}}"  data-placement="top" rel="tooltip" title="Edit information in the consortium about page" ><i class="fas fa-edit"></i> Edit Details</button> --}}
                                                 </td>
                                             </tr>
                                         @endif 
@@ -442,9 +438,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(App\ArtifactAANR::where('is_agrisyunaryo', '=', 0)
-                                                                            ->where('consortia_id', '=', auth()->user()->consortia_admin_id)
-                                                                            ->get() as $artifact)
+                                                @foreach($artifactAANR->where('consortia_id', '=', auth()->user()->consortia_admin_id)->get() as $artifact)
                                                     <tr>
                                                         <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
                                                         <td>{{$artifact->id}}</td>
@@ -531,7 +525,7 @@
             <div class="modal-body">
                 <div class="form-group ">
                     {{Form::label('consortia_admin_id', 'Choose consortia', ['class' => 'col-form-label'])}} 
-                    {{Form::select('consortia_admin_id', App\Consortia::pluck('short_name', 'id')->all(), '', ['class' => 'form-control'])}}
+                    {{Form::select('consortia_admin_id', $consortia->pluck('short_name', 'id'), '', ['class' => 'form-control'])}}
                 </div>
             </div>
             <div class="modal-footer">
@@ -556,7 +550,7 @@
             <div class="modal-body">
                 <div class="form-group ">
                     {{Form::label('consortia_admin_id', 'Choose consortia', ['class' => 'col-form-label'])}} 
-                    {{Form::select('consortia_admin_id', App\Consortia::pluck('short_name', 'id')->all(), auth()->user()->consortia_admin_id, ['class' => 'form-control', 'disabled'])}}
+                    {{Form::select('consortia_admin_id', $consortia->pluck('short_name', 'id'), auth()->user()->consortia_admin_id, ['class' => 'form-control', 'disabled'])}}
                 </div>
                 <div class="form-group">
                     {{Form::label('request_status', 'Request Status', ['class' => 'col-form-label'])}}

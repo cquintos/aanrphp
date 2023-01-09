@@ -24,7 +24,7 @@
 <div class="container mt-5 mb-5">
     <h2 class="title">About us</h2>
     <p style="line-height:1.8; font-size:1.1em">
-        Ang KM4AANR.PH ay nakalaan sa pagkalap ng mga nilalaman mula sa iba’t ibang plataporma na matatagpuan online. Tampok dito ang mga datos, impormasyon, at balita tungkol sa pinakabagong teknolohiya sa Agrikultura, Yamang Tubig at Likas na Yaman (AANR). Kaugnay dito, binuo ng PCAARRD ang Industry Strategic S&T Programs o ISPs upang makapagbigay ng mga solusyong naka-base sa agham at teknolohiya para sa mga pangangailangan ng AANR. 
+        Ang KM4AANR ay nakalaan sa pagkalap ng mga nilalaman mula sa iba’t ibang plataporma na matatagpuan online. Tampok dito ang mga datos, impormasyon, at balita tungkol sa pinakabagong teknolohiya sa Agrikultura, Yamang Tubig at Likas na Yaman (AANR). Kaugnay dito, binuo ng PCAARRD ang Industry Strategic S&T Programs o ISPs upang makapagbigay ng mga solusyong naka-base sa agham at teknolohiya para sa mga pangangailangan ng AANR. 
         <br><br>
         Ang pahinaryang ito ay pinamumunuan ng DOST-PCAARRD.  
     </p>
@@ -57,7 +57,7 @@
     <br>
     <h2 class="title">How KM4AANR Works</h2>
     <p style="line-height:1.8; font-size:1.1em">
-        KM4AANR.ph is an online database dedicated to Agriculture, Aquatic and Natural Resources news, updates, and content from different platforms. This project is funded by DOST-PCAARRD. This is a short walkthrough of the system.
+        KM4AANR is an online database dedicated to Agriculture, Aquatic and Natural Resources news, updates, and content from different platforms. This project is funded by DOST-PCAARRD. This is a short walkthrough of the system.
     </p>
     <div class="video-container text-center my-4">
         <iframe src="//www.youtube.com/embed/B1qgdkgxnLk" width="720" height="460" frameborder="0" allowfullscreen="true"></iframe>

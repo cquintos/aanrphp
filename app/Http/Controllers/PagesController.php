@@ -75,7 +75,7 @@ class PagesController extends Controller
     }
 
     public function saveAnalytics(){
-        $file = Browsershot::url('http://aanr.ph/analytics/search')
+        $file = Browsershot::url('http://km4aanr.pcaarrd.dost.gov.ph/analytics/search')
             ->noSandbox()->landscape()->showBrowserHeaderAndFooter()
             ->windowSize(1920, 1080)->scale(0.75)->pdf();
         
@@ -293,27 +293,29 @@ class PagesController extends Controller
 
     public function userDashboard(){
         return view('dashboard.userDashboard', [
-            'advertisements' => Advertisement::all(),
-            'agendas' => Agenda::all(),
-            'announcements' => Announcement::all(),
+            'advertisements' => Advertisement::get(),
+            'agendas' => Agenda::get(),
+            'announcements' => Announcement::get(),
             'artifactAANR' => ArtifactAANR::where('is_agrisyunaryo', '=', 0)->get(),
-            'consortia' => Consortia::pluck('short_name', 'id')->all(),
-            'content' => Content::pluck('type', 'id')->all(),
-            'content_subtype' => ContentSubtype::all(),
-            'contributors' => Contributor::all(),
-            'isp' => ISP::pluck('name', 'id')->all(),
-            'sectors' => Sector::pluck('name', 'id')->all(),
-            'industries' => Industry::pluck('name', 'id')->all(),
-            'commodities' => Commodity::all(),
-            'subscribers' => Subscriber::all(),
+            'consortia' => Consortia::with('consortia_members')->get(),
+            'consortia_members' => ConsortiaMember::get(),
+            'content' => Content::get(),
+            'content_subtype' => ContentSubtype::get(),
+            'contributors' => Contributor::get(),
+            'countries' => Country::get(),
+            'isps' => ISP::groupBy('name')->get(),
+            'sectors' => Sector::get(),
+            'industries' => Industry::get(),
+            'commodities' => Commodity::groupBy('name')->get(),
+            'subscribers' => Subscriber::get(),
         ]);
     }
 
     public function communityPage() {
         if(Auth::user() && Auth::user()->hasVerifiedEmail()) {
-            return Redirect::away('http://km4aanr.pcaarrd.dost.gov.ph/community/moLogin');
+            return Redirect::away('http://community.pcaarrd.dost.gov.ph/moLogin');
         } 
 
-        return Redirect::away('http://km4aanr.pcaarrd.dost.gov.ph/community');
+        return Redirect::away('http://community.pcaarrd.dost.gov.ph/');
     }
 }

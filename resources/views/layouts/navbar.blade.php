@@ -31,7 +31,7 @@
                     <a class="nav-links" href="/usefulLinks">Useful Links</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-links" href="https://techdashboard.aanr.ph/">Technology</a>
+                    <a class="nav-links" href="https://techdashboard.pcaarrd.dost.gov.ph/">Technology</a>
                 </li>
                 <li class="nav-item">
                         <a class="nav-links" href="/redirect/community" target=”_blank”>Community</a>

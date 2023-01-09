@@ -9,7 +9,7 @@ About Us
 <br><br>
 <p>You are now also registered in our community portal.</p>
 <br>
-@component('mail::button2', ['url' => 'http://community.aanr.ph/moLogin']) 
+@component('mail::button2', ['url' => 'http://community.pcaarrd.dost.gov.ph/moLogin']) 
 Community
 @endcomponent
 @endcomponent

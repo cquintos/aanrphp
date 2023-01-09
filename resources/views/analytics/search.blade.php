@@ -175,13 +175,6 @@
             }
         }
     }
-    function clog($output, $with_script_tags=true) { 
-    $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
-        if ($with_script_tags) {
-            $js_code = '<script>' . $js_code . '</script>';
-        }
-        echo $js_code;
-}
 
     // *NOT SHOWN IF WITH ISP FILTER*
     //  COMMODITIES WITH THE MOST VIEWS
@@ -876,7 +869,7 @@
             maintainAspectRatio: false,
             responsive:true,
             scales: {
-                yAxes:{
+                y:{
                     display: true,
                     ticks: {
                         beginAtZero: true,
@@ -885,7 +878,8 @@
                     max: @php echo $barGraph_y_max @endphp,
                     stacked: true,
                 },
-                xAxes: {
+                x: {
+                    display: true,
                     stacked: true,
                 }
             }
