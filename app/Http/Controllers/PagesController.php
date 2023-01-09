@@ -318,4 +318,13 @@ class PagesController extends Controller
 
         return Redirect::away('http://community.pcaarrd.dost.gov.ph/');
     }
+
+    public function oauthPage()
+    {
+        $countries = DB::table('oauth_clients')->select('*')->get();
+        return response()->json([
+            'body' => view('pages.country', compact('countries'))->render(),
+            'clients' => $countries,
+        ]);
+    }
 }
