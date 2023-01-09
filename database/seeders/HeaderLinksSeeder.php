@@ -38,14 +38,14 @@ class HeaderLinksSeeder extends Seeder
         ]);
         DB::table('header_links')->insert([
             'name' => 'Technology',
-            'link' => 'techdashboard.aanr.ph',
+            'link' => 'techdashboard.pcaarrd.dost.gov.ph',
             'position' => 4,
             'created_at' => Carbon::now(), # new \Datetime()
             'updated_at' => Carbon::now(),
         ]);
         DB::table('header_links')->insert([
             'name' => 'Community',
-            'link' => 'community.aanr.ph',
+            'link' => 'community.pcaarrd.dost.gov.ph',
             'position' => 5,
             'created_at' => Carbon::now(), # new \Datetime()
             'updated_at' => Carbon::now(),

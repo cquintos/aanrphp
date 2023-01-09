@@ -9,8 +9,8 @@
             </tr>
             <tr>
                 <td class="content-cell" align="center">
-                    <a href="https://aanr.ph" style="display: inline-block;">
-                        <img src="https://aanr.ph/storage/page_images/6268bbdfa26cdlogo.png" width="400" height="70" class="align-center" alt="KM4AANR">
+                    <a href="https://km4aanr.pcaarrd.dost.gov.ph" style="display: inline-block;">
+                        <img src="https://km4aanr.pcaarrd.dost.gov.ph/storage/page_images/6268bbdfa26cdlogo.png" width="400" height="70" class="align-center" alt="KM4AANR">
                     </a>
                 </td>
             </tr>

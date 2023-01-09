@@ -7,7 +7,7 @@
     <div class="container {{request()->edit == '1' && $user != null ? 'overlay-container' : ''}}">
         <div class="row">
             <div class="col-sm-4">
-                <h5 class="footer-title">About aanr.ph</h5>
+                <h5 class="footer-title">About KM4AANR</h5>
                 <ul class="list-unstyled text-small">
                     <li>{!!$footer_info->about!!}</li>
                     <li style="margin-top:15px">
@@ -15,7 +15,7 @@
                     </li>
                     <li>
                        <small class="text-muted">
-                            © 2019-2023 - aanr.ph
+                            © 2019-2023 - km4aanr.pcaarrd.dost.gov.ph
                         </small>
                     </li>
                 </ul>

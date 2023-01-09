@@ -23,7 +23,7 @@ Route::get('about', 'PagesController@aboutUs')->name('aboutUs');
 Route::post('signup/createUser', 'UsersController@createUser')->name('createUser');
 Route::get('countries', [CountryController::class, 'index']);
 Route::get('/', 'PagesController@getLandingPage')->name('getLandingPage');
-Route::get('/redirect/community', 'PagesController@communityPage')->name('goToCommunity');
+Route::get('/community', 'PagesController@communityPage')->name('goToCommunity');
 
 // Route::get('/test', function(){
 //     event(new Verified(auth()->user()));
