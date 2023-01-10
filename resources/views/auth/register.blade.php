@@ -6,7 +6,7 @@
 <script type="text/javascript">
     var onloadCallback = function() {
     grecaptcha.render('captcha_element', {
-          'sitekey' : '6Ldcxx4hAAAAAHNwSiJDjRPp0tioB6Z6glyKKiQL'
+          'sitekey' : '6Lf3rOUjAAAAAEsgJM9HSw9bV5KIOT-hz6fywTpt'
         });
     };
  
