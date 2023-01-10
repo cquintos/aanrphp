@@ -49,7 +49,7 @@ class UsersController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'secret' => '6Lf3rOUjAAAAAIv8p5NUKUwH-da74g_chC-PaVD7',
+            'secret' => '6LdCtOUjAAAAAJva2VoKfJZbdjuKbESGqOBFS-Yd',
             'response' => $_POST['g-recaptcha-response'],
             'remoteip' => $_SERVER['REMOTE_ADDR']
         ]);
