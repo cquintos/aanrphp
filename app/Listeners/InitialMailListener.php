@@ -34,7 +34,7 @@ class InitialMailListener
         $user = $event->user;
         $compiled_featured_artifacts = collect();
 
-        Http::post('community.pcaarrd.dost.gov.ph/user/register?_format=json', [
+        Http::post('https://community.pcaarrd.dost.gov.ph/user/register', [
             "name" => ["value" => $user->first_name],
             "mail" => ["value" => $user->email],
             "pass" => ["value" => $user->password]
