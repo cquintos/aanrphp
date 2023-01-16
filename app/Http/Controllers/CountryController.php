@@ -8,7 +8,10 @@ class CountryController extends Controller
 {
     public function index()
     {
-        $countries = Country::all();
-        return view('country', compact('countries'));
+        $countries = \App\Country::all();
+        return response()->json([
+            'body' => view('pages.country', compact('countries'))->render(),
+            'countries' => $countries,
+        ]);
     }
 }
