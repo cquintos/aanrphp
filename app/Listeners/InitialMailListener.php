@@ -35,9 +35,9 @@ class InitialMailListener
         $compiled_featured_artifacts = collect();
 
         Http::post('https://community.pcaarrd.dost.gov.ph/user/register', [
-            "name" => ["value" => $user->first_name],
-            "mail" => ["value" => $user->email],
-            "pass" => ["value" => $user->password]
+            "name"  => $user->first_name,
+            "mail"  => $user->email,
+            "pass"  => $user->password
         ]);
 
         if(!$user->subscribed) {
