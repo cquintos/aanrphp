@@ -413,7 +413,7 @@ class ConsortiaController extends Controller
 
         $user->role = $request->user_role;
 
-        if ($request->role == 5) {
+        if ($request->user_role == 5) {
             $user->consortia_admin_id = null;
             $log->changes = 'Set '.$user->email.' as SUPERADMIN';
             $log->action = 'Set \''. $user->email.' as SUPERADMIN\'';
