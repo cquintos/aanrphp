@@ -34,12 +34,12 @@ class InitialMailListener
         $user = $event->user;
         $compiled_featured_artifacts = collect();
 
-        Http::post('https://community.pcaarrd.dost.gov.ph/user/register', [
-            "name"  => $user->first_name,
-            "mail"  => $user->email,
-            "pass"  => $user->password
+        Http::post('https://community.pcaarrd.dost.gov.ph/user/register?_format=json', [
+            "name" => ["value" => $user->first_name],
+            "mail" => ["value" => $user->email],
+            "pass" => ["value" => $user->password]
         ]);
-
+        
         if(!$user->subscribed) {
             $details = [
                 'title' => 'Email Confirmed!',  
