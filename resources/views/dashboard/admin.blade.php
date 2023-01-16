@@ -117,21 +117,21 @@
 </style>
 @section('content')
     <!-- Modal Includes -->
+    @include('dashboard.modals.industry')
+    @include('dashboard.modals.users')
+
     @includeWhen(request()->asset == 'Sectors', 'dashboard.modals.sector')
-    @includeWhen(request()->asset == 'Industries', 'dashboard.modals.industry')
     @includeWhen(request()->asset == 'ISP', 'dashboard.modals.isp')
     @includeWhen(request()->asset == 'Commodities', 'dashboard.modals.commodity')
     @includeWhen(request()->asset == 'Consortia', 'dashboard.modals.consortia')
     @includeWhen(request()->asset == 'Consortia_Members', 'dashboard.modals.consortiaMembers')
     @includeWhen(request()->asset == 'Content', 'dashboard.modals.contenttype')
     @includeWhen(request()->asset == 'Content_Subtype', 'dashboard.modals.contentSubtype')
-
     @includeWhen(request()->asset == 'aanrpage', 'dashboard.modals.aanrpage')
     @includeWhen(request()->asset == 'Agrisyunaryo', 'dashboard.modals.agrisyunaryos')
     @includeWhen(request()->asset == 'pcaarrdpage', 'dashboard.modals.pcaarrdpage')
     @includeWhen(request()->asset == 'advertisement', 'dashboard.modals.advertisement')
     @includeWhen(request()->asset == 'API', 'dashboard.modals.apientries')
-    @includeWhen(request()->user == 'all', 'dashboard.modals.users')
     @includeWhen(request()->landing_page == 'Sliders', 'dashboard.modals.sliders')    
     @includeWhen(request()->landing_page == 'Header_Links', 'dashboard.modals.headerlinks')      
     @includeWhen(request()->landing_page == 'Footer_Links', 'dashboard.modals.footerlinks')      
@@ -400,7 +400,7 @@
                                     <h2 class="text-primary" >
                                         Industries
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createIndustryModal"><i class="fas fa-plus"></i> Add Industry</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createIndustryModal"><i class="fas fa-plus"></i> Add Industry</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -418,8 +418,8 @@
                                                     <td>{{$key}}</td>
                                                     <td>{{$industry}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editIndustryModal-{{$key}}"><i class="fas fa-edit"></i>  Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteIndustryModal-{{$key}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editIndustryModal-{{$key}}"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteIndustryModal-{{$key}}"><i class="fas fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -433,7 +433,7 @@
                                     <h2 class="text-primary" >
                                         Sectors
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createSectorModal"><i class="fas fa-plus"></i> Add Sector</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createSectorModal"><i class="fas fa-plus"></i> Add Sector</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -453,8 +453,8 @@
                                                     <td>{{$sector->name}}</td>
                                                     <td>{{$sector->industry->name}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editSectorModal-{{$sector->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteSectorModal-{{$sector->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editSectorModal-{{$sector->id}}"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteSectorModal-{{$sector->id}}"><i class="fas fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -468,7 +468,7 @@
                                     <h2 class="text-primary" >
                                         ISP
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createISPModal"><i class="fas fa-plus"></i> Add ISP</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createISPModal"><i class="fas fa-plus"></i> Add ISP</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -488,8 +488,8 @@
                                                     <td>{{$isp_each->name}}</td>
                                                     <td>{{$sectors->pluck('name', 'id')[$isp_each->sector_id]}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editISPModal-{{$isp_each->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteISPModal-{{$isp_each->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editISPModal-{{$isp_each->id}}"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteISPModal-{{$isp_each->id}}"><i class="fas fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -503,7 +503,7 @@
                                     <h2 class="text-primary" >
                                         Commodities
                                     <span class="float-right">
-                                        <a class="btn btn-success" class="btn btn-default" href="{{ route('addCommodityPage')}}" role="button"><i class="fas fa-plus"></i> Commodity</a>
+                                        <a class="btn btn-success" href="{{ route('addCommodityPage')}}" role="button"><i class="fas fa-plus"></i> Commodity</a>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -558,7 +558,7 @@
                                     <h2 class="text-primary" >
                                         Consortia
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createConsortiaModal"><i class="fas fa-plus"></i> Add Consortia</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createConsortiaModal"><i class="fas fa-plus"></i> Add Consortia</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -579,7 +579,7 @@
                                                     <td>{{$aanrPage->full_name}}</td>
                                                     <td>----------------</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAANRPageModal"><i class="fas fa-edit"></i> Edit Details</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAANRPageModal"><i class="fas fa-edit"></i></button>
                                                     </td>
                                                 </tr>
                                             @foreach($consortia as $consortium)
@@ -589,8 +589,8 @@
                                                     <td>{{$consortium->full_name}}</td>
                                                     <td>{{$consortium->region}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteConsortiaModal-{{$consortium->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium->id}}"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConsortiaModal-{{$consortium->id}}"><i class="fas fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -604,7 +604,7 @@
                                     <h2 class="text-primary" >
                                         Consortia Members
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createConsortiaMemberModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createConsortiaMemberModal"><i class="fas fa-plus"></i> Add Consortia Member</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -625,7 +625,7 @@
                                                     <td>{{$pcaarrdPage->full_name}}</td>
                                                     <td>----------------</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editPCAARRDPageModal"><i class="fas fa-edit"></i> Edit Details</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPCAARRDPageModal"><i class="fas fa-edit"></i></button>
                                                     </td>
                                                 </tr>
                                             @foreach($consortia_members as $consortia_member)
@@ -635,8 +635,8 @@
                                                     <td>{{$consortia_member->name}}</td>
                                                     <td>{{$consortia_member->contact_name}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaMemberModal-{{$consortia_member->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteConsortiaMemberModal-{{$consortia_member->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editConsortiaMemberModal-{{$consortia_member->id}}"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConsortiaMemberModal-{{$consortia_member->id}}"><i class="fas fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -650,7 +650,7 @@
                                     <h2 class="text-primary" >
                                         Advertisements
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createAdvertisementModal"><i class="fas fa-plus"></i> Add Advertisement</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createAdvertisementModal"><i class="fas fa-plus"></i> Add Advertisement</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -675,7 +675,7 @@
                                     <h2 class="text-primary" >
                                         Agenda
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createAgendaModal"><i class="fas fa-plus"></i> Add Agenda</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createAgendaModal"><i class="fas fa-plus"></i> Add Agenda</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -699,8 +699,8 @@
                                                     <td>{{$agenda->agenda_types}}</td>
                                                     <td>{{$agenda->sector_id}}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAgendaModal-{{$agenda->id}}"><i class="fas fa-edit"></i>  Edit Details</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteAgendaModal-{{$agenda->id}}"><i class="fas fa-trash"></i> Delete</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAgendaModal-{{$agenda->id}}"><i class="fas fa-edit"></i> </button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteAgendaModal-{{$agenda->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -714,7 +714,7 @@
                                     <h2 class="text-primary" >
                                         Announcements
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createAnnouncementModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createAnnouncementModal"><i class="fas fa-plus"></i> Add Announcement</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -805,7 +805,7 @@
                                     <h2 class="text-primary" >
                                         API Upload
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createAPIEntryModal"><i class="fas fa-plus"></i> Add API</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createAPIEntryModal"><i class="fas fa-plus"></i> Add API</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -831,8 +831,8 @@
                                                         <td>{{Carbon::parse($api_entry->time)->format('h:i A')}} </td>
                                                         <td>-</td>
                                                         <td>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAPIEntryModal-{{$api_entry->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteAPIEntryModal-{{$api_entry->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAPIEntryModal-{{$api_entry->id}}"><i class="fas fa-edit"></i></button>
+                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteAPIEntryModal-{{$api_entry->id}}"><i class="fas fa-trash"></i></button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -851,7 +851,7 @@
                                     <h2 class="text-primary" >
                                         Content Type
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createContentTypeModal"><i class="fas fa-plus"></i> Add Content Type</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createContentTypeModal"><i class="fas fa-plus"></i> Add Content Type</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -869,8 +869,8 @@
                                                         <td>{{$key}}</td>
                                                         <td>{{$content}}</td>
                                                         <td>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContentTypeModal-{{$key}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteContentTypeModal-{{$key}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editContentTypeModal-{{$key}}"><i class="fas fa-edit"></i></button>
+                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteContentTypeModal-{{$key}}"><i class="fas fa-trash"></i></button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -884,7 +884,7 @@
                                     <h2 class="text-primary" >
                                         Content Subtype
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createContentSubtypeModal"><i class="fas fa-plus"></i> Add Content Subtype</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createContentSubtypeModal"><i class="fas fa-plus"></i> Add Content Subtype</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -905,8 +905,8 @@
                                                         <td>{{$content_subtype->name}}</td>
                                                         <td>{{$content_subtype->content->type}}</td>
                                                         <td>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContentSubtypeModal-{{$content_subtype->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteContentSubtypeModal-{{$content_subtype->id}}"><i class="fas fa-trash"></i> Delete Entry</button>
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editContentSubtypeModal-{{$content_subtype->id}}"><i class="fas fa-edit"></i></button>
+                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteContentSubtypeModal-{{$content_subtype->id}}"><i class="fas fa-trash"></i></button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -920,7 +920,7 @@
                                     <h2 class="text-primary" >
                                         Contributors
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add Contributors</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -947,7 +947,7 @@
                                     <h2 class="text-primary" >
                                         Subscribers
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add Subscribers</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -976,8 +976,8 @@
                                     <h2 class="text-primary" >
                                         Agrisyunaryos
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createAgrisyunaryoModal"><i class="fas fa-plus"></i> Add Agrisyunaryo</button>
-                                        <input type="submit" class="btn btn-default" value="Delete Checked">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createAgrisyunaryoModal"><i class="fas fa-plus"></i> Add Agrisyunaryo</button>
+                                        <input type="submit" class="btn btn-danger" value="Delete Checked">
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -1003,7 +1003,7 @@
                                                         max-width: 150px; 
                                                         max-height: 150px;"></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAgrisyunaryoModal-{{$agrisyunaryo->id}}"><i class="fas fa-edit"></i>  Edit Details</button>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAgrisyunaryoModal-{{$agrisyunaryo->id}}"><i class="fas fa-edit"></i> </button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -1088,7 +1088,7 @@
                                         <span class="text-muted"><i>Edit header links.</i></span>
 
                                         <span class="float-right">
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addHeaderLinkModal"><i class="fas fa-plus"></i> Add Header Link</button>
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addHeaderLinkModal"><i class="fas fa-plus"></i> Add Header Link</button>
                                         </span>
                                     </div>
                                 </div>
@@ -1096,8 +1096,8 @@
                                     <table class="table data-table tech-table table-hover" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th width="45%">Name</th>
                                                 <th width="15%">Position</th>
+                                                <th width="45%">Name</th>
                                                 <th width="25%">Link</th>
                                                 <th width="15%">Actions</th>
                                             </tr>
@@ -1105,12 +1105,12 @@
                                         <tbody>
                                             @foreach($header_links as $header_link)
                                             <tr>
-                                                <td><span class="text-muted">{{$header_link->name}}</span></td>
                                                 <td><span class="text-muted">{{$header_link->position}}</span></td>
+                                                <td><span class="text-muted">{{$header_link->name}}</span></td>
                                                 <td><span class="text-muted">{{$header_link->link}}</span></td>
                                                 <td class="">
-                                                    <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editHeaderLinkModal-{{$header_link->id}}"><i class="fas fa-edit"></i> Edit Details</button>
-                                                    <button class="btn btn-danger pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#deleteHeaderLinkModal-{{$header_link->id}}"><i class="fas fa-trash"></i> Delete</button>
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#editHeaderLinkModal-{{$header_link->id}}"><i class="fas fa-edit"></i> Edit</button>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteHeaderLinkModal-{{$header_link->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -1126,7 +1126,7 @@
                                         <span class="text-muted"><i>Edit footer links.</i></span>
 
                                         <span class="float-right">
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addFooterLinkModal"><i class="fas fa-plus"></i> Add Footer Link</button>
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addFooterLinkModal"><i class="fas fa-plus"></i> Add Footer Link</button>
                                         </span>
                                     </div>
                                 </div>
@@ -1147,7 +1147,7 @@
                                                 <td><span class="text-muted">{{$footer_link->position}}</span></td>
                                                 <td><span class="text-muted">{{$footer_link->link}}</span></td>
                                                 <td class="">
-                                                    <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editFooterLinkModal-{{$footer_link->id}}"><i class="fas fa-edit"></i> Edit Details</button>
+                                                    <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editFooterLinkModal-{{$footer_link->id}}"><i class="fas fa-edit"></i></button>
                                                     <button class="btn btn-danger pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#deleteFooterLinkModal-{{$footer_link->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                 </td>
                                             </tr>
@@ -1164,7 +1164,7 @@
                                         <span class="text-muted"><i>Add a headline topic.</i></span>
 
                                         <span class="float-right">
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addHeadlineModal"><i class="fas fa-plus"></i> Add Headline</button>
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addHeadlineModal"><i class="fas fa-plus"></i> Add Headline</button>
                                         </span>
                                     </div>
                                 </div>
@@ -1188,7 +1188,7 @@
                                                     <td>{{$headline->title}}</td>
                                                     <td><a href="{{$headline->link}}">Link</a></td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editHeadlineModal-{{$headline->id}}"><i class="fas fa-edit"></i> Edit Details</button>
+                                                        <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editHeadlineModal-{{$headline->id}}"><i class="fas fa-edit"></i></button>
                                                         <button class="btn btn-danger pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#deleteHeadlineModal-{{$headline->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                     </td>
                                                 </tr>
@@ -1205,7 +1205,7 @@
                                         <span class="text-muted"><i>Add a carousel entry.</i></span>
 
                                         <span class="float-right">
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addSliderModal"><i class="fas fa-plus"></i> Add Slider</button>
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addSliderModal"><i class="fas fa-plus"></i> Add Slider</button>
                                         </span>
                                     </div>
                                 </div>
@@ -1231,7 +1231,7 @@
                                                     <td>{{$slider->is_consortia == 0 ? 'AANR' : $slider->consortia->short_name}}</td>
                                                     <td>{{$slider->weight}}</td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editSliderModal-{{$slider->id}}"><i class="fas fa-edit"></i> Edit Details</button>
+                                                        <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editSliderModal-{{$slider->id}}"><i class="fas fa-edit"></i></button>
                                                         <button class="btn btn-danger pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#deleteSliderModal-{{$slider->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                     </td>
                                                 </tr>
@@ -1265,7 +1265,7 @@
                                                 <td><span class="text-muted">{{$social->name}}</span></td>
                                                 <td><span class="text-muted" style="word-wrap: break-word">{{$social->link}}</span></td>
                                                 <td class="">
-                                                    <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editStickyModal-{{$social->id}}"><i class="fas fa-edit"></i> Edit Details</button>
+                                                    <button class="btn btn-primary pl-1 pr-1 pt-0 pb-0" data-toggle="modal" data-target="#editStickyModal-{{$social->id}}"><i class="fas fa-edit"></i></button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -1279,7 +1279,7 @@
                                     <h2 class="text-primary" >
                                         Featured Videos
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add Featured Videos</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -1303,7 +1303,7 @@
                                     <h2 class="text-primary" >
                                         Featured Publications
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createTechnologyCategoryModal"><i class="fas fa-plus"></i> Add Featured Publication</button>
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
@@ -1328,7 +1328,7 @@
                                     <h2 class="text-primary" >
                                         Industry Profile
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editIndustryProfileFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editIndustryProfileFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
                                     </span></h2>
                                 </div>
                             </div>   
@@ -1338,7 +1338,7 @@
                                     <h2 class="text-primary" >
                                         AANR Latest
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editAANRLatestFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAANRLatestFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
                                     </span></h2>
                                 </div>
                             </div>  
@@ -1348,7 +1348,7 @@
                                     <h2 class="text-primary" >
                                         User Type Recommendation
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editUserTypeRecommendationFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editUserTypeRecommendationFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
                                     </span></h2>
                                 </div>
                             </div>    
@@ -1358,7 +1358,7 @@
                                     <h2 class="text-primary" >
                                         Recommended For You
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editRecommendedForYouFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editRecommendedForYouFieldsModal"><i class="fas fa-edit"></i> Edit Fields</button>
                                     </span></h2>
                                 </div>
                             </div>       
@@ -1683,15 +1683,8 @@
                                                         @endif
                                                     </td>
                                                     <td style="width:30%">
-                                                        @if(auth()->user()->role == 1 || auth()->user()->role == 2)
-                                                            @if($user->role == 0 || ($user->consortia_admin_id == auth()->user()->consortia_admin_id && $user->role != 5) )
-                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Change User Role</button>
-                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteUserModal-{{$user->id}}"><i class="fas fa-trash"></i> Delete</button>
-                                                            @endif
-                                                        @elseif(auth()->user()->role == 5)
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Change User Role</button>
-                                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteUserModal-{{$user->id}}"><i class="fas fa-trash"></i> Delete</button>
-                                                        @endif
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#setConsortiaAdminModal-{{$user->id}}"><i class="fas fa-edit"></i> Role</button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteUserModal-{{$user->id}}"><i class="fas fa-trash"></i> Delete</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -1757,7 +1750,7 @@
                                 <h2 class="text-primary" >
                                     Activity Logs
                                 <span class="float-right">
-                                    <a href="{{ url('/logs/download') }}" type="button" class="btn btn-default"> <i class="fas fa-download"></i> Download Excel</a>
+                                    <a href="{{ url('/logs/download') }}" type="button" class="btn btn-success"> <i class="fas fa-download"></i> Download Excel</a>
                                 </span></h2>
                             </div>
                             <div class="card-body">
@@ -1820,6 +1813,32 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
+        $(document).ready(() => {
+            let url = location.href.replace(/\/$/, "");
+            if (location.hash) {
+                const hash = url.split("#");
+                $('#myTab a[href="#'+hash[1]+'"]').tab("show");
+                url = location.href.replace(/\/#/, "#");
+                history.replaceState(null, null, url);
+                setTimeout(() => {
+                $(window).scrollTop(0);
+                }, 400);
+            } 
+            
+            $('a[data-toggle="tab"]').on("click", function() {
+                let newUrl;
+                const hash = $(this).attr("href");
+                if(hash == "#home") {
+                    newUrl = url.split("#")[0];
+                } else {
+                    newUrl = url.split('?')[0];
+                    newUrl = newUrl.split('#')[0] + hash;
+                }
+                history.replaceState(null, null, newUrl);
+            });
+        });
+
+        
         $(".list-group-item-action").on('click', function() {
             $(".list-group-item-action").each(function(index) {
                 $(this).removeClass("active show");
@@ -1839,7 +1858,7 @@
         }
         $(document).ready(function() {
             $('.data-table').DataTable({
-                "order": [[ 0, "desc" ]],
+                "order": [[ 0, "asc" ]],
             });
             $('.data-table-options').DataTable({
                 "order": [[ 1, "desc" ]],
