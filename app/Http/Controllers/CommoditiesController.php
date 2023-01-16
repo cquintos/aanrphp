@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Redirect;
 //     editCommodity(Request $request, $commodity_id)
 //     deleteCommodity($commodity_id, Request $request)
 //
-// if ($user->role != 5 && $user->role != 2)
-//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
-//
 // Certain data are validated.
 //
 // all changes are logged in a new Log object
@@ -101,8 +98,11 @@ class CommoditiesController extends Controller
 
         $user = auth()->user();
         $temp_changes = '';
-        $commodity = Commodity::findOrFail($commodity_id);
-        
+        $commodity = Commodity::find($commodity_id);
+
+        if($commodity == null) {
+            return redirect()->back()->with('error', 'Commodity not found.');
+        }
         if ($commodity->name != $request->name) {
             $temp_changes = $temp_changes.'<strong>Name:</strong> '.$commodity->name.' <strong>-></strong> '.$request->name.'<br>';
             $commodity->name = ucwords($request->name);
@@ -173,6 +173,11 @@ class CommoditiesController extends Controller
     {
         $user = auth()->user();
         $commodity = Commodity::findOrFail($commodity_id);
+        
+        if($commodity == null) {
+            return redirect()->back()->with('error', 'Commodity not found.');
+        }
+
         $commodity->delete();
 
         $this->log([

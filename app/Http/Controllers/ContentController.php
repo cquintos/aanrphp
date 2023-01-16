@@ -12,9 +12,6 @@ use App\Log;
 //     editContent(Request $request, $content_id)
 //     deleteContent(Request $request, $content_id)
 //
-// if ($user->role != 5 && $user->role != 2)
-//     Means only a SUPER ADMIN (role = 5) and a CONSORTIA ADMIN (role = 2) may use the function.      
-//
 // Certain data are validated.
 //
 // all changes are logged in a new Log object
@@ -26,26 +23,23 @@ class ContentController extends Controller
         $this->validate($request, array(
             'type' => 'required|max:50'
         ));
+
         $user = auth()->user();
         $temp_changes = '';
         $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $content = new Content();
-            $content->type = $request->type;
-            $content->save();
+        $content = new Content();
+        $content->type = $request->type;
+        $content->save();
 
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = '<strong>Added:</strong> '.$content->type.'';
-            $log->action = 'Added \''. $content->type.'\'';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Content Type';
-            $log->save();
+        $log->user_id = $user->id;
+        $log->user_email = $user->email;
+        $log->changes = '<strong>Added:</strong> '.$content->type.'';
+        $log->action = 'Added \''. $content->type.'\'';
+        $log->IP_address = $request->ip();
+        $log->resource = 'Content Type';
+        $log->save();
 
-            return redirect()->back()->with('success', 'Content Added.');
-        }
+        return redirect()->back()->with('success', 'Content Added.');
     }
 
     public function editContent(Request $request, $content_id)
@@ -53,31 +47,31 @@ class ContentController extends Controller
         $this->validate($request, array(
             'type' => 'required|max:50'
         ));
+
         $user = auth()->user();
         $temp_changes = '';
         $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $content = Content::find($content_id);
+        $content = Content::find($content_id);
 
-            if ($content->type != $request->type) {
-                $temp_changes = $temp_changes.'<strong>Type:</strong> '.$content->type.' <strong>-></strong> '.$request->type.'<br>';
-            }
-
-            $content->type = $request->type;
-            $content->save();
-
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = $temp_changes;
-            $log->action = 'Edited \''. $content->type.'\'';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Content Type';
-            $log->save();
-
-            return redirect()->back()->with('success', 'Content Updated.');
+        if ($content == null) {
+            return redirect()->back()->with('error', 'Content not found.');
         }
+        if ($content->type != $request->type) {
+            $temp_changes = $temp_changes.'<strong>Type:</strong> '.$content->type.' <strong>-></strong> '.$request->type.'<br>';
+        }
+
+        $content->type = $request->type;
+        $content->save();
+
+        $log->user_id = $user->id;
+        $log->user_email = $user->email;
+        $log->changes = $temp_changes;
+        $log->action = 'Edited \''. $content->type.'\'';
+        $log->IP_address = $request->ip();
+        $log->resource = 'Content Type';
+        $log->save();
+
+        return redirect()->back()->with('success', 'Content Updated.');
     }
 
     public function deleteContent(Request $request, $content_id)
@@ -85,22 +79,22 @@ class ContentController extends Controller
         $user = auth()->user();
         $temp_changes = '';
         $log = new Log();
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } else {
-            $content = Content::find($content_id);
+        $content = Content::find($content_id);
 
-            $log->user_id = $user->id;
-            $log->user_email = $user->email;
-            $log->changes = '<strong>Deleted:</strong> '.$content->type.'';
-            $log->action = 'Deleted \''. $content->type.'\'';
-            $log->IP_address = $request->ip();
-            $log->resource = 'Content Type';
-            $log->save();
-
-            $content->delete();
-
-            return redirect()->back()->with('success', 'Content Type Deleted.');
+        if ($content == null) {
+            return redirect()->back()->with('error', 'Content not found.');
         }
+        
+        $log->user_id = $user->id;
+        $log->user_email = $user->email;
+        $log->changes = '<strong>Deleted:</strong> '.$content->type.'';
+        $log->action = 'Deleted \''. $content->type.'\'';
+        $log->IP_address = $request->ip();
+        $log->resource = 'Content Type';
+        $log->save();
+
+        $content->delete();
+
+        return redirect()->back()->with('success', 'Content Type Deleted.');
     }
 }

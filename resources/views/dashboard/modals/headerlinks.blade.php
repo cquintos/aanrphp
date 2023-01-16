@@ -20,8 +20,8 @@
                         {{Form::text('link', '', ['class' => 'form-control', 'placeholder' => 'Add a link'])}}
                     </div>
                     <div class="form-group">
-                        {{Form::label('weight', 'Position weight (lowest to highest, from left to right)', ['class' => 'col-form-label'])}}
-                        {{Form::text('weight', '', ['class' => 'form-control', 'placeholder' => 'Add a number'])}}
+                        {{Form::label('position', 'Position weight (lowest to highest, from left to right)', ['class' => 'col-form-label'])}}
+                        {{Form::selectRange('position', '1', $header_links->count()+1, ['class' => 'form-control', 'placeholder' => 'Position of the header link. 1 being the leftest.'])}}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -54,8 +54,8 @@
                             {{Form::text('link', $header->link, ['class' => 'form-control', 'placeholder' => 'Add a link'])}}
                         </div>
                         <div class="form-group">
-                            {{Form::label('weight', 'Position weight (lowest to highest, from left to right)', ['class' => 'col-form-label'])}}
-                            {{Form::text('weight', $header->position, ['class' => 'form-control', 'placeholder' => 'Add a number'])}}
+                            {{Form::label('position', 'Position weight (lowest to highest, from left to right)', ['class' => 'col-form-label'])}}
+                            {{Form::selectRange('position', '1', $header_links->count(), $header->position, ['class' => 'form-control', 'placeholder' => 'Position of the header link. 1 being the leftest.'])}}
                         </div>
                     </div>
                     <div class="modal-footer">

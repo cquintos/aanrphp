@@ -3,8 +3,13 @@
 @section('breadcrumb')
     <ol class="breadcrumb pb-0" style="background-color:transparent">
         <li class="breadcrumb-item"><a class="breadcrumb-link" href="/">KM4AANR</a></li>
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}">Admin Dashboard</a></li>
-        <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}?asset=Artifacts">Artifact</a></li>
+        @if(auth()->user()->role == 5)
+            <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}">Admin Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('dashboardAdmin') }}?asset=Artifacts">Artifact</a></li>
+        @else
+            <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('userDashboard') }}">Consortia Admin Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="breadcrumb-link" href="{{ route('userDashboard') }}?asset=Artifacts">Artifact</a></li>
+        @endif
         <li class="breadcrumb-item active" aria-current="page">Upload</li>
     </ol>
 @endsection
@@ -19,7 +24,7 @@
                     <a class="list-group-item list-group-item-action" href="#basic_info"><i class="fas fa-info-circle side_panel_icon"></i> Basic Info</a>
                     <a class="list-group-item list-group-item-action" href="#file_and_links"><i class="fas fa-file-pdf side_panel_icon"></i> Files</a>
                     <a class="list-group-item list-group-item-action" href="#keywords"><i class="fas fa-search side_panel_icon"></i> Keywords</a>
-                    <a class="list-group-item" href="{{ route('dashboardAdmin') }}?asset=Artifacts"><i class="fas fa-angle-left side_panel_icon"></i> Back</a>
+                    <a class="list-group-item" href="{{ url()->previous() }}"><i class="fas fa-angle-left side_panel_icon"></i> Back</a>
                 </div>
             </div>
             <div class="col-sm-1"></div> 

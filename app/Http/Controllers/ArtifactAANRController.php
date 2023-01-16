@@ -311,9 +311,6 @@ class ArtifactAANRController extends Controller
         $log = new Log();
         $artifactaanr = ArtifactAANR::find($artifact_id);
 
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        } 
         if ($artifactaanr->title != $request->title) {
             $temp_changes = $temp_changes.'<strong>Title:</strong> '.$artifactaanr->title.' <strong>-></strong> '.$request->title.'<br>';
         }
@@ -429,10 +426,6 @@ class ArtifactAANRController extends Controller
     {
         $user = auth()->user();
         
-        if ($user->role != 5 && $user->role != 2) {
-            return redirect()->back()->with('error', 'Your account is not authorized to use this function.');
-        }
-        
         if (!$request->input('artifactaanr_check')) {
             return redirect()->back()->with('error', 'No content selected.');
         }
@@ -482,7 +475,7 @@ class ArtifactAANRController extends Controller
     public function fetchConsortiaMemberDependent(Request $request)
     {
         $consortia_members = Consortia::find($request->get('value'))->consortia_members;
-        $output = '<option value="">Select Commodity Subtype</option>';
+        $output = '<option value="">Select Consortia Member</option>';
 
         if(count($consortia_members) === 0) {
             return '<option value="">---------------------</option>';
@@ -498,7 +491,7 @@ class ArtifactAANRController extends Controller
     public function fetchContentSubtypeDependent(Request $request)
     {
         $content_subtypes = Content::find($request->get('value'))->content_subtypes;
-        $output = '<option value="">Select Commodity Subtype</option>';
+        $output = '<option value="">Select Content Subtype</option>';
 
         if(count($content_subtypes) === 0) {
             return '<option value="">---------------------</option>';

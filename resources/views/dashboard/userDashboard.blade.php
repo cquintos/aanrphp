@@ -329,7 +329,7 @@
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{route('userDashboard', ['asset' => 'Consortia'])}}" data-placement="top" rel="tooltip" title="Edit information in the consortium about page">Consortia</a>
                                     <a class="dropdown-item" href="{{route('userDashboard', ['asset' => 'Members'])}}" data-placement="top" rel="tooltip" title="Add new CMIs and edit information in the CMI pages">Members</a>
-                                    <a class="dropdown-item" href="{{route('userDashboard', ['asset' => 'Content'])}}" data-placement="top" rel="tooltip" title="Add and edit content about the consortium">Content</a>
+                                    <a class="dropdown-item" href="{{route('userDashboard', ['asset' => 'Artifacts'])}}" data-placement="top" rel="tooltip" title="Add and edit artifacts about the consortium">Artifacts</a>
                                 </div>
                             </div>
                         </div>
@@ -360,7 +360,7 @@
                                                 <td>{{$consortium_chosen->full_name}}</td>
                                                 <td>{{$consortium_chosen->region}}</td>
                                                 <td>
-                                                    <a target="blank_" href="{{route('consortiaAboutPage', ['consortia' => $consortium_chosen->short_name])}}" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Live view of the consortium about page"><i class="far fa-eye"></i> View About Page</a>
+                                                    <a target="blank_" href="{{route('consortiaAboutPage', ['consortia' => $consortium_chosen->short_name])}}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Live view of the consortium about page"><i class="far fa-eye"></i> View About Page</a>
                                                     {{-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaModal-{{$consortium_chosen->id}}"  data-placement="top" rel="tooltip" title="Edit information in the consortium about page" ><i class="fas fa-edit"></i> Edit Details</button> --}}
                                                 </td>
                                             </tr>
@@ -375,7 +375,7 @@
                                 <h2 class="text-primary" >
                                     {{$consortium_chosen->short_name}} Members
                                 <span class="float-right">
-                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createConsortiaMemberModal" data-placement="top" rel="tooltip" title="Add new CMI page"><i class="fas fa-plus"></i> Add</button>
+                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createConsortiaMemberModal" data-placement="top" rel="tooltip" title="Add new CMI page"><i class="fas fa-plus"></i> Add</button>
                                 </span></h2>
                             </div>
                             <div class="card-body px-5">
@@ -400,9 +400,9 @@
                                                 <td>{{$consortia_member->name}}</td>
                                                 <td>{{$consortia_member->contact_name}}</td>
                                                 <td>
-                                                    <a target="blank_" href="{{route('unitAboutPage', ['consortiaMember' => $consortia_member->acronym])}}" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Edit information in the CMI about page"><i class="far fa-eye"></i> View About Page</a>
-                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editConsortiaMemberModal-{{$consortia_member->id}}" data-placement="top" rel="tooltip" title="Edit information in the CMI about page"><i class="fas fa-edit"></i> Edit Details</button>
-                                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#deleteConsortiaMemberModal-{{$consortia_member->id}}" data-placement="top" rel="tooltip" title="Delete CMI"><i class="fas fa-trash"></i> Delete</button>
+                                                    <a target="blank_" href="{{route('unitAboutPage', ['consortiaMember' => $consortia_member->acronym])}}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Edit information in the CMI about page"><i class="far fa-eye"></i> View About Page</a>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editConsortiaMemberModal-{{$consortia_member->id}}" data-placement="top" rel="tooltip" title="Edit information in the CMI about page"><i class="fas fa-edit"></i> Edit Details</button>
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConsortiaMemberModal-{{$consortia_member->id}}" data-placement="top" rel="tooltip" title="Delete CMI"><i class="fas fa-trash"></i> Delete</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -411,47 +411,47 @@
                                 </table>
                             </div>
                         </div>
-                        @elseif(request()->asset == 'Content')
+                        @elseif(request()->asset == 'Artifacts')
                             <div class="card shadow mb-5 mt-0 ml-0">
                                 <form action="{{ route('deleteArtifact')}}" id="deleteForm" method="POST">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="delete">
                                 <div class="card-header px-5 pt-4">
                                     <h2 class="text-primary" >
-                                        AANR Content
+                                        AANR Artifacts
                                     <span class="float-right">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#createArtifactModal"><i class="fas fa-plus"></i> Add Content</button>
-                                        <input type="submit" class="btn btn-default" value="Delete Checked">
+                                        <a class="btn btn-success" href="{{ route('artifactUpload') }}" role="button"><i class="fas fa-plus"></i> Upload Artifact</a>
+                                        <input type="submit" class="btn btn-danger" value="Delete Checked">
                                     </span></h2>
                                 </div>
                                 <div class="card-body px-5">
                                     <table class="table data-table tech-table table-hover" style="width:100%">
-                                            <thead>
+                                        <thead>
+                                            <tr>
+                                                <th width="5%"></th>
+                                                <th width="5%">ID</th>
+                                                <th width="20%">Title</th>
+                                                <th width="30%">Content Type</th>
+                                                <th width="10%">Date Published</th>
+                                                <th width="10%">Author</th>
+                                                <th width="10%">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach(App\ArtifactAANR::where('consortia_id', '=', auth()->user()->consortia_admin_id)->get() as $artifact)
                                                 <tr>
-                                                    <th width="5%"></th>
-                                                    <th width="5%">ID</th>
-                                                    <th width="20%">Title</th>
-                                                    <th width="30%">Content Type</th>
-                                                    <th width="10%">Date Published</th>
-                                                    <th width="10%">Author</th>
-                                                    <th width="10%">Action</th>
+                                                    <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
+                                                    <td>{{$artifact->id}}</td>
+                                                    <td>{{$artifact->title}}</td>
+                                                    <td>{{$artifact->content->type}}</td>
+                                                    <td>{{$artifact->date_published}}</td>
+                                                    <td>{{$artifact->author}}</td>
+                                                    <td>
+                                                        <a class="btn btn-primary" href="/dashboard/admin/artifact/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($artifactAANR->where('consortia_id', '=', auth()->user()->consortia_admin_id)->get() as $artifact)
-                                                    <tr>
-                                                        <td style="text-align:center"><input class="form-check-input" type="checkbox" name="artifactaanr_check[]" value="{{$artifact->id}}" id="flexCheckDefault"></td>
-                                                        <td>{{$artifact->id}}</td>
-                                                        <td>{{$artifact->title}}</td>
-                                                        <td>{{$artifact->content->type}}</td>
-                                                        <td>{{$artifact->date_published}}</td>
-                                                        <td>{{$artifact->author}}</td>
-                                                        <td>
-                                                            <a class="btn btn-default" href="/dashboard/admin/content/{{$artifact->id}}/edit" role="button"><i class="fas fa-edit"></i> Edit Details</a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -467,7 +467,7 @@
                                     Activity Logs
                                 <span class="float-right">
                                     <a href="{{route('exportConsortiaLogs')}}">
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-placement="top" rel="tooltip" title="Export activity logs as an excel file">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-placement="top" rel="tooltip" title="Export activity logs as an excel file">
                                             <i class="fas fa-download"></i> Download Excel
                                         </button>
                                     </a>

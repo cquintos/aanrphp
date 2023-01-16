@@ -20,7 +20,7 @@
             <div class="col-xl-2 col-lg-12 col-md-12 pl-0 pr-0" id="side_bar">
                 <div id="nav_items" class="list-group">
                     <a class="list-group-item list-group-item-action" href="#basic_info"><i class="fas fa-info-circle side_panel_icon"></i> Basic Info</a>
-                    <a class="list-group-item list-group-item-action" href="{{ route('dashboardAdmin') }}?asset=Commodities"><i class="fas fa-angle-left side_panel_icon "></i> Back</a>
+                    <a class="list-group-item list-group-item-action" href="{{ url()->previous() }}"><i class="fas fa-angle-left side_panel_icon "></i> Back</a>
                 </div>
             </div>
             <div class="col-sm-1">

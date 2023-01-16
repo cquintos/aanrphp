@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         {{Form::label('industry', 'Industry', ['class' => 'col-form-label required'])}}
-                        {{Form::select('industry', $industries, null,['class' => 'form-control', 'placeholder' => 'Select Industry']) }}
+                        {{Form::select('industry', $industries->pluck('name', 'id'), null,['class' => 'form-control', 'placeholder' => 'Select Industry']) }}
                     </div>
                     <div class="form-group">
                         {{Form::label('name', 'Sector Name', ['class' => 'col-form-label required'])}}
@@ -45,7 +45,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             {{Form::label('industry', 'Industry', ['class' => 'col-form-label required'])}}
-                            {{Form::select('industry', $industries, $sector->industry_id,['class' => 'form-control', 'placeholder' => 'Select Industry']) }}
+                            {{Form::select('industry', $industries->pluck('name', 'id'), $sector->industry_id,['class' => 'form-control', 'placeholder' => 'Select Industry']) }}
                         </div>
                         <div class="form-group">
                             {{Form::label('name', 'Sector Name', ['class' => 'col-form-label required'])}}

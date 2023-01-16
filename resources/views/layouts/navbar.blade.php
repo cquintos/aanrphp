@@ -16,29 +16,11 @@
         
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto upper-nav">
-                {{-- @foreach(App\HeaderLink::all()->sortBy('position') as $header_link)
+                @foreach(App\HeaderLink::get()->sortBy('position') as $header_link)
                     <li class="nav-item">
                         <a class="nav-links" href="{{$header_link->link}}">{{$header_link->name}}</a>
                     </li>
-                @endforeach --}}
-                <li class="nav-item">
-                    <a class="nav-links" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-links" href="/about">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-links" href="/usefulLinks">Useful Links</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-links" href="https://techdashboard.pcaarrd.dost.gov.ph/">Technology</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-links" href="/redirect/community" target=”_blank”>Community</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-links" href="/agrisyunaryo">Agrisyunaryo</a>
-                </li>
+                @endforeach
             </ul>   
             <div class="dropdown btn-group">
                 <button class="btn btn-default btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
