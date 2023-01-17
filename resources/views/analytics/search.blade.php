@@ -92,8 +92,22 @@
     // *NOT SHOWN IF WITH ISP FILTER*
     // AVERAGE SEARCH PER DAY 
     $date_diff = date_diff($begin, $end, true);
-    $search_ave = sprintf("%.2f", $total_search/$date_diff->days);
-    $prev_search_ave = sprintf("%.2f", $prev_total_search/$date_diff->days);
+
+    function clog($output, $with_script_tags=true) { 
+    $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+        if ($with_script_tags) {
+            $js_code = '<script>' . $js_code . '</script>';
+        }
+        echo $js_code;
+}
+    clog(Carbon::now()->startOfMonth());
+    if($date_diff->days == 0) {
+        $date_diff->days = 1;
+    }
+    clog($date_diff->days);
+
+    $search_ave = sprintf("%.2f", $total_search/($date_diff->days ?: 1));
+    $prev_search_ave = sprintf("%.2f", $prev_total_search/($date_diff->days ?: 1));
     $search_ave_percentage = 0;
     
     if($prev_search_ave != 0) {
@@ -106,8 +120,8 @@
     $new_users_total = $analytics_user_types->totalsForAllResults['ga:newUsers'];
     $old_users_total = $analytics_user_types->totalsForAllResults['ga:users'];
     $total_users = $new_users_total + $old_users_total;
-    $new_users_percentage = number_format((float)($new_users_total/$total_users*100), 2, '.', '');
-    $old_users_percentage = number_format((float)($old_users_total/$total_users*100), 2, '.', '');
+    $new_users_percentage = number_format((float)($new_users_total/($total_users*100 ?: 1)), 2, '.', '');
+    $old_users_percentage = number_format((float)($old_users_total/($total_users*100 ?: 1)), 2, '.', '');
     
     // BAR GRAPH FOR ISP SEARCHES WITHIN DATE FILTER AND TOTAL VISITORS FOR 30 DAYS 
     $freq_index = 0;
@@ -301,7 +315,7 @@
                                         {{Form::label('year_from', 'Date Start: ', ['class' => 'col-form-label'])}}
                                     </div>
                                     <div class="col-6">
-                                        {{ Form::date('year_from_filter', Carbon::now()->startOfMonth(),['class' => 'form-control']) }}
+                                        {{ Form::date('year_from_filter', request()->to ?: Carbon::now()->startOfMonth(),['class' => 'form-control']) }}
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +347,7 @@
                                         {{Form::label('year_to', 'Date End: ', ['class' => 'col-form-label'])}}
                                     </div>
                                     <div class="col-6">
-                                        {{ Form::date('year_to_filter', Carbon::now(),['class' => 'form-control']) }}
+                                        {{ Form::date('year_to_filter', request()->to ?: Carbon::now(),['class' => 'form-control']) }}
                                     </div>
                                 </div>
                             </div>
