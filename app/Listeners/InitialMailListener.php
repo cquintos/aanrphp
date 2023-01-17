@@ -39,7 +39,7 @@ class InitialMailListener
             "mail" => ["value" => $user->email],
             "pass" => ["value" => $user->password]
         ]);
-        
+
         if(!$user->subscribed) {
             $details = [
                 'title' => 'Email Confirmed!',  
@@ -47,6 +47,7 @@ class InitialMailListener
             ];
     
             Mail::to($user->email)->send(new SendInitialMailClass($details));
+            return;
         }
 
         if($user->is_organization_other != 1){
