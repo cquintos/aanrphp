@@ -40,6 +40,7 @@ use Illuminate\Http\Request;
 use Spatie\Browsershot\Browsershot;
 use Elastic\Elasticsearch\ClientBuilder;
 use Stevebauman\Location\Facades\Location;
+use Illuminate\Support\Facades\Http;
 
 class PagesController extends Controller
 {
@@ -78,7 +79,7 @@ class PagesController extends Controller
 
     public function saveAnalytics()
     {
-        $file = Browsershot::url('http://km4aanr.pcaarrd.dost.gov.ph/analytics/search')
+        $file = Browsershot::url('https://km4aanr.pcaarrd.dost.gov.ph/analytics/search')
             ->noSandbox()->landscape()->showBrowserHeaderAndFooter()
             ->windowSize(1920, 1080)->scale(0.75)->pdf();
 
@@ -327,10 +328,10 @@ class PagesController extends Controller
     public function communityPage()
     {
         if (Auth::user() && Auth::user()->hasVerifiedEmail()) {
-            return Redirect::away('http://community.pcaarrd.dost.gov.ph/moLogin');
+            return Redirect::away('https://community.pcaarrd.dost.gov.ph/moLogin');
         }
 
-        return Redirect::away('http://community.pcaarrd.dost.gov.ph/');
+        return Redirect::away('https://community.pcaarrd.dost.gov.ph/');
     }
 
     public function oauthPage()
