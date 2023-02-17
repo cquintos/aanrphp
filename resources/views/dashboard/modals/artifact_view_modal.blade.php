@@ -68,7 +68,14 @@
                 </div>
                 <div class="modal-footer">
                     @if($artifact->link != null)
-                    <a target="_blank" href="//{{$artifact->link}}"><button type="button" class="btn btn-primary">Go to link</button></a>
+                    @php
+                        $http_pattern = "/^http[s]*:\/\/[\w]+/i";
+                        $url = $artifact->link;
+                        if (!preg_match($http_pattern, $url, $match)){  
+                            $url = 'http://' .$url;
+                        }
+                    @endphp
+                    <a target="_blank" href="{{$url}}"><button type="button" class="btn btn-primary">Go to link</button></a>
                     @endif
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                 </div>

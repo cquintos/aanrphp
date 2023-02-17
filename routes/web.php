@@ -25,6 +25,7 @@ Route::get('analytics/search', 'PagesController@searchAnalytics')->name('searchA
 Route::get('analytics/searchWithFilter', 'PagesController@searchAnalyticsWithFilter')->name('searchAnalyticsWithFilter');
 Route::get('countries', [CountryController::class, 'index']);
 Route::post('signup/createUser', 'UsersController@createUser')->name('createUser');
+Route::get('search', 'PagesController@search')->name('search');
 
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/email/verify', 'VerificationController@show')->name('verification.notice');
@@ -32,7 +33,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/email/resend', 'VerificationController@resend')->name('verification.resend');
     
     Route::group(['middleware' => ['verified']], function() {
-        Route::get('search', 'PagesController@search')->name('search');
         Route::get('unit/about', 'PagesController@unitAboutPage')->name('unitAboutPage');
         Route::get('usefulLinks', 'PagesController@usefulLinks')->name('usefulLinks');
         Route::get('agrisyunaryo', 'PagesController@agrisyunaryo')->name('agrisyunaryo');
