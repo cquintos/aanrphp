@@ -17,6 +17,8 @@
                         </div>
                         <br>
                         <div>
+                            <a target="_blank" href="https://docs.google.com/spreadsheets/d/17F9EeS2Fjb3Mqtw8U5Hu_mzT7zl4xe2V2zeXCudysWY/edit?usp=sharing"> Click here to download CSV template. </a>
+                            <br><br>
                             <h3 style="color:black"> IMPORTANT REMINDERS: </h3>
                             <br>
                             <h6 style="color:black">Entries with missing TITLE, CONSORTIA, and CONTENT_TYPE fields will be skipped.</h6>
