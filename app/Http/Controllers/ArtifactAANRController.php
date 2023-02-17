@@ -100,6 +100,10 @@ class ArtifactAANRController extends Controller
             return redirect()->back()->with('error', 'Invalid file.');
         }
 
+        if(strpos($request->file('csv_file')->getClientOriginalName(), ".csv") === false) {
+            return redirect()->back()->with('error', 'Invalid file format. Please make sure the file is in .csv extension.');
+        } 
+
         $upload = $request->file('csv_file');
         $filePath = $upload->getRealPath();
         $file = fopen($filePath, 'r');
@@ -113,21 +117,17 @@ class ArtifactAANRController extends Controller
         $err_duplicate = 0; 
         $output = '';
 
-        function clog($output, $with_script_tags=true) { 
-            $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
-                if ($with_script_tags) {
-                    $js_code = '<script>' . $js_code . '</script>';
-                }
-                echo $js_code;
-        }
-        
-
         while ($columns = fgetcsv($file)) {
             $count = $count + 1;
+
+            if(count($header) != count($columns)) {
+                return redirect()->back()->with('error', 'Something went wrong. Try again.');
+            }
+
             $data = array_combine($header, $columns);
             $artifact = new ArtifactAANR();
 
-            foreach ($data as $key => &$value) {
+            foreach ($data as $key => $value) {
                 $key = strtolower($key);
                 $value = ($key == "gad") ? (int)$value : (string)$value;
             }
@@ -159,7 +159,6 @@ class ArtifactAANRController extends Controller
                 }
                 $contentsubtype_id = $contentsubtype_id->id;
             }
-            clog($contentsubtype_id);
             
             $consortia_member_id = $data['CMI']; //consortia id is nullable but user input still needs to be checked
             if ($consortia_member_id != null) {
